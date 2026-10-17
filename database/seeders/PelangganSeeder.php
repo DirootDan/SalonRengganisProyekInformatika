@@ -2,52 +2,31 @@
 
 namespace Database\Seeders;
 
+use App\Models\Pelanggan;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class PelangganSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table('pelanggan')->insert([
-            [
-                'nama_cust' => 'Rina Anggraini',
-                'no_telp'   => '081234567890',
-                'email'     => 'rina@gmail.com',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_cust' => 'Dewi Lestari',
-                'no_telp'   => '082198765432',
-                'email'     => 'dewi.lestari@gmail.com',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_cust' => 'Siti Nurhaliza',
-                'no_telp'   => '085712345678',
-                'email'     => 'siti.nurhaliza@yahoo.com',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_cust' => 'Maya Sari',
-                'no_telp'   => '081377788899',
-                'email'     => 'maya.sari@gmail.com',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_cust' => 'Indah Permata',
-                'no_telp'   => '089655544433',
-                'email'     => 'indah.permata@gmail.com',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        $daftar = [
+            ['Rina Anggraini', '081234567890', 'rina@gmail.com'],
+            ['Dewi Lestari',   '082198765432', 'dewi.lestari@gmail.com'],
+            ['Siti Nurhaliza', '085712345678', 'siti.nurhaliza@yahoo.com'],
+            ['Maya Sari',      '081377788899', 'maya.sari@gmail.com'],
+            ['Indah Permata',  '089655544433', 'indah.permata@gmail.com'],
+        ];
+
+        foreach ($daftar as [$nama, $telp, $email]) {
+            // updateOrCreate: aman dijalankan berulang, dan memperbaiki data yang sudah ada
+            Pelanggan::updateOrCreate(
+                ['email' => $email],
+                [
+                    'nama_cust' => $nama,
+                    'no_telp'   => $telp,
+                    'password'  => 'password123', // di-hash otomatis oleh model
+                ]
+            );
+        }
     }
 }

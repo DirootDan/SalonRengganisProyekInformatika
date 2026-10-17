@@ -13,6 +13,7 @@ export default defineConfig({
     'resources/css/lupapassword.css',
     'resources/css/resetpassword.css',
     'resources/js/loginpage.js',
+    'resources/css/pelanggan.css'
 ],
             refresh: true,
         }),

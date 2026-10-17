@@ -9,14 +9,22 @@ class KaryawanSeeder extends Seeder
 {
     public function run(): void
     {
-        Karyawan::updateOrCreate(
-            ['username' => 'admin'],
-            [
-                'nama_staff'   => 'Administrator',
-                'email'        => 'admin@salon.test',
-                'role_jabatan' => 'Admin',
-                'password'     => 'admin123',
-            ]
-        );
+        $akun = [
+            ['admin',   'Manajer Salon',  'admin@salon.test',   'Manajer', 'admin123'],
+            ['kasir',   'Kasir Salon',    'kasir@salon.test',   'Kasir',   'kasir123'],
+            ['stylist', 'Stylist Salon',  'stylist@salon.test', 'Stylist', 'stylist123'],
+        ];
+
+        foreach ($akun as [$username, $nama, $email, $role, $password]) {
+            Karyawan::updateOrCreate(
+                ['username' => $username],
+                [
+                    'nama_staff'   => $nama,
+                    'email'        => $email,
+                    'role_jabatan' => $role,
+                    'password'     => $password,
+                ]
+            );
+        }
     }
 }

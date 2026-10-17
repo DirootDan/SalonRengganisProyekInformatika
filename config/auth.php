@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Karyawan;
+use App\Models\Pelanggan;
 use App\Models\User;
 
 return [
@@ -19,6 +20,10 @@ return [
             'driver' => 'session',
             'provider' => 'karyawan',
         ],
+        'pelanggan' => [
+            'driver' => 'session',
+            'provider' => 'pelanggan',
+        ],
     ],
 
     'providers' => [
@@ -29,6 +34,10 @@ return [
         'karyawan' => [
             'driver' => 'eloquent',
             'model' => Karyawan::class,
+        ],
+        'pelanggan' => [
+            'driver' => 'eloquent',
+            'model' => Pelanggan::class,
         ],
     ],
 
@@ -41,6 +50,12 @@ return [
         ],
         'karyawan' => [
             'provider' => 'karyawan',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'pelanggan' => [
+            'provider' => 'pelanggan',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

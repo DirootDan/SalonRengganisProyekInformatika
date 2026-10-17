@@ -104,5 +104,5 @@ button:disabled { opacity: 0.7; cursor: not-allowed; }
 
 .link-row a { color: #db2777; text-decoration: none; font-weight: 600; }
 .link-row a:hover { text-decoration: underline; }
-
+.link-row.center { justify-content: center; }
 .footer-note { margin-top: 20px; font-size: 11px; color: #9ca3af; }

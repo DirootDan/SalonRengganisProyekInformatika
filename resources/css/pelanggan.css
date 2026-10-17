@@ -1,0 +1,226 @@
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #fdf2f8;
+    color: #374151;
+}
+
+/* ===== Header ===== */
+.topbar {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.brand { color: #db2777; font-weight: 700; font-size: 18px; text-decoration: none; }
+
+.menu { display: flex; gap: 6px; flex: 1; }
+
+.menu a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.menu a:hover { background: #fce7f3; color: #db2777; }
+.menu a.aktif { background: #db2777; color: white; }
+
+.akun { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+
+.btn-keluar {
+    padding: 7px 14px;
+    background: white;
+    color: #db2777;
+    border: 1px solid #db2777;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-keluar:hover { background: #db2777; color: white; }
+
+/* ===== Isi halaman ===== */
+.container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+
+.judul-halaman { color: #db2777; margin: 0 0 4px; font-size: 26px; font-weight: 700; }
+.sub-halaman { color: #6b7280; margin: 0 0 24px; font-size: 14px; }
+
+.success-msg {
+    background: #dcfce7;
+    color: #16a34a;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #bbf7d0;
+}
+
+.error-msg {
+    background: #fee2e2;
+    color: #ef4444;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #fecaca;
+    line-height: 1.6;
+}
+
+.kosong {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.kosong a { color: #db2777; font-weight: 600; }
+
+/* ===== Layanan ===== */
+.grid-layanan {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.kartu {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.kartu:hover { transform: translateY(-4px); }
+.kartu-ikon { font-size: 30px; margin-bottom: 8px; }
+.kartu h3 { margin: 0 0 8px; font-size: 16px; }
+.harga { color: #db2777; font-weight: 700; }
+
+.aksi-tengah { text-align: center; margin-top: 30px; }
+
+/* ===== Tombol ===== */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: #db2777;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover { background: #be185d; box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.btn-penuh { width: 100%; margin-top: 20px; }
+
+/* ===== Form booking ===== */
+.form-box {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 640px;
+}
+
+.label { font-size: 13px; font-weight: 600; color: #6b7280; margin: 0 0 8px; display: block; }
+
+input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+input[type="date"]:focus { outline: none; border-color: #db2777; }
+
+.daftar-opsi { display: flex; flex-direction: column; gap: 10px; }
+
+.opsi {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.opsi:hover { border-color: #db2777; }
+.opsi:has(input:checked) { border-color: #db2777; background: #fdf2f8; }
+.opsi input { accent-color: #db2777; width: 18px; height: 18px; }
+.opsi-nama { flex: 1; font-size: 14px; font-weight: 600; }
+.opsi-harga { color: #db2777; font-weight: 600; font-size: 14px; }
+
+/* ===== Riwayat ===== */
+.reservasi-item {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.reservasi-atas { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.reservasi-tgl { font-weight: 700; font-size: 16px; }
+.reservasi-no { font-size: 12px; color: #9ca3af; }
+
+.status {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-selesai { background: #dcfce7; color: #16a34a; }
+.status-batal { background: #fee2e2; color: #ef4444; }
+
+.reservasi-layanan { list-style: none; margin: 0 0 12px; padding: 0; font-size: 14px; }
+
+.reservasi-layanan li {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed #f3f4f6;
+}
+
+.reservasi-total { text-align: right; font-weight: 700; color: #db2777; }
+
+.footer { text-align: center; padding: 30px 20px; font-size: 12px; color: #9ca3af; }
+
+@media (max-width: 640px) {
+    .topbar-inner { justify-content: center; }
+    .menu { justify-content: center; flex: none; width: 100%; order: 3; }
+}

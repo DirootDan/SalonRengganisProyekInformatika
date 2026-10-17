@@ -38,7 +38,7 @@
 
         <div class="link-row">
             <a href="{{ route('password.lupa') }}">Lupa password?</a>
-            <a href="{{ route('register') }}">Buat akun baru</a>
+            <a href="{{ route('pelanggan.login') }}">Login pelanggan</a>
         </div>
 
         <p class="footer-note">Aplikasi Kasir v1.0 &bull; Web Version</p>

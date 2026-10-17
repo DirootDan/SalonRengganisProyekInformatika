@@ -11,12 +11,14 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    /* ================= LOGIN ================= */
+    /* ================= LOGIN KARYAWAN ================= */
 
     public function showLogin()
     {
-        if (Auth::guard('karyawan')->check()) {
-            return redirect()->route('dashboard');
+        $user = Auth::guard('karyawan')->user();
+
+        if ($user && $user->rutePeran()) {
+            return redirect()->route($user->rutePeran());
         }
 
         return view('loginpage');
@@ -30,9 +32,22 @@ class AuthController extends Controller
         ], $this->pesan(), $this->atribut());
 
         if (Auth::guard('karyawan')->attempt($credentials)) {
+            $user = Auth::guard('karyawan')->user();
+
+            // Jabatan tidak dikenali -> tolak
+            if (! $user->rutePeran()) {
+                Auth::guard('karyawan')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()
+                    ->withErrors(['username' => 'Jabatan akun ini belum dikenali. Hubungi manajer.'])
+                    ->onlyInput('username');
+            }
+
             $request->session()->regenerate();
 
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route($user->rutePeran()));
         }
 
         return back()
@@ -48,34 +63,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
-    }
-
-    /* ================= BUAT AKUN BARU ================= */
-
-    public function showRegister()
-    {
-        return view('registerpage');
-    }
-
-    public function register(Request $request)
-    {
-        $data = $request->validate([
-            'nama_staff' => ['required', 'string', 'max:100'],
-            'email'      => ['required', 'email', 'max:100', 'unique:karyawan,email'],
-            'username'   => ['required', 'string', 'min:4', 'max:50', 'alpha_dash', 'unique:karyawan,username'],
-            'password'   => ['required', 'string', 'min:6', 'confirmed'],
-        ], $this->pesan(), $this->atribut());
-
-        Karyawan::create([
-            'nama_staff'   => $data['nama_staff'],
-            'email'        => $data['email'],
-            'role_jabatan' => 'Kasir',
-            'username'     => $data['username'],
-            'password'     => $data['password'], // di-hash otomatis oleh model
-        ]);
-
-        return redirect()->route('login')
-            ->with('status', 'Akun berhasil dibuat. Silakan login.');
     }
 
     /* ================= LUPA PASSWORD ================= */
@@ -162,10 +149,9 @@ class AuthController extends Controller
     private function atribut(): array
     {
         return [
-            'nama_staff' => 'Nama lengkap',
-            'email'      => 'Email',
-            'username'   => 'Username',
-            'password'   => 'Password',
+            'email'    => 'Email',
+            'username' => 'Username',
+            'password' => 'Password',
         ];
     }
 }

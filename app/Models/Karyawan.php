@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Karyawan extends Authenticatable
 {
+    use Notifiable;
+
     protected $table = 'karyawan';
     protected $primaryKey = 'id_karyawan';
 
@@ -27,5 +30,19 @@ class Karyawan extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Nama route halaman utama sesuai jabatan.
+     * Mengembalikan null kalau jabatannya tidak dikenali.
+     */
+    public function rutePeran(): ?string
+    {
+        return match ($this->role_jabatan) {
+            'Manajer' => 'manajer.dashboard',
+            'Kasir'   => 'kasir.dashboard',
+            'Stylist' => 'stylist.dashboard',
+            default   => null,
+        };
     }
 }
