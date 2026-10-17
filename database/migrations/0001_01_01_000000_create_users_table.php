@@ -22,6 +22,7 @@ return new class extends Migration
             $table->id('id_karyawan');
             $table->string('nama_staff');
             $table->string('role_jabatan');
+            $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
             $table->rememberToken();

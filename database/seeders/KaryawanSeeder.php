@@ -13,6 +13,7 @@ class KaryawanSeeder extends Seeder
             ['username' => 'admin'],
             [
                 'nama_staff'   => 'Administrator',
+                'email'        => 'admin@salon.test',
                 'role_jabatan' => 'Admin',
                 'password'     => 'admin123',
             ]

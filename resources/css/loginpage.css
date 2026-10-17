@@ -5,8 +5,10 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px 0;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,7 +73,6 @@ button {
 }
 
 button:hover { background: #be185d; box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3); }
-
 button:disabled { opacity: 0.7; cursor: not-allowed; }
 
 .error-msg {
@@ -83,5 +84,25 @@ button:disabled { opacity: 0.7; cursor: not-allowed; }
     margin-bottom: 20px;
     border: 1px solid #fecaca;
 }
+
+.success-msg {
+    background: #dcfce7;
+    color: #16a34a;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    border: 1px solid #bbf7d0;
+}
+
+.link-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    font-size: 12px;
+}
+
+.link-row a { color: #db2777; text-decoration: none; font-weight: 600; }
+.link-row a:hover { text-decoration: underline; }
 
 .footer-note { margin-top: 20px; font-size: 11px; color: #9ca3af; }
