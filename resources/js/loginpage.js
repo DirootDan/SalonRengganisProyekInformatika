@@ -7,11 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const defaultText = submitBtn.innerHTML;
 
     loginForm.addEventListener("submit", function () {
-        
         submitBtn.innerHTML = "MEMPROSES...";
         submitBtn.disabled = true;
     });
-
 
     window.addEventListener("pageshow", function () {
         submitBtn.innerHTML = defaultText;
