@@ -21,7 +21,7 @@ class AuthController extends Controller
             return redirect()->route($user->rutePeran());
         }
 
-        return view('loginpage');
+        return view('karyawan.loginpage');
     }
 
     public function login(Request $request)
@@ -69,7 +69,7 @@ class AuthController extends Controller
 
     public function showLupaPassword()
     {
-        return view('lupapassword');
+        return view('karyawan.lupapassword');
     }
 
     public function kirimLinkReset(Request $request)
@@ -96,7 +96,7 @@ class AuthController extends Controller
 
     public function showResetPassword(Request $request, string $token)
     {
-        return view('resetpassword', [
+        return view('karyawan.resetpassword', [
             'token' => $token,
             'email' => $request->query('email'),
         ]);

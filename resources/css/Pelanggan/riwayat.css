@@ -1,0 +1,69 @@
+/* ===== Riwayat ===== */
+.reservasi-item {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.reservasi-atas {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.reservasi-tgl {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.reservasi-no {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.status {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-selesai {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-batal {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.reservasi-layanan {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    font-size: 14px;
+}
+
+.reservasi-layanan li {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed #f3f4f6;
+}
+
+.reservasi-total {
+    text-align: right;
+    font-weight: 700;
+    color: #db2777;
+}

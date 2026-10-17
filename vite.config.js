@@ -8,12 +8,15 @@ export default defineConfig({
            input: [
     'resources/css/app.css',
     'resources/js/app.js',
-    'resources/css/loginpage.css',
-    'resources/css/registerpage.css',
-    'resources/css/lupapassword.css',
-    'resources/css/resetpassword.css',
+    'resources/css/Login/loginpage.css',
+    'resources/css/Login/registerpage.css',
+    'resources/css/Login/lupapassword.css',
+    'resources/css/Login/resetpassword.css',
     'resources/js/loginpage.js',
-    'resources/css/pelanggan.css'
+    'resources/css/pelanggan/dashboard.css',
+    'resources/css/pelanggan/layanan.css',
+    'resources/css/pelanggan/riwayat.css'
+
 ],
             refresh: true,
         }),

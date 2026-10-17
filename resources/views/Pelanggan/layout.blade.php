@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('judul', 'Salon Rengganis')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/pelanggan.css', 'resources/js/loginpage.js'])
+    @vite(['resources/css/pelanggan/dashboard.css', 'resources/css/pelanggan/layanan.css', 'resources/css/pelanggan/riwayat.css', 'resources/js/loginpage.js'])
 </head>
 <body>
 
