@@ -14,6 +14,10 @@
         <h2>Salon Rengganis</h2>
         <p class="subtitle">Silakan masuk untuk memulai kasir</p>
 
+        @if (session('status'))
+            <div class="success-msg">✅ {{ session('status') }}</div>
+        @endif
+
         @if ($errors->any())
             <div class="error-msg">⚠️ {{ $errors->first() }}</div>
         @endif
@@ -31,6 +35,11 @@
 
             <button type="submit" id="submitBtn">MASUK SEKARANG</button>
         </form>
+
+        <div class="link-row">
+            <a href="{{ route('password.lupa') }}">Lupa password?</a>
+            <a href="{{ route('register') }}">Buat akun baru</a>
+        </div>
 
         <p class="footer-note">Aplikasi Kasir v1.0 &bull; Web Version</p>
     </div>
