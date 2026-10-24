@@ -41,7 +41,8 @@ class Karyawan extends Authenticatable
         return match ($this->role_jabatan) {
             'Manajer' => 'manajer.dashboard',
             'Kasir'   => 'kasir.dashboard',
-            'Stylist' => 'stylist.dashboard',
+            'Stylist'   => 'stylist.dashboard',
+            'Therapist' => 'therapist.dashboard',
             default   => null,
         };
     }

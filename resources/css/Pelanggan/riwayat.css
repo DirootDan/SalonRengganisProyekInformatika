@@ -121,3 +121,15 @@
     color: #db2777;
     margin-top: 8px;
 }
+
+.layanan-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.layanan-petugas {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+}

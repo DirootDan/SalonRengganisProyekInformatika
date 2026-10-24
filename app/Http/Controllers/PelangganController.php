@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Karyawan;
 use App\Models\Layanan;
 use App\Models\Reservasi;
 use Illuminate\Http\Request;
@@ -22,7 +23,13 @@ class PelangganController extends Controller
     {
         $layanan = Layanan::orderBy('nama_layanan')->get();
 
-        return view('pelanggan.booking', compact('layanan'));
+        // Daftar petugas dikelompokkan per jabatan: ['Stylist' => [...], 'Therapist' => [...]]
+        $petugas = Karyawan::whereIn('role_jabatan', Layanan::JABATAN_PETUGAS)
+            ->orderBy('nama_staff')
+            ->get(['id_karyawan', 'nama_staff', 'role_jabatan'])
+            ->groupBy('role_jabatan');
+
+        return view('pelanggan.booking', compact('layanan', 'petugas'));
     }
 
     public function layanan()
@@ -47,14 +54,45 @@ class PelangganController extends Controller
             'layanan.*.exists'              => 'Layanan yang dipilih tidak ditemukan.',
         ]);
 
-        DB::transaction(function () use ($data) {
+        // Pastikan setiap layanan memiliki petugas dengan jabatan yang sesuai
+        $layananDipilih = Layanan::whereIn('id_layanan', array_unique($data['layanan']))->get();
+        $petugasInput   = (array) $request->input('petugas', []);
+        $lampiran       = [];
+        $galat          = [];
+
+        foreach ($layananDipilih as $item) {
+            $jabatan   = $item->jabatan_petugas;
+            $idPetugas = $petugasInput[$item->id_layanan] ?? null;
+
+            if (! $idPetugas) {
+                $galat["petugas.{$item->id_layanan}"] = "Silakan pilih {$jabatan} untuk layanan {$item->nama_layanan}.";
+                continue;
+            }
+
+            $valid = Karyawan::where('id_karyawan', $idPetugas)
+                ->where('role_jabatan', $jabatan)
+                ->exists();
+
+            if (! $valid) {
+                $galat["petugas.{$item->id_layanan}"] = "{$jabatan} yang dipilih untuk layanan {$item->nama_layanan} tidak valid.";
+                continue;
+            }
+
+            $lampiran[$item->id_layanan] = ['id_karyawan' => (int) $idPetugas];
+        }
+
+        if ($galat) {
+            return back()->withErrors($galat)->withInput();
+        }
+
+        DB::transaction(function () use ($data, $lampiran) {
             $reservasi = Reservasi::create([
                 'id_pelanggan' => Auth::guard('pelanggan')->id(),
                 'tgl_booking'  => $data['tgl_booking'],
                 'status'       => 'pending',
             ]);
 
-            $reservasi->layanan()->attach(array_unique($data['layanan']));
+            $reservasi->layanan()->attach($lampiran);
         });
 
         return redirect()->route('pelanggan.riwayat')
@@ -69,7 +107,14 @@ class PelangganController extends Controller
             ->latest('id_reservasi')
             ->get();
 
-        return view('pelanggan.riwayat', compact('reservasi'));
+        // Ambil nama petugas untuk setiap layanan yang tercatat di detail reservasi
+        $idPetugas = $reservasi->flatMap(fn ($r) => $r->layanan->pluck('pivot.id_karyawan'))
+            ->filter()
+            ->unique();
+
+        $petugas = Karyawan::whereIn('id_karyawan', $idPetugas)->pluck('nama_staff', 'id_karyawan');
+
+        return view('pelanggan.riwayat', compact('reservasi', 'petugas'));
     }
 
     public function profil()

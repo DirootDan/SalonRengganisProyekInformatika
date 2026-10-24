@@ -21,6 +21,7 @@ export default defineConfig({
                 'resources/css/pelanggan/layanan.css',
                 'resources/css/pelanggan/riwayat.css',
                 'resources/css/pelanggan/profil.css',
+                'resources/css/pelanggan/booking.css',
                 
                 // Pelanggan JS (Baru Ditambahkan)
                 'resources/js/pelanggan/beranda.js',

@@ -59,6 +59,15 @@ Route::middleware(['auth:karyawan', 'peran:Stylist'])
         ]))->name('dashboard');
     });
 
+// Area Therapist
+Route::middleware(['auth:karyawan', 'peran:Therapist'])
+    ->prefix('therapist')->name('therapist.')->group(function () {
+        Route::get('/dashboard', fn () => view('Karyawan.PlaceHolder', [
+            'judul' => 'Dashboard Therapist',
+            'user'  => Auth::guard('karyawan')->user(),
+        ]))->name('dashboard');
+    });
+
 /* ===== AREA PELANGGAN ===== */
 // Hanya berisi rute yang membutuhkan login pelanggan
 Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth:pelanggan')->group(function () {

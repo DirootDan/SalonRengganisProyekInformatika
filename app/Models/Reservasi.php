@@ -31,6 +31,6 @@ class Reservasi extends Model
             'detail_reservasi',
             'id_reservasi',
             'id_layanan'
-        );
+        )->withPivot('id_karyawan');
     }
 }

@@ -28,7 +28,12 @@
                 <ul class="reservasi-layanan">
                     @foreach ($r->layanan as $l)
                         <li>
-                            <span>{{ $l->nama_layanan }}</span>
+                            <span class="layanan-info">
+                                <span>{{ $l->nama_layanan }}</span>
+                                @if ($l->pivot->id_karyawan && isset($petugas[$l->pivot->id_karyawan]))
+                                    <small class="layanan-petugas">{{ $l->jabatan_petugas }}: {{ $petugas[$l->pivot->id_karyawan] }}</small>
+                                @endif
+                            </span>
                             <span>Rp {{ number_format($l->harga_layanan, 0, ',', '.') }}</span>
                         </li>
                     @endforeach

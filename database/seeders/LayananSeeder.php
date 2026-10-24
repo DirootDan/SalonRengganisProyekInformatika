@@ -9,18 +9,22 @@ class LayananSeeder extends Seeder
 {
     public function run(): void
     {
+        // [nama layanan, harga, jabatan petugas yang menangani]
         $daftar = [
-            ['Potong Rambut', 50000],
-            ['Creambath', 80000],
-            ['Hair Coloring', 250000],
-            ['Facial', 120000],
-            ['Manicure & Pedicure', 100000],
+            ['Potong Rambut',       50000,  'Stylist'],
+            ['Creambath',           80000,  'Stylist'],
+            ['Hair Coloring',       250000, 'Stylist'],
+            ['Facial',              120000, 'Therapist'],
+            ['Manicure & Pedicure', 100000, 'Therapist'],
         ];
 
-        foreach ($daftar as [$nama, $harga]) {
+        foreach ($daftar as [$nama, $harga, $jabatan]) {
             Layanan::updateOrCreate(
                 ['nama_layanan' => $nama],
-                ['harga_layanan' => $harga]
+                [
+                    'harga_layanan'   => $harga,
+                    'jabatan_petugas' => $jabatan,
+                ]
             );
         }
     }
