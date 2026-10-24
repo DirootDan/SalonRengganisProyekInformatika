@@ -5,18 +5,29 @@
     padding: 24px 32px;
     margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
 }
 
-.reservasi-item:hover { transform: scale(1.01); }
+.reservasi-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 10px 25px rgba(219, 39, 119, 0.08);
+}
 
+/* ===== Header Interaktif ===== */
 .reservasi-atas {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 2px dashed #f3f4f6;
+    align-items: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.reservasi-info-utama {
+    display: flex;
+    flex-direction: column;
 }
 
 .reservasi-tgl {
@@ -31,6 +42,12 @@
     margin-top: 4px;
 }
 
+.reservasi-kanan {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .status {
     padding: 6px 16px;
     border-radius: 999px;
@@ -40,10 +57,49 @@
     text-transform: uppercase;
 }
 
-.status-pending { background: #fef3c7; color: #b45309; }
-.status-selesai { background: #dcfce7; color: #16a34a; }
-.status-batal { background: #fee2e2; color: #ef4444; }
+.status-pending { 
+    background: #fef3c7; 
+    color: #b45309; 
+}
 
+.status-selesai { 
+    background: #dcfce7; 
+    color: #16a34a; 
+}
+
+.status-batal { 
+    background: #fee2e2; 
+    color: #ef4444; 
+}
+
+.chevron-icon {
+    color: #9ca3af;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* ===== Bagian Detail Tersembunyi ===== */
+.reservasi-body {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Kondisi Aktif (Tampil) ===== */
+.reservasi-item.aktif .reservasi-body {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed #f3f4f6;
+}
+
+.reservasi-item.aktif .chevron-icon {
+    transform: rotate(180deg);
+    color: #db2777;
+}
+
+/* ===== List Layanan ===== */
 .reservasi-layanan {
     list-style: none;
     margin: 0 0 16px;
