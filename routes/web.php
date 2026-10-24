@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ManajerController;
 use App\Http\Controllers\PelangganController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,23 +31,28 @@ Route::middleware('auth:karyawan')->get('/dashboard', function () {
     return redirect()->route($rute ?? 'login');
 })->name('dashboard');
 
-// Area Manajer
+// Area Manajer (Eksklusif Manajer)
 Route::middleware(['auth:karyawan', 'peran:Manajer'])
     ->prefix('manajer')->name('manajer.')->group(function () {
-        Route::get('/dashboard', fn () => view('Karyawan.PlaceHolder', [
-            'judul' => 'Dashboard Manajer',
-            'user'  => Auth::guard('karyawan')->user(),
-        ]))->name('dashboard');
+        Route::get('/dashboard', [ManajerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/karyawan', [ManajerController::class, 'karyawan'])->name('karyawan');
+        Route::get('/promo', [ManajerController::class, 'promo'])->name('promo');
     });
 
-// Area Kasir (Manajer juga boleh masuk)
+// Area Operasional Bersama (Bisa diakses Manajer & Kasir — Tidak perlu buat 2 halaman terpisah)
+Route::middleware(['auth:karyawan', 'peran:Manajer,Kasir'])
+    ->prefix('manajer')->name('manajer.')->group(function () {
+        Route::get('/layanan', [ManajerController::class, 'layanan'])->name('layanan');
+        Route::get('/produk', [ManajerController::class, 'produk'])->name('produk');
+        Route::get('/laporan', [ManajerController::class, 'laporan'])->name('laporan');
+        Route::get('/metode-pembayaran', [ManajerController::class, 'metodePembayaran'])->name('metode');
+        Route::get('/struk', [ManajerController::class, 'struk'])->name('struk');
+    });
+
+// Area Kasir / POS Transaksi (Bisa diakses Kasir & Manajer)
 Route::middleware(['auth:karyawan', 'peran:Kasir,Manajer'])
     ->prefix('kasir')->name('kasir.')->group(function () {
-        // PERBAIKAN: Mengarah ke Karyawan.PlaceHolder
-        Route::get('/dashboard', fn () => view('Karyawan.PlaceHolder', [
-            'judul' => 'Dashboard Kasir',
-            'user'  => Auth::guard('karyawan')->user(),
-        ]))->name('dashboard');
+        Route::get('/dashboard', [ManajerController::class, 'kasirPos'])->name('dashboard');
     });
 
 // Area Stylist

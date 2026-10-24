@@ -23,11 +23,33 @@ export default defineConfig({
                 'resources/css/pelanggan/profil.css',
                 'resources/css/pelanggan/booking.css',
                 
-                // Pelanggan JS (Baru Ditambahkan)
+                // Pelanggan JS
                 'resources/js/pelanggan/beranda.js',
                 'resources/js/pelanggan/booking.js',
                 'resources/js/pelanggan/riwayat.js',
-                'resources/js/pelanggan/profil.js'
+                'resources/js/pelanggan/profil.js',
+
+                // Manajer CSS
+                'resources/css/Manajer/layout.css',
+                'resources/css/Manajer/dashboard.css',
+                'resources/css/Manajer/karyawan.css',
+                'resources/css/Manajer/layanan.css',
+                'resources/css/Manajer/produk.css',
+                'resources/css/Manajer/promo.css',
+                'resources/css/Manajer/laporan.css',
+                'resources/css/Manajer/metode.css',
+                'resources/css/Manajer/struk.css',
+
+                // Manajer JS
+                'resources/js/Manajer/layout.js',
+                'resources/js/Manajer/dashboard.js',
+                'resources/js/Manajer/karyawan.js',
+                'resources/js/Manajer/layanan.js',
+                'resources/js/Manajer/produk.js',
+                'resources/js/Manajer/promo.js',
+                'resources/js/Manajer/laporan.js',
+                'resources/js/Manajer/metode.js',
+                'resources/js/Manajer/struk.js'
             ],
             refresh: true,
         }),

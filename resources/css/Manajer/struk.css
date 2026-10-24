@@ -1,0 +1,152 @@
+.struk-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .struk-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-dua-kolom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.opsi-ceklis-grup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f9fafb;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #f3f4f6;
+}
+
+.opsi-ceklis {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+}
+
+.opsi-ceklis input {
+    accent-color: #db2777;
+    width: 17px;
+    height: 17px;
+}
+
+/* ===== Pratinjau Kertas Struk Thermal ===== */
+.pratinjau-wadah {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    top: 96px;
+}
+
+.label-pratinjau {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9d174d;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+}
+
+.kertas-struk {
+    width: 100%;
+    max-width: 360px;
+    background: #fffef9;
+    color: #1f2937;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    padding: 28px 24px;
+    border-radius: 6px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    border-top: 6px dashed #e5e7eb;
+    border-bottom: 6px dashed #e5e7eb;
+}
+
+.struk-kepala {
+    text-align: center;
+}
+
+.struk-logo {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.struk-judul {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.struk-sub {
+    font-size: 12px;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+
+.struk-alamat,
+.struk-telp {
+    font-size: 11.5px;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+.struk-garis {
+    text-align: center;
+    color: #9ca3af;
+    margin: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.baris-struk {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    line-height: 1.6;
+}
+
+.struk-item {
+    margin-bottom: 8px;
+}
+
+.prev-petugas {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.struk-grand-total {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 4px 0;
+    padding: 4px 0;
+    border-top: 1px dashed #d1d5db;
+    border-bottom: 1px dashed #d1d5db;
+}
+
+.struk-kaki {
+    text-align: center;
+    font-size: 11.5px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.struk-kaki p {
+    margin: 0 0 6px;
+}
+
+.struk-ig {
+    font-weight: 700;
+    color: #111827;
+}

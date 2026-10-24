@@ -1,0 +1,33 @@
+.sel-staf {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar-kecil {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #fce7f3;
+    color: #db2777;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.form-dua-kolom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+code {
+    background: #f3f4f6;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #db2777;
+}
