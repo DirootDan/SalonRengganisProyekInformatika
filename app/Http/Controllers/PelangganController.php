@@ -12,9 +12,8 @@ class PelangganController extends Controller
 {
     public function beranda()
     {
-        $layanan = Layanan::orderBy('nama_layanan')->get();
-
-        return view('pelanggan.beranda', compact('layanan'));
+        // Beranda sekarang tidak perlu query data layanan
+        return view('Pelanggan.beranda');
     }
 
     public function booking()
@@ -23,7 +22,14 @@ class PelangganController extends Controller
 
         return view('pelanggan.booking', compact('layanan'));
     }
+    
 
+    public function layanan()
+    {
+        // Pindahkan query data layanan ke sini
+        $layanan = \App\Models\Layanan::all(); // Sesuaikan dengan model Anda
+        return view('Pelanggan.layanan', compact('layanan'));
+    }
     public function simpanBooking(Request $request)
     {
         $data = $request->validate([

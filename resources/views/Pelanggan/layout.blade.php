@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -14,14 +15,20 @@
             <a href="{{ route('pelanggan.beranda') }}" class="brand">🌸 Salon Rengganis</a>
 
             <nav class="menu">
-                <a href="{{ route('pelanggan.beranda') }}" class="{{ request()->routeIs('pelanggan.beranda') ? 'aktif' : '' }}">Layanan</a>
+                <!-- Tambahan Menu Beranda -->
+                <a href="{{ route('pelanggan.beranda') }}" class="{{ request()->routeIs('pelanggan.beranda') ? 'aktif' : '' }}">Beranda</a>
+
+                <!-- Menu Layanan Baru -->
+                <a href="{{ route('pelanggan.layanan') }}" class="{{ request()->routeIs('pelanggan.layanan') ? 'aktif' : '' }}">Layanan</a>
+
                 <a href="{{ route('pelanggan.booking') }}" class="{{ request()->routeIs('pelanggan.booking') ? 'aktif' : '' }}">Booking</a>
+
                 <a href="{{ route('pelanggan.riwayat') }}" class="{{ request()->routeIs('pelanggan.riwayat') ? 'aktif' : '' }}">Riwayat</a>
             </nav>
 
             <div class="akun">
                 <span>Halo, {{ auth('pelanggan')->user()->nama_cust }}</span>
-                
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="btn-keluar">Keluar</button>
@@ -44,3 +51,4 @@
     @stack('scripts')
 </body>
 </html>
+```

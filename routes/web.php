@@ -63,6 +63,7 @@ Route::middleware(['auth:karyawan', 'peran:Stylist'])
 // Hanya berisi rute yang membutuhkan login pelanggan
 Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth:pelanggan')->group(function () {
     Route::get('/beranda', [PelangganController::class, 'beranda'])->name('beranda');
+    Route::get('/layanan', [PelangganController::class, 'layanan'])->name('layanan'); // Rute Baru!
     Route::get('/booking', [PelangganController::class, 'booking'])->name('booking');
     Route::post('/booking', [PelangganController::class, 'simpanBooking'])->name('booking.simpan');
     Route::get('/riwayat', [PelangganController::class, 'riwayat'])->name('riwayat');

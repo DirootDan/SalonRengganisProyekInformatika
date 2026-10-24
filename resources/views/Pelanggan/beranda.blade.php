@@ -1,30 +1,17 @@
 @extends('pelanggan.layout')
 
-@section('judul', 'Layanan - Salon Rengganis')
+@section('judul', 'Beranda - Salon Rengganis')
 
 @section('isi')
-    <h1 class="judul-halaman">Layanan Kami</h1>
-    <p class="sub-halaman">Pilih perawatan favorit Anda, lalu booking dalam satu langkah.</p>
+    <div style="background: white; border-radius: 24px; padding: 60px 40px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px;">
+        <h1 class="judul-halaman" style="margin-bottom: 16px;">Selamat Datang, {{ auth('pelanggan')->user()->nama_cust }}!</h1>
+        <p class="sub-halaman" style="margin-bottom: 0;">Kami siap memberikan pelayanan terbaik untuk kecantikan dan perawatan Anda hari ini.</p>
+    </div>
 
-    @if ($layanan->isEmpty())
-        <div class="kosong">Belum ada layanan yang tersedia.</div>
-    @else
-        <div class="grid-layanan">
-            @foreach ($layanan as $item)
-                <div class="kartu">
-                    <div class="kartu-ikon">✨</div>
-                    <h3>{{ $item->nama_layanan }}</h3>
-                    <div class="harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</div>
-                </div>
-            @endforeach
-        </div>
-
-        <div class="aksi-tengah">
-            <a href="{{ route('pelanggan.booking') }}" class="btn">Booking Sekarang</a>
-        </div>
-    @endif
+    <div class="kosong" style="border: 2px dashed #f3f4f6; background: transparent; box-shadow: none;">
+        <p style="margin-bottom: 16px;">--- Ruang Kosong untuk Informasi Salon ---<br>
+        (Bisa diisi banner promo, jam operasional, atau artikel kecantikan nantinya)</p>
+        
+        <a href="{{ route('pelanggan.layanan') }}" class="btn">Lihat Daftar Layanan</a>
+    </div>
 @endsection
-
-@push('scripts')
-    @vite(['resources/js/pelanggan/beranda.js'])
-@endpush
