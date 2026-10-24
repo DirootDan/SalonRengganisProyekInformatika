@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -51,4 +50,3 @@
     @stack('scripts')
 </body>
 </html>
-```

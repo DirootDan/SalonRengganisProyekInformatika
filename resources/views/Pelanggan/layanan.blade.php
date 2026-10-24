@@ -26,6 +26,6 @@
 @endsection
 
 @push('scripts')
-    <!-- Kita tetap bisa memakai script beranda.js untuk efek animasinya -->
+    
     @vite(['resources/js/pelanggan/beranda.js'])
 @endpush
