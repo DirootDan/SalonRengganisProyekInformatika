@@ -1,14 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Ambil semua header reservasi
     const riwayatHeaders = document.querySelectorAll('.reservasi-atas');
-    
+
     riwayatHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            // Cari elemen kotak utama (.reservasi-item) dari header yang diklik
+        header.addEventListener('click', function () {
             const parentItem = this.closest('.reservasi-item');
-            
-            // Tambahkan atau hapus kelas 'aktif' untuk mentrigger CSS
             parentItem.classList.toggle('aktif');
+        });
+    });
+
+    // Konfirmasi sebelum membatalkan reservasi
+    document.querySelectorAll('.form-batal-booking').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            if (!confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) {
+                e.preventDefault();
+            }
         });
     });
 });

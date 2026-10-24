@@ -66,6 +66,56 @@ body {
     color: white; 
 }
 
+.lencana-notif {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef4444;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 999px;
+    margin-left: 4px;
+}
+
+.kartu-sambutan {
+    background: white;
+    border-radius: 24px;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    margin-bottom: 30px;
+}
+
+.kartu-sambutan .judul-halaman {
+    margin-bottom: 16px;
+}
+
+.kartu-sambutan .sub-halaman {
+    margin-bottom: 0;
+}
+
+.kosong {
+    background: white;
+    border-radius: 24px;
+    padding: 36px;
+    text-align: center;
+    border: 2px dashed #fbcfe8;
+    color: #6b7280;
+}
+
+.kosong p {
+    margin: 0 0 18px;
+}
+
+.aksi-tengah {
+    text-align: center;
+    margin-top: 32px;
+}
+
 .akun { 
     display: flex; 
     align-items: center; 

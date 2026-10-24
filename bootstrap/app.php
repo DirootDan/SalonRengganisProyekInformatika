@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
     $middleware->alias([
-        'peran' => \App\Http\Middleware\CekPeran::class,
+        'peran'          => \App\Http\Middleware\CekPeran::class,
+        'cek.blokir'     => \App\Http\Middleware\CekBlokirBooking::class,
     ]);
 
     // Kalau belum login: pelanggan ke login pelanggan, sisanya ke login karyawan

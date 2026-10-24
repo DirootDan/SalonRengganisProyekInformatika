@@ -51,6 +51,23 @@
     color: #db2777 !important;
 }
 
+.panel-filter-laporan {
+    margin-bottom: 24px;
+}
+
+.btn-turun {
+    margin-top: 18px;
+}
+
+.teks-sedang {
+    font-size: 20px;
+}
+
+.judul-sub-panel {
+    margin: 0 0 16px;
+    font-size: 17px;
+}
+
 @media print {
     .sidebar,
     .topbar,

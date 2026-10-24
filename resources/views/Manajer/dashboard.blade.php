@@ -31,7 +31,7 @@
             <div class="stat-ikon stat-hijau">🧴</div>
             <div class="stat-info">
                 <span class="stat-label">Katalog Produk</span>
-                <span class="stat-nilai">{{ $totalProduk ?: 4 }} Produk</span>
+                <span class="stat-nilai">{{ $totalProduk }} Produk</span>
             </div>
         </div>
 
@@ -44,14 +44,14 @@
         </div>
     </div>
 
-    <!-- Pintasan Menu Manajer (4 Area Utama) -->
+    <!-- Pintasan Menu Manajer -->
     <h2 class="seksi-judul">Akses Cepat Menu Manajer</h2>
     <div class="pintas-grid">
         <a href="{{ route('manajer.karyawan') }}" class="pintas-item">
             <span class="pintas-ikon">👥</span>
             <div>
                 <h3>Kelola Karyawan</h3>
-                <p>Tambah, ubah, atau nonaktifkan akun Manajer, Kasir, Stylist, dan Therapist.</p>
+                <p>Tambah, ubah, atur persentase komisi, atau nonaktifkan akun staf.</p>
             </div>
         </a>
 
@@ -59,7 +59,7 @@
             <span class="pintas-ikon">💇‍♀️</span>
             <div>
                 <h3>Kelola Layanan</h3>
-                <p>Atur daftar perawatan salon, harga layanan, dan jabatan petugasnya.</p>
+                <p>Atur kategori layanan, harga perawatan, dan pemetaan jabatan petugas.</p>
             </div>
         </a>
 
@@ -83,7 +83,7 @@
             <span class="pintas-ikon">📈</span>
             <div>
                 <h3>Cek Laporan</h3>
-                <p>Lihat rekap pendapatan, transaksi layanan, dan komisi petugas.</p>
+                <p>Lihat rekap pendapatan, layanan terlaris, dan kinerja komisi karyawan.</p>
             </div>
         </a>
 
@@ -102,12 +102,20 @@
                 <p>Sesuaikan nama cabang, alamat, logo, dan pesan kaki pada struk belanja.</p>
             </div>
         </a>
+
+        <a href="{{ route('manajer.kebijakan') }}" class="pintas-item">
+            <span class="pintas-ikon">🛡️</span>
+            <div>
+                <h3>Kebijakan Booking &amp; Pinalti</h3>
+                <p>Atur batas pelanggaran, lama blokir, dan buka blokir pelanggan secara manual.</p>
+            </div>
+        </a>
     </div>
 
     <!-- Ringkasan Reservasi Terbaru -->
-    <div class="panel-kartu" style="margin-top: 28px;">
-        <div class="toolbar-atas" style="margin-bottom: 14px;">
-            <h3 style="margin: 0; font-size: 17px;">Reservasi Pelanggan Terbaru</h3>
+    <div class="panel-kartu spasi-atas">
+        <div class="toolbar-atas">
+            <h3 class="tanpa-margin">Reservasi Pelanggan Terbaru</h3>
             <a href="{{ route('manajer.laporan') }}" class="btn-sekunder">Lihat Semua Laporan &rarr;</a>
         </div>
 
@@ -117,7 +125,7 @@
                     <tr>
                         <th>ID Reservasi</th>
                         <th>Nama Pelanggan</th>
-                        <th>Tanggal Booking</th>
+                        <th>Jadwal Kedatangan</th>
                         <th>Rincian Layanan</th>
                         <th>Total Estimasi</th>
                         <th>Status</th>
@@ -128,18 +136,18 @@
                         <tr>
                             <td><strong>#{{ $r->id_reservasi }}</strong></td>
                             <td>{{ $pelangganMap[$r->id_pelanggan] ?? 'Pelanggan' }}</td>
-                            <td>{{ $r->tgl_booking->format('d/m/Y') }}</td>
+                            <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }})</td>
                             <td>{{ $r->layanan->pluck('nama_layanan')->join(', ') ?: '-' }}</td>
                             <td><strong>Rp {{ number_format($r->layanan->sum('harga_layanan'), 0, ',', '.') }}</strong></td>
                             <td>
-                                <span class="badge {{ $r->status === 'selesai' ? 'badge-aktif' : 'badge-manajer' }}">
-                                    {{ ucfirst($r->status) }}
+                                <span class="badge {{ $r->statusTernormalisasi() === 'Selesai' ? 'badge-aktif' : 'badge-manajer' }}">
+                                    {{ $r->statusTernormalisasi() }}
                                 </span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #9ca3af;">Belum ada data reservasi.</td>
+                            <td colspan="6" class="teks-tengah-abu">Belum ada data reservasi.</td>
                         </tr>
                     @endforelse
                 </tbody>

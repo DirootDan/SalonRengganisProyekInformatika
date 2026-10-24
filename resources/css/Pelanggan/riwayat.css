@@ -67,6 +67,11 @@
     color: #16a34a; 
 }
 
+.status-diterima {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
 .status-batal { 
     background: #fee2e2; 
     color: #ef4444; 
@@ -132,4 +137,124 @@
     font-size: 12px;
     color: #9ca3af;
     font-weight: 500;
+}
+
+.panel-notifikasi {
+    background: white;
+    border-radius: 24px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1.5px solid #fce7f3;
+}
+
+.notifikasi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.notifikasi-header h3 {
+    margin: 0;
+    font-size: 17px;
+    color: #111827;
+}
+
+.btn-tandai-baca {
+    background: #fdf2f8;
+    color: #db2777;
+    border: 1px solid #fbcfe8;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.daftar-notifikasi {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.item-notifikasi {
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: #f9fafb;
+    border-left: 4px solid #d1d5db;
+}
+
+.item-notifikasi.belum-dibaca {
+    background: #fdf2f8;
+    border-left-color: #db2777;
+}
+
+.notif-atas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13.5px;
+    margin-bottom: 4px;
+}
+
+.notif-waktu {
+    font-size: 11.5px;
+    color: #6b7280;
+}
+
+.titik-baru {
+    background: #db2777;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    margin-right: 6px;
+}
+
+.notif-pesan {
+    margin: 0;
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.kotak-alasan {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.reservasi-kaki-aksi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-batal-booking {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-batal-booking:hover {
+    background: #fecaca;
 }

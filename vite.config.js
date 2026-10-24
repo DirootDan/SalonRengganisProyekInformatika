@@ -39,6 +39,7 @@ export default defineConfig({
                 'resources/css/Manajer/laporan.css',
                 'resources/css/Manajer/metode.css',
                 'resources/css/Manajer/struk.css',
+                'resources/css/Manajer/kebijakan.css',
 
                 // Manajer JS
                 'resources/js/Manajer/layout.js',
@@ -49,7 +50,36 @@ export default defineConfig({
                 'resources/js/Manajer/promo.js',
                 'resources/js/Manajer/laporan.js',
                 'resources/js/Manajer/metode.js',
-                'resources/js/Manajer/struk.js'
+                'resources/js/Manajer/struk.js',
+                'resources/js/Manajer/kebijakan.js',
+
+                // Karyawan - Kasir CSS
+                'resources/css/Karyawan/Kasir/layout.css',
+                'resources/css/Karyawan/Kasir/dashboard.css',
+                'resources/css/Karyawan/Kasir/permintaan.css',
+                'resources/css/Karyawan/Kasir/antrean.css',
+                'resources/css/Karyawan/Kasir/layanan.css',
+                'resources/css/Karyawan/Kasir/produk.css',
+                'resources/css/Karyawan/Kasir/laporan.css',
+                'resources/css/Karyawan/Kasir/metode.css',
+                'resources/css/Karyawan/Kasir/struk.css',
+
+                // Karyawan - Kasir JS
+                'resources/js/Karyawan/Kasir/layout.js',
+                'resources/js/Karyawan/Kasir/dashboard.js',
+                'resources/js/Karyawan/Kasir/permintaan.js',
+                'resources/js/Karyawan/Kasir/antrean.js',
+                'resources/js/Karyawan/Kasir/layanan.js',
+                'resources/js/Karyawan/Kasir/produk.js',
+                'resources/js/Karyawan/Kasir/laporan.js',
+                'resources/js/Karyawan/Kasir/metode.js',
+                'resources/js/Karyawan/Kasir/struk.js',
+
+                // Karyawan - Stylist & Therapist
+                'resources/css/Karyawan/Stylist/dashboard.css',
+                'resources/css/Karyawan/Therapist/dashboard.css',
+                'resources/js/Karyawan/Stylist/dashboard.js',
+                'resources/js/Karyawan/Therapist/dashboard.js'
             ],
             refresh: true,
         }),

@@ -3,14 +3,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterPetugas = document.getElementById('filterPetugas');
     const barisLayanan  = document.querySelectorAll('.baris-layanan');
 
-    const modal       = document.getElementById('modalLayanan');
-    const judulModal  = document.getElementById('judulModalLayanan');
-    const form        = document.getElementById('formLayanan');
-    const btnTambah   = document.getElementById('btnTambahLayanan');
+    const modal        = document.getElementById('modalLayanan');
+    const judulModal   = document.getElementById('judulModalLayanan');
+    const form         = document.getElementById('formLayanan');
+    const methodInput  = document.getElementById('methodLayanan');
+    const btnTambah    = document.getElementById('btnTambahLayanan');
 
-    const inputNama    = document.getElementById('inputNamaLayanan');
-    const inputJabatan = document.getElementById('inputJabatanLayanan');
-    const inputHarga   = document.getElementById('inputHargaLayanan');
+    const inputNama     = document.getElementById('inputNamaLayanan');
+    const inputKategori = document.getElementById('inputKategoriLayanan');
+    const inputJabatan  = document.getElementById('inputJabatanLayanan');
+    const inputHarga    = document.getElementById('inputHargaLayanan');
+
+    // Otomatis sesuaikan jabatan saat kategori berubah
+    inputKategori?.addEventListener('change', () => {
+        if (inputKategori.value.includes('Wajah')) {
+            inputJabatan.value = 'Therapist';
+        } else {
+            inputJabatan.value = 'Stylist';
+        }
+    });
 
     const saringLayanan = () => {
         const kataKunci = (cariInput?.value || '').toLowerCase().trim();
@@ -29,30 +40,29 @@ document.addEventListener('DOMContentLoaded', () => {
     btnTambah?.addEventListener('click', () => {
         judulModal.textContent = 'Tambah Layanan Baru';
         form.reset();
+        form.action       = btnTambah.dataset.urlSimpan;
+        methodInput.value = 'POST';
         modal.classList.add('tampil');
     });
 
     document.querySelectorAll('.btnEditLayanan').forEach(btn => {
         btn.addEventListener('click', () => {
-            judulModal.textContent = 'Edit Layanan';
+            judulModal.textContent = 'Ubah Layanan';
+            form.action            = btn.dataset.urlUpdate;
+            methodInput.value      = 'PUT';
             inputNama.value        = btn.dataset.namaAsli || '';
+            inputKategori.value    = btn.dataset.kategori || 'Perawatan Rambut';
             inputJabatan.value     = btn.dataset.jabatan || 'Stylist';
             inputHarga.value       = btn.dataset.harga || '';
             modal.classList.add('tampil');
         });
     });
 
-    form?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        modal.classList.remove('tampil');
-        window.tampilkanToast(`Layanan "${inputNama.value}" berhasil disimpan.`);
-    });
-
-    document.querySelectorAll('.btnHapusLayanan').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const nama = btn.dataset.namaAsli;
-            if (confirm(`Hapus layanan "${nama}" dari daftar?`)) {
-                window.tampilkanToast(`Layanan "${nama}" berhasil dihapus.`);
+    document.querySelectorAll('.form-hapus-layanan').forEach(f => {
+        f.addEventListener('submit', (e) => {
+            const nama = f.dataset.nama;
+            if (!confirm(`Hapus layanan "${nama}" dari daftar?`)) {
+                e.preventDefault();
             }
         });
     });

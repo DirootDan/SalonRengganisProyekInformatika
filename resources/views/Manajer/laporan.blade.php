@@ -2,135 +2,137 @@
 
 @section('judul', 'Cek Laporan - Salon Rengganis')
 @section('header', 'Laporan Keuangan & Kinerja')
-@section('sub_header', 'Rekap pendapatan salon, riwayat transaksi, dan komisi petugas berdasarkan periode.')
+@section('sub_header', 'Rekap pendapatan salon, riwayat transaksi, layanan terlaris, dan kinerja komisi karyawan.')
 
 @push('styles')
     @vite(['resources/css/Manajer/laporan.css'])
 @endpush
 
 @section('isi')
-    <!-- Filter Periode & Tombol Cetak -->
-    <div class="panel-kartu" style="margin-bottom: 24px;">
-        <div class="toolbar-atas" style="margin-bottom: 0;">
+    <!-- Filter Periode & Tombol Cetak / Ekspor -->
+    <div class="panel-kartu panel-filter-laporan">
+        <form method="GET" action="{{ route('manajer.laporan') }}" class="toolbar-atas tanpa-margin">
             <div class="toolbar-kiri">
                 <div>
                     <label class="label-kecil">Dari Tanggal</label>
-                    <input type="date" id="tglMulai" class="select-filter" value="{{ now()->startOfMonth()->toDateString() }}">
+                    <input type="date" name="mulai" id="tglMulai" class="select-filter" value="{{ $tglMulai }}">
                 </div>
                 <div>
                     <label class="label-kecil">Sampai Tanggal</label>
-                    <input type="date" id="tglSelesai" class="select-filter" value="{{ now()->toDateString() }}">
+                    <input type="date" name="selesai" id="tglSelesai" class="select-filter" value="{{ $tglSelesai }}">
                 </div>
-                <div>
-                    <label class="label-kecil">Kategori Laporan</label>
-                    <select id="jenisLaporan" class="select-filter">
-                        <option value="semua">Semua Transaksi &amp; Layanan</option>
-                        <option value="layanan">Pendapatan Layanan</option>
-                        <option value="produk">Penjualan Produk</option>
-                        <option value="komisi">Komisi Stylist &amp; Therapist</option>
-                    </select>
-                </div>
-                <button type="button" class="btn-sekunder" id="btnTerapkanFilter" style="margin-top: 18px;">
+                <button type="submit" class="btn-sekunder btn-turun">
                     🔄 Terapkan Filter
                 </button>
             </div>
 
-            <div class="aksi-grup" style="margin-top: 18px;">
-                <button type="button" class="btn-sekunder" id="btnEksporCsv">📥 Ekspor CSV</button>
-                <button type="button" class="btn-utama" id="btnCetakLaporan">🖨️ Cetak Laporan</button>
+            <div class="aksi-grup btn-turun">
+                <a href="{{ route('manajer.laporan.ekspor', ['mulai' => $tglMulai, 'selesai' => $tglSelesai]) }}" class="btn-sekunder">
+                    📥 Ekspor CSV / Excel
+                </a>
+                <button type="button" class="btn-utama" id="btnCetakLaporan">🖨️ Cetak PDF / Kertas</button>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Ringkasan Metrik Keuangan -->
     <div class="ringkasan-laporan">
         <div class="kartu-metrik">
-            <span class="metrik-judul">Total Pendapatan Kotor</span>
-            <span class="metrik-angka" id="metrikPendapatan">Rp 4.850.000</span>
-            <span class="metrik-tren positif">▲ +14,2% dibanding bulan lalu</span>
+            <span class="metrik-judul">Total Pendapatan Lunas</span>
+            <span class="metrik-angka">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</span>
+            <span class="metrik-tren positif">Periode {{ $tglMulai }} s/d {{ $tglSelesai }}</span>
         </div>
 
         <div class="kartu-metrik">
-            <span class="metrik-judul">Total Reservasi Selesai</span>
-            <span class="metrik-angka" id="metrikTransaksi">28 Transaksi</span>
-            <span class="metrik-tren positif">▲ Rata-rata Rp 173.000 / kunjungan</span>
+            <span class="metrik-judul">Total Reservasi Periode Ini</span>
+            <span class="metrik-angka">{{ $reservasi->count() }} Reservasi</span>
+            <span class="metrik-tren positif">{{ $reservasi->where('status', 'Selesai')->count() }} Selesai &bull; {{ $reservasi->where('status', 'Hangus')->count() }} Hangus</span>
         </div>
 
         <div class="kartu-metrik">
-            <span class="metrik-judul">Total Komisi Petugas (15%)</span>
-            <span class="metrik-angka" id="metrikKomisi">Rp 727.500</span>
+            <span class="metrik-judul">Total Komisi Karyawan</span>
+            <span class="metrik-angka">Rp {{ number_format($totalKomisi, 0, ',', '.') }}</span>
             <span class="metrik-tren">Dibagikan ke Stylist &amp; Therapist</span>
         </div>
 
         <div class="kartu-metrik">
-            <span class="metrik-judul">Layanan Terpopuler</span>
-            <span class="metrik-angka" style="font-size: 20px;">Creambath &amp; Facial</span>
-            <span class="metrik-tren">42% dari total pemesanan</span>
+            <span class="metrik-judul">Layanan Terlaris</span>
+            <span class="metrik-angka teks-sedang">{{ $layananTerlaris->nama_layanan ?? 'Belum Ada' }}</span>
+            <span class="metrik-tren">{{ $layananTerlaris ? $layananTerlaris->total_pesan . ' kali dipesan' : '-' }}</span>
+        </div>
+    </div>
+
+    <!-- Tabel Kinerja Karyawan -->
+    <div class="panel-kartu panel-filter-laporan">
+        <h3 class="judul-sub-panel">Kinerja Stylist &amp; Therapist (Layanan Selesai)</h3>
+        <div class="tabel-Responsif">
+            <table class="tabel-data">
+                <thead>
+                    <tr>
+                        <th>Nama Karyawan</th>
+                        <th>Jabatan</th>
+                        <th>Jumlah Layanan Diselesaikan</th>
+                        <th>Total Komisi Diterima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($kinerjaKaryawan as $k)
+                        <tr>
+                            <td><strong>{{ $k->nama_staff }}</strong></td>
+                            <td><span class="badge badge-{{ strtolower($k->role_jabatan) }}">{{ $k->role_jabatan }}</span></td>
+                            <td>{{ $k->jumlah_layanan }} Layanan</td>
+                            <td class="nominal-tebal">Rp {{ number_format($k->total_komisi, 0, ',', '.') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="teks-tengah-abu">Belum ada layanan selesai pada periode ini.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- Tabel Rincian Transaksi & Reservasi -->
     <div class="panel-kartu">
-        <h3 style="margin: 0 0 16px; font-size: 17px;">Rincian Transaksi &amp; Reservasi Periode Ini</h3>
+        <h3 class="judul-sub-panel">Rincian Transaksi &amp; Reservasi Periode Ini</h3>
 
         <div class="tabel-Responsif">
             <table class="tabel-data" id="tabelLaporan">
                 <thead>
                     <tr>
                         <th>No. Nota / ID</th>
-                        <th>Tanggal</th>
+                        <th>Tanggal &amp; Jam</th>
                         <th>Pelanggan</th>
                         <th>Rincian Perawatan</th>
                         <th>Metode Bayar</th>
-                        <th>Total Bayar</th>
+                        <th>Total Tagihan</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($reservasi as $r)
+                    @forelse ($reservasi as $r)
+                        @php
+                            $totalBaris = $r->transaksi ? $r->transaksi->total_bayar : $r->layanan->sum('harga_layanan');
+                        @endphp
                         <tr>
                             <td><strong>#INV-{{ str_pad($r->id_reservasi, 4, '0', STR_PAD_LEFT) }}</strong></td>
-                            <td>{{ $r->tgl_booking->format('d/m/Y') }}</td>
+                            <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }})</td>
                             <td>{{ $pelangganMap[$r->id_pelanggan] ?? 'Pelanggan' }}</td>
                             <td>{{ $r->layanan->pluck('nama_layanan')->join(', ') ?: '-' }}</td>
-                            <td>QRIS / Tunai</td>
-                            <td class="nominal-tebal">Rp {{ number_format($r->layanan->sum('harga_layanan'), 0, ',', '.') }}</td>
+                            <td>{{ $r->transaksi->metode_bayar ?? '-' }}</td>
+                            <td class="nominal-tebal">Rp {{ number_format($totalBaris, 0, ',', '.') }}</td>
                             <td>
-                                <span class="badge {{ $r->status === 'selesai' ? 'badge-aktif' : 'badge-manajer' }}">
-                                    {{ ucfirst($r->status) }}
+                                <span class="badge {{ $r->statusTernormalisasi() === 'Selesai' ? 'badge-aktif' : 'badge-manajer' }}">
+                                    {{ $r->statusTernormalisasi() }}
                                 </span>
                             </td>
                         </tr>
-                    @endforeach
-
-                    <!-- Contoh Baris Transaksi Historis untuk Kebutuhan Tampilan Laporan -->
-                    <tr>
-                        <td><strong>#INV-0018</strong></td>
-                        <td>{{ now()->subDays(1)->format('d/m/Y') }}</td>
-                        <td>Siti Nurhaliza</td>
-                        <td>Hair Coloring, Creambath</td>
-                        <td>Transfer BCA</td>
-                        <td class="nominal-tebal">Rp 330.000</td>
-                        <td><span class="badge badge-aktif">Selesai</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>#INV-0017</strong></td>
-                        <td>{{ now()->subDays(2)->format('d/m/Y') }}</td>
-                        <td>Nadia Vega</td>
-                        <td>Facial, Manicure &amp; Pedicure</td>
-                        <td>QRIS All Payment</td>
-                        <td class="nominal-tebal">Rp 220.000</td>
-                        <td><span class="badge badge-aktif">Selesai</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>#INV-0016</strong></td>
-                        <td>{{ now()->subDays(3)->format('d/m/Y') }}</td>
-                        <td>Putri Marino</td>
-                        <td>Potong Rambut, Creambath</td>
-                        <td>Tunai (Cash)</td>
-                        <td class="nominal-tebal">Rp 130.000</td>
-                        <td><span class="badge badge-aktif">Selesai</span></td>
-                    </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="teks-tengah-abu">Tidak ada data reservasi pada rentang tanggal ini.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

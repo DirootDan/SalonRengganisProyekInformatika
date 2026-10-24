@@ -1,8 +1,8 @@
 @extends('Manajer.layout')
 
 @section('judul', 'Kelola Karyawan - Salon Rengganis')
-@section('header', 'Data Karyawan')
-@section('sub_header', 'Kelola akun staf salon (Manajer, Kasir, Stylist, dan Therapist).')
+@section('header', 'Data Karyawan & Komisi')
+@section('sub_header', 'Kelola akun staf salon (Manajer, Kasir, Stylist, dan Therapist) beserta persentase komisinya.')
 
 @push('styles')
     @vite(['resources/css/Manajer/karyawan.css'])
@@ -21,7 +21,7 @@
                     <option value="Therapist">Therapist</option>
                 </select>
             </div>
-            <button type="button" class="btn-utama" id="btnTambahKaryawan">
+            <button type="button" class="btn-utama" id="btnTambahKaryawan" data-url-simpan="{{ route('manajer.karyawan.simpan') }}">
                 <span>＋</span> Tambah Karyawan
             </button>
         </div>
@@ -34,6 +34,8 @@
                         <th>Username Login</th>
                         <th>Alamat Email</th>
                         <th>Jabatan</th>
+                        <th>Komisi</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -55,20 +57,30 @@
                                     {{ $staf->role_jabatan }}
                                 </span>
                             </td>
+                            <td><strong>{{ number_format($staf->persen_komisi, 0) }}%</strong></td>
+                            <td>
+                                <span class="badge {{ $staf->aktif ? 'badge-aktif' : 'badge-nonaktif' }}">
+                                    {{ $staf->aktif ? 'Aktif' : 'Nonaktif' }}
+                                </span>
+                            </td>
                             <td>
                                 <div class="aksi-grup">
                                     <button type="button" class="btn-aksi btn-edit btnEditKaryawan"
-                                            data-id="{{ $staf->id_karyawan }}"
+                                            data-url-update="{{ route('manajer.karyawan.update', $staf->id_karyawan) }}"
                                             data-nama-asli="{{ $staf->nama_staff }}"
                                             data-username="{{ $staf->username }}"
                                             data-email="{{ $staf->email }}"
-                                            data-jabatan="{{ $staf->role_jabatan }}">
-                                        ✏️ Edit
+                                            data-jabatan="{{ $staf->role_jabatan }}"
+                                            data-komisi="{{ (float) $staf->persen_komisi }}"
+                                            data-aktif="{{ $staf->aktif ? '1' : '0' }}">
+                                        ✏️ Ubah
                                     </button>
-                                    <button type="button" class="btn-aksi btn-hapus btnHapusKaryawan"
-                                            data-nama-asli="{{ $staf->nama_staff }}">
-                                        🗑️ Hapus
-                                    </button>
+
+                                    <form method="POST" action="{{ route('manajer.karyawan.hapus', $staf->id_karyawan) }}" class="form-hapus-staf" data-nama="{{ $staf->nama_staff }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-aksi btn-hapus">🗑️ Hapus</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -86,21 +98,24 @@
                 <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
             </div>
 
-            <form id="formKaryawan">
+            <form method="POST" action="{{ route('manajer.karyawan.simpan') }}" id="formKaryawan">
+                @csrf
+                <input type="hidden" name="_method" id="methodKaryawan" value="POST">
+
                 <div class="form-grup">
                     <label class="form-label">Nama Lengkap Staf</label>
-                    <input type="text" id="inputNamaStaf" class="form-input" placeholder="Contoh: Dewi Lestari" required>
+                    <input type="text" name="nama_staff" id="inputNamaStaf" class="form-input" placeholder="Contoh: Dewi Lestari" required>
                 </div>
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
                         <label class="form-label">Username Login</label>
-                        <input type="text" id="inputUsernameStaf" class="form-input" placeholder="Contoh: dewi_stylist" required>
+                        <input type="text" name="username" id="inputUsernameStaf" class="form-input" placeholder="Contoh: dewi_stylist" required>
                     </div>
 
                     <div class="form-grup">
                         <label class="form-label">Jabatan</label>
-                        <select id="inputJabatanStaf" class="form-select" required>
+                        <select name="role_jabatan" id="inputJabatanStaf" class="form-select" required>
                             <option value="Stylist">Stylist</option>
                             <option value="Therapist">Therapist</option>
                             <option value="Kasir">Kasir</option>
@@ -109,14 +124,29 @@
                     </div>
                 </div>
 
-                <div class="form-grup">
-                    <label class="form-label">Alamat Email</label>
-                    <input type="email" id="inputEmailStaf" class="form-input" placeholder="nama@salon.test" required>
+                <div class="form-dua-kolom">
+                    <div class="form-grup">
+                        <label class="form-label">Persentase Komisi (%)</label>
+                        <input type="number" name="persen_komisi" id="inputKomisiStaf" class="form-input" min="0" max="100" step="1" value="15" required>
+                    </div>
+
+                    <div class="form-grup">
+                        <label class="form-label">Status Keaktifan</label>
+                        <select name="aktif" id="inputAktifStaf" class="form-select">
+                            <option value="1">Aktif Melayani</option>
+                            <option value="0">Nonaktif / Cuti</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Password Akun</label>
-                    <input type="password" id="inputPasswordStaf" class="form-input" placeholder="Isi untuk membuat/mengganti password">
+                    <label class="form-label">Alamat Email</label>
+                    <input type="email" name="email" id="inputEmailStaf" class="form-input" placeholder="nama@salon.test" required>
+                </div>
+
+                <div class="form-grup">
+                    <label class="form-label">Kata Sandi Akun</label>
+                    <input type="password" name="password" id="inputPasswordStaf" class="form-input" placeholder="Minimal 6 karakter (kosongkan jika tidak diubah)">
                 </div>
 
                 <div class="modal-kaki">

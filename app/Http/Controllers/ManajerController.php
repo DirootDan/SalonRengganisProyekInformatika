@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use App\Models\Layanan;
+use App\Models\MetodePembayaran;
+use App\Models\NotifikasiPelanggan;
 use App\Models\Pelanggan;
+use App\Models\PengaturanKebijakan;
+use App\Models\PengaturanStruk;
+use App\Models\Produk;
+use App\Models\Promo;
 use App\Models\Reservasi;
+use App\Models\RiwayatPelanggaran;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ManajerController extends Controller
 {
@@ -14,16 +24,15 @@ class ManajerController extends Controller
     {
         $totalKaryawan  = Karyawan::count();
         $totalLayanan   = Layanan::count();
-        $totalProduk    = DB::table('produk')->count();
+        $totalProduk    = Produk::count();
         $totalPelanggan = Pelanggan::count();
         $totalReservasi = Reservasi::count();
         $reservasiBaru  = Reservasi::with('layanan')
             ->latest('tgl_booking')
             ->latest('id_reservasi')
-            ->limit(5)
+            ->limit(6)
             ->get();
 
-        // Ambil nama pelanggan untuk ringkasan reservasi terbaru
         $pelangganMap = Pelanggan::whereIn('id_pelanggan', $reservasiBaru->pluck('id_pelanggan'))
             ->pluck('nama_cust', 'id_pelanggan');
 
@@ -38,6 +47,8 @@ class ManajerController extends Controller
         ));
     }
 
+    /* ================= 1A. CRUD KARYAWAN ================= */
+
     public function karyawan()
     {
         $karyawan = Karyawan::orderBy('role_jabatan')->orderBy('nama_staff')->get();
@@ -45,72 +56,243 @@ class ManajerController extends Controller
         return view('Manajer.karyawan', compact('karyawan'));
     }
 
+    public function simpanKaryawan(Request $request)
+    {
+        $data = $request->validate([
+            'nama_staff'    => ['required', 'string', 'max:100'],
+            'username'      => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('karyawan', 'username')],
+            'email'         => ['required', 'email', 'max:100', Rule::unique('karyawan', 'email')],
+            'role_jabatan'  => ['required', Rule::in(['Manajer', 'Kasir', 'Stylist', 'Therapist'])],
+            'persen_komisi' => ['required', 'numeric', 'min:0', 'max:100'],
+            'password'      => ['required', 'string', 'min:6'],
+        ], [
+            'nama_staff.required' => 'Nama lengkap karyawan wajib diisi.',
+            'username.required'   => 'Username login wajib diisi.',
+            'username.unique'     => 'Username ini sudah digunakan.',
+            'email.unique'        => 'Alamat email sudah terdaftar.',
+            'password.min'        => 'Kata sandi minimal 6 karakter.',
+        ]);
+
+        $data['aktif'] = true;
+        Karyawan::create($data);
+
+        return back()->with('status', "Karyawan {$data['nama_staff']} berhasil ditambahkan.");
+    }
+
+    public function updateKaryawan(Request $request, int $id)
+    {
+        $staf = Karyawan::findOrFail($id);
+
+        $data = $request->validate([
+            'nama_staff'    => ['required', 'string', 'max:100'],
+            'username'      => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('karyawan', 'username')->ignore($staf->id_karyawan, 'id_karyawan')],
+            'email'         => ['required', 'email', 'max:100', Rule::unique('karyawan', 'email')->ignore($staf->id_karyawan, 'id_karyawan')],
+            'role_jabatan'  => ['required', Rule::in(['Manajer', 'Kasir', 'Stylist', 'Therapist'])],
+            'persen_komisi' => ['required', 'numeric', 'min:0', 'max:100'],
+            'aktif'         => ['nullable', 'boolean'],
+            'password'      => ['nullable', 'string', 'min:6'],
+        ]);
+
+        $update = [
+            'nama_staff'    => $data['nama_staff'],
+            'username'      => $data['username'],
+            'email'         => $data['email'],
+            'role_jabatan'  => $data['role_jabatan'],
+            'persen_komisi' => $data['persen_komisi'],
+            'aktif'         => $request->boolean('aktif', true),
+        ];
+
+        if (! empty($data['password'])) {
+            $update['password'] = $data['password'];
+        }
+
+        $staf->update($update);
+
+        return back()->with('status', "Data karyawan {$staf->nama_staff} berhasil diperbarui.");
+    }
+
+    public function hapusKaryawan(int $id)
+    {
+        $staf = Karyawan::findOrFail($id);
+
+        // Kondisi tepi (Anti-Bug #9): periksa apakah karyawan masih punya booking aktif di masa mendatang
+        $bookingAktif = DB::table('detail_reservasi')
+            ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
+            ->where('detail_reservasi.id_karyawan', $staf->id_karyawan)
+            ->whereIn('reservasi.status', [Reservasi::STATUS_MENUNGGU, Reservasi::STATUS_DITERIMA])
+            ->count();
+
+        $staf->update(['aktif' => false]);
+        $staf->delete(); // Soft delete (Anti-Bug #7)
+
+        $catatan = $bookingAktif > 0
+            ? " Perhatian: karyawan ini memiliki {$bookingAktif} reservasi aktif yang perlu dialihkan."
+            : '';
+
+        return back()->with('status', "Karyawan {$staf->nama_staff} berhasil dinonaktifkan/dihapus.{$catatan}");
+    }
+
+    /* ================= 1B. CRUD LAYANAN ================= */
+
     public function layanan()
     {
-        $layanan = Layanan::orderBy('nama_layanan')->get();
+        $layanan = Layanan::orderBy('kategori')->orderBy('nama_layanan')->get();
 
         return view('Manajer.layanan', compact('layanan'));
     }
 
+    public function simpanLayanan(Request $request)
+    {
+        $data = $request->validate([
+            'nama_layanan'    => ['required', 'string', 'max:100'],
+            'kategori'        => ['required', 'string', 'max:50'],
+            'jabatan_petugas' => ['required', Rule::in(Layanan::JABATAN_PETUGAS)],
+            'harga_layanan'   => ['required', 'numeric', 'min:0'],
+        ]);
+
+        Layanan::create($data);
+
+        return back()->with('status', "Layanan {$data['nama_layanan']} berhasil ditambahkan.");
+    }
+
+    public function updateLayanan(Request $request, int $id)
+    {
+        $layanan = Layanan::findOrFail($id);
+
+        $data = $request->validate([
+            'nama_layanan'    => ['required', 'string', 'max:100'],
+            'kategori'        => ['required', 'string', 'max:50'],
+            'jabatan_petugas' => ['required', Rule::in(Layanan::JABATAN_PETUGAS)],
+            'harga_layanan'   => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $layanan->update($data);
+
+        return back()->with('status', "Layanan {$layanan->nama_layanan} berhasil diperbarui.");
+    }
+
+    public function hapusLayanan(int $id)
+    {
+        $layanan = Layanan::findOrFail($id);
+        $layanan->delete(); // Soft delete
+
+        return back()->with('status', "Layanan {$layanan->nama_layanan} berhasil dihapus.");
+    }
+
+    /* ================= 1C. CRUD PRODUK ================= */
+
     public function produk()
     {
-        $produk = DB::table('produk')->orderBy('nama_produk')->get();
-
-        // Data contoh apabila tabel produk masih kosong agar tampilan tetap terlihat jelas
-        if ($produk->isEmpty()) {
-            $produk = collect([
-                (object) ['id_produk' => 1, 'nama_produk' => 'Vitamin Rambut Keratin 100ml', 'stok_produk' => 24, 'harga_produk' => 65000],
-                (object) ['id_produk' => 2, 'nama_produk' => 'Masker Rambut Argan Oil 250g', 'stok_produk' => 15, 'harga_produk' => 95000],
-                (object) ['id_produk' => 3, 'nama_produk' => 'Serum Wajah Brightening 30ml', 'stok_produk' => 8,  'harga_produk' => 120000],
-                (object) ['id_produk' => 4, 'nama_produk' => 'Shampo Anti-Dandruff Salon 500ml', 'stok_produk' => 4, 'harga_produk' => 85000],
-            ]);
-        }
+        $produk = Produk::orderBy('nama_produk')->get();
 
         return view('Manajer.produk', compact('produk'));
     }
 
+    public function simpanProduk(Request $request)
+    {
+        $data = $request->validate([
+            'nama_produk'  => ['required', 'string', 'max:100'],
+            'stok_produk'  => ['required', 'integer', 'min:0'],
+            'harga_produk' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        Produk::create($data);
+
+        return back()->with('status', "Produk {$data['nama_produk']} berhasil ditambahkan.");
+    }
+
+    public function updateProduk(Request $request, int $id)
+    {
+        $produk = Produk::findOrFail($id);
+
+        $data = $request->validate([
+            'nama_produk'  => ['required', 'string', 'max:100'],
+            'stok_produk'  => ['required', 'integer', 'min:0'],
+            'harga_produk' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $produk->update($data);
+
+        return back()->with('status', "Produk {$produk->nama_produk} berhasil diperbarui.");
+    }
+
+    public function hapusProduk(int $id)
+    {
+        $produk = Produk::findOrFail($id);
+        $produk->delete(); // Soft delete
+
+        return back()->with('status', "Produk {$produk->nama_produk} berhasil dihapus.");
+    }
+
+    /* ================= 1D. CRUD PROMO ================= */
+
     public function promo()
     {
-        // Data pratinjau promo salon
-        $promo = collect([
-            (object) [
-                'id_promo'     => 1,
-                'kode_promo'   => 'CANTIK20',
-                'nama_promo'   => 'Diskon Perawatan Akhir Pekan',
-                'tipe_diskon'  => 'Persentase',
-                'nilai_diskon' => 20,
-                'min_transaksi'=> 150000,
-                'berlaku_sampai'=> '2026-12-31',
-                'status'       => 'Aktif',
-            ],
-            (object) [
-                'id_promo'     => 2,
-                'kode_promo'   => 'MEMBERBARU',
-                'nama_promo'   => 'Potongan Pelanggan Baru',
-                'tipe_diskon'  => 'Nominal',
-                'nilai_diskon' => 25000,
-                'min_transaksi'=> 100000,
-                'berlaku_sampai'=> '2026-11-30',
-                'status'       => 'Aktif',
-            ],
-            (object) [
-                'id_promo'     => 3,
-                'kode_promo'   => 'SPESIALGAJIAN',
-                'nama_promo'   => 'Paket Hemat Creambath & Facial',
-                'tipe_diskon'  => 'Persentase',
-                'nilai_diskon' => 15,
-                'min_transaksi'=> 200000,
-                'berlaku_sampai'=> '2026-10-01',
-                'status'       => 'Berakhir',
-            ],
-        ]);
+        $promo = Promo::latest('id_promo')->get();
 
         return view('Manajer.promo', compact('promo'));
     }
 
-    public function laporan()
+    public function simpanPromo(Request $request)
     {
-        $reservasi = Reservasi::with('layanan')
+        $data = $request->validate([
+            'kode_promo'     => ['required', 'string', 'max:40', Rule::unique('promo', 'kode_promo')],
+            'nama_promo'     => ['required', 'string', 'max:100'],
+            'tipe_diskon'    => ['required', Rule::in(['Persentase', 'Nominal'])],
+            'nilai_diskon'   => ['required', 'numeric', 'min:1'],
+            'min_transaksi'  => ['required', 'numeric', 'min:0'],
+            'berlaku_sampai' => ['required', 'date'],
+            'aktif'          => ['nullable', 'boolean'],
+        ]);
+
+        $data['kode_promo']    = strtoupper($data['kode_promo']);
+        $data['berlaku_mulai'] = now()->toDateString();
+        $data['aktif']         = $request->boolean('aktif', true);
+
+        Promo::create($data);
+
+        return back()->with('status', "Program promo {$data['kode_promo']} berhasil disimpan.");
+    }
+
+    public function updatePromo(Request $request, int $id)
+    {
+        $promo = Promo::findOrFail($id);
+
+        $data = $request->validate([
+            'kode_promo'     => ['required', 'string', 'max:40', Rule::unique('promo', 'kode_promo')->ignore($promo->id_promo, 'id_promo')],
+            'nama_promo'     => ['required', 'string', 'max:100'],
+            'tipe_diskon'    => ['required', Rule::in(['Persentase', 'Nominal'])],
+            'nilai_diskon'   => ['required', 'numeric', 'min:1'],
+            'min_transaksi'  => ['required', 'numeric', 'min:0'],
+            'berlaku_sampai' => ['required', 'date'],
+            'aktif'          => ['nullable', 'boolean'],
+        ]);
+
+        $data['kode_promo'] = strtoupper($data['kode_promo']);
+        $data['aktif']      = $request->boolean('aktif', true);
+
+        $promo->update($data);
+
+        return back()->with('status', "Promo {$promo->kode_promo} berhasil diperbarui.");
+    }
+
+    public function hapusPromo(int $id)
+    {
+        $promo = Promo::findOrFail($id);
+        $promo->delete(); // Soft delete
+
+        return back()->with('status', "Promo {$promo->kode_promo} berhasil dihapus.");
+    }
+
+    /* ================= 2. LAPORAN & EKSPOR ================= */
+
+    public function laporan(Request $request)
+    {
+        $tglMulai   = $request->query('mulai', now()->startOfMonth()->toDateString());
+        $tglSelesai = $request->query('selesai', now()->endOfMonth()->toDateString());
+
+        $reservasi = Reservasi::with(['layanan', 'transaksi'])
+            ->whereBetween('tgl_booking', [$tglMulai, $tglSelesai])
             ->latest('tgl_booking')
             ->latest('id_reservasi')
             ->get();
@@ -118,93 +300,248 @@ class ManajerController extends Controller
         $pelangganMap = Pelanggan::whereIn('id_pelanggan', $reservasi->pluck('id_pelanggan'))
             ->pluck('nama_cust', 'id_pelanggan');
 
-        return view('Manajer.laporan', compact('reservasi', 'pelangganMap'));
+        $totalPendapatan = Transaksi::whereBetween('created_at', [$tglMulai . ' 00:00:00', $tglSelesai . ' 23:59:59'])
+            ->sum('total_bayar');
+
+        $totalKomisi = Transaksi::whereBetween('created_at', [$tglMulai . ' 00:00:00', $tglSelesai . ' 23:59:59'])
+            ->sum('komisi_stylist');
+
+        // Kinerja karyawan
+        $kinerjaKaryawan = DB::table('detail_reservasi')
+            ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
+            ->join('karyawan', 'karyawan.id_karyawan', '=', 'detail_reservasi.id_karyawan')
+            ->whereBetween('reservasi.tgl_booking', [$tglMulai, $tglSelesai])
+            ->where('reservasi.status', Reservasi::STATUS_SELESAI)
+            ->select(
+                'karyawan.nama_staff',
+                'karyawan.role_jabatan',
+                DB::raw('COUNT(*) as jumlah_layanan'),
+                DB::raw('SUM(detail_reservasi.nominal_komisi) as total_komisi')
+            )
+            ->groupBy('karyawan.id_karyawan', 'karyawan.nama_staff', 'karyawan.role_jabatan')
+            ->orderByDesc('jumlah_layanan')
+            ->get();
+
+        // Layanan terlaris
+        $layananTerlaris = DB::table('detail_reservasi')
+            ->join('layanan', 'layanan.id_layanan', '=', 'detail_reservasi.id_layanan')
+            ->select('layanan.nama_layanan', DB::raw('COUNT(*) as total_pesan'))
+            ->groupBy('layanan.id_layanan', 'layanan.nama_layanan')
+            ->orderByDesc('total_pesan')
+            ->first();
+
+        return view('Manajer.laporan', compact(
+            'reservasi',
+            'pelangganMap',
+            'tglMulai',
+            'tglSelesai',
+            'totalPendapatan',
+            'totalKomisi',
+            'kinerjaKaryawan',
+            'layananTerlaris'
+        ));
     }
+
+    public function eksporLaporanCsv(Request $request)
+    {
+        $tglMulai   = $request->query('mulai', now()->startOfMonth()->toDateString());
+        $tglSelesai = $request->query('selesai', now()->endOfMonth()->toDateString());
+
+        $reservasi = Reservasi::with(['layanan', 'pelanggan', 'transaksi'])
+            ->whereBetween('tgl_booking', [$tglMulai, $tglSelesai])
+            ->latest('tgl_booking')
+            ->get();
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"laporan-salon-rengganis-{$tglMulai}-{$tglSelesai}.csv\"",
+        ];
+
+        $callback = function () use ($reservasi) {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, ['ID Reservasi', 'Tanggal', 'Jam', 'Pelanggan', 'Rincian Layanan', 'Total (Rp)', 'Status']);
+
+            foreach ($reservasi as $r) {
+                $total = $r->transaksi ? $r->transaksi->total_bayar : $r->layanan->sum('harga_layanan');
+                fputcsv($out, [
+                    '#' . $r->id_reservasi,
+                    $r->tgl_booking->format('d/m/Y'),
+                    $r->jam_booking,
+                    $r->pelanggan->nama_cust ?? 'Pelanggan',
+                    $r->layanan->pluck('nama_layanan')->join(', '),
+                    (int) $total,
+                    $r->statusTernormalisasi(),
+                ]);
+            }
+            fclose($out);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /* ================= 3. PENGATURAN STRUK NOTA ================= */
+
+    public function struk()
+    {
+        $struk = PengaturanStruk::aktif();
+
+        return view('Manajer.struk', compact('struk'));
+    }
+
+    public function simpanStruk(Request $request)
+    {
+        $data = $request->validate([
+            'nama_salon'  => ['required', 'string', 'max:100'],
+            'slogan'      => ['nullable', 'string', 'max:150'],
+            'alamat'      => ['required', 'string', 'max:255'],
+            'telepon'     => ['required', 'string', 'max:50'],
+            'instagram'   => ['nullable', 'string', 'max:80'],
+            'teks_header' => ['nullable', 'string', 'max:150'],
+            'teks_footer' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $data['tampil_logo']    = $request->boolean('tampil_logo');
+        $data['tampil_petugas'] = $request->boolean('tampil_petugas');
+        $data['tampil_kasir']   = $request->boolean('tampil_kasir');
+        $data['tampil_sosmed']  = $request->boolean('tampil_sosmed');
+
+        PengaturanStruk::aktif()->update($data);
+
+        return back()->with('status', 'Pengaturan format struk nota berhasil disimpan.');
+    }
+
+    /* ================= 4. METODE PEMBAYARAN ================= */
 
     public function metodePembayaran()
     {
-        $metode = collect([
-            (object) [
-                'id_metode' => 1,
-                'nama'      => 'Tunai (Cash)',
-                'kategori'  => 'Tunai',
-                'nomor_rek' => 'Pembayaran langsung di meja kasir',
-                'atas_nama' => 'Kasir Salon Rengganis',
-                'ikon'      => '💵',
-                'aktif'     => true,
-            ],
-            (object) [
-                'id_metode' => 2,
-                'nama'      => 'QRIS All Payment',
-                'kategori'  => 'Dompet Digital / QR',
-                'nomor_rek' => 'NMID: ID102003004005',
-                'atas_nama' => 'Salon Rengganis Official',
-                'ikon'      => '📱',
-                'aktif'     => true,
-            ],
-            (object) [
-                'id_metode' => 3,
-                'nama'      => 'Transfer Bank BCA',
-                'kategori'  => 'Transfer Bank',
-                'nomor_rek' => '8420-9912-34',
-                'atas_nama' => 'PT Rengganis Cantika',
-                'ikon'      => '🏦',
-                'aktif'     => true,
-            ],
-            (object) [
-                'id_metode' => 4,
-                'nama'      => 'Transfer Bank Mandiri',
-                'kategori'  => 'Transfer Bank',
-                'nomor_rek' => '137-00-9821345-6',
-                'atas_nama' => 'PT Rengganis Cantika',
-                'ikon'      => '🏦',
-                'aktif'     => true,
-            ],
-            (object) [
-                'id_metode' => 5,
-                'nama'      => 'Kartu Debit / Kredit (EDC)',
-                'kategori'  => 'Mesin EDC',
-                'nomor_rek' => 'Terminal EDC BCA & Mandiri',
-                'atas_nama' => 'Salon Rengganis',
-                'ikon'      => '💳',
-                'aktif'     => false,
-            ],
-        ]);
+        $metode = MetodePembayaran::orderBy('id_metode')->get();
 
         return view('Manajer.metode-pembayaran', compact('metode'));
     }
 
-    public function struk()
+    public function simpanMetode(Request $request)
     {
-        return view('Manajer.struk');
+        $data = $request->validate([
+            'nama_metode'    => ['required', 'string', 'max:80'],
+            'kategori'       => ['required', 'string', 'max:50'],
+            'nomor_rekening' => ['required', 'string', 'max:100'],
+            'atas_nama'      => ['required', 'string', 'max:100'],
+        ]);
+
+        $data['ikon']  = match ($data['kategori']) {
+            'Tunai' => '💵',
+            'Dompet Digital / QRIS', 'Dompet Digital / QR' => '📱',
+            'Mesin EDC' => '💳',
+            default => '🏦',
+        };
+        $data['aktif'] = true;
+
+        MetodePembayaran::create($data);
+
+        return back()->with('status', "Metode pembayaran {$data['nama_metode']} berhasil ditambahkan.");
     }
 
-    public function kasirPos()
+    public function updateMetode(Request $request, int $id)
     {
-        $layanan = Layanan::orderBy('nama_layanan')->get();
-        $produk  = DB::table('produk')->orderBy('nama_produk')->get();
+        $metode = MetodePembayaran::findOrFail($id);
 
-        if ($produk->isEmpty()) {
-            $produk = collect([
-                (object) ['id_produk' => 1, 'nama_produk' => 'Vitamin Rambut Keratin 100ml', 'stok_produk' => 24, 'harga_produk' => 65000],
-                (object) ['id_produk' => 2, 'nama_produk' => 'Masker Rambut Argan Oil 250g', 'stok_produk' => 15, 'harga_produk' => 95000],
-                (object) ['id_produk' => 3, 'nama_produk' => 'Serum Wajah Brightening 30ml', 'stok_produk' => 8,  'harga_produk' => 120000],
-                (object) ['id_produk' => 4, 'nama_produk' => 'Shampo Anti-Dandruff Salon 500ml', 'stok_produk' => 4, 'harga_produk' => 85000],
-            ]);
-        }
+        $data = $request->validate([
+            'nama_metode'    => ['required', 'string', 'max:80'],
+            'kategori'       => ['required', 'string', 'max:50'],
+            'nomor_rekening' => ['required', 'string', 'max:100'],
+            'atas_nama'      => ['required', 'string', 'max:100'],
+        ]);
 
-        $reservasiPending = Reservasi::with('layanan')
-            ->where('status', 'pending')
-            ->latest('tgl_booking')
+        $metode->update($data);
+
+        return back()->with('status', "Metode {$metode->nama_metode} berhasil diperbarui.");
+    }
+
+    public function toggleMetode(int $id)
+    {
+        $metode = MetodePembayaran::findOrFail($id);
+        $metode->update(['aktif' => ! $metode->aktif]);
+
+        return back()->with('status', "Status metode {$metode->nama_metode} telah diperbarui.");
+    }
+
+    /* ================= 5. PENGATURAN KEBIJAKAN BOOKING & BUKA BLOKIR ================= */
+
+    public function kebijakan()
+    {
+        $kebijakan         = PengaturanKebijakan::aktif();
+        $pelangganDiblokir = Pelanggan::whereNotNull('diblokir_sampai')
+            ->where('diblokir_sampai', '>', now())
+            ->orderByDesc('diblokir_sampai')
             ->get();
 
-        $pelangganMap = Pelanggan::whereIn('id_pelanggan', $reservasiPending->pluck('id_pelanggan'))
-            ->pluck('nama_cust', 'id_pelanggan');
+        $pelangganPelanggar = Pelanggan::where('jumlah_pelanggaran', '>', 0)
+            ->orderByDesc('jumlah_pelanggaran')
+            ->get();
 
-        $petugas = Karyawan::whereIn('role_jabatan', ['Stylist', 'Therapist'])
-            ->orderBy('nama_staff')
-            ->get(['id_karyawan', 'nama_staff', 'role_jabatan']);
+        $riwayatPelanggaran = RiwayatPelanggaran::with('pelanggan')
+            ->latest('id_pelanggaran')
+            ->limit(25)
+            ->get();
 
-        return view('Manajer.kasir', compact('layanan', 'produk', 'reservasiPending', 'pelangganMap', 'petugas'));
+        return view('Manajer.kebijakan', compact(
+            'kebijakan',
+            'pelangganDiblokir',
+            'pelangganPelanggar',
+            'riwayatPelanggaran'
+        ));
+    }
+
+    public function simpanKebijakan(Request $request)
+    {
+        $data = $request->validate([
+            'batas_pelanggaran'    => ['required', 'integer', 'min:1', 'max:20'],
+            'lama_blokir_hari'     => ['required', 'integer', 'min:1', 'max:90'],
+            'toleransi_bayar_hari' => ['required', 'integer', 'min:1', 'max:14'],
+            'batas_batal_jam'      => ['required', 'integer', 'min:0', 'max:48'],
+        ]);
+
+        $data['kebijakan_aktif'] = $request->boolean('kebijakan_aktif');
+
+        PengaturanKebijakan::aktif()->update($data);
+
+        return back()->with('status', 'Pengaturan kebijakan booking dan pinalti berhasil disimpan.');
+    }
+
+    public function bukaBlokirPelanggan(Request $request, int $idPelanggan)
+    {
+        $data = $request->validate([
+            'alasan_buka' => ['required', 'string', 'min:5', 'max:255'],
+        ], [
+            'alasan_buka.required' => 'Alasan pembukaan blokir wajib diisi.',
+            'alasan_buka.min'      => 'Alasan pembukaan blokir minimal 5 karakter.',
+        ]);
+
+        $pelanggan = Pelanggan::findOrFail($idPelanggan);
+
+        DB::transaction(function () use ($pelanggan, $data) {
+            $pelanggan->update([
+                'jumlah_pelanggaran' => 0,
+                'diblokir_sampai'    => null,
+                'alasan_blokir'      => null,
+            ]);
+
+            RiwayatPelanggaran::create([
+                'id_pelanggan' => $pelanggan->id_pelanggan,
+                'id_reservasi' => null,
+                'jenis'        => 'Buka Blokir Manual',
+                'tanggal'      => now()->toDateString(),
+                'keterangan'   => 'Dibuka oleh Manajer. Alasan: ' . $data['alasan_buka'],
+            ]);
+
+            NotifikasiPelanggan::kirim(
+                $pelanggan->id_pelanggan,
+                'Blokir Akun Dibuka oleh Manajer',
+                "Pemblokiran akun Anda telah dibuka oleh Manajer dengan catatan: \"{$data['alasan_buka']}\". Jumlah pelanggaran Anda telah direset ke 0.",
+                'sukses'
+            );
+        });
+
+        return back()->with('status', "Blokir pelanggan {$pelanggan->nama_cust} berhasil dibuka dan pelanggaran direset ke 0.");
     }
 }

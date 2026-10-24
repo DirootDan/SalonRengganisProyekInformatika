@@ -19,7 +19,7 @@
                     <option value="menipis">Stok Menipis (&lt; 10)</option>
                 </select>
             </div>
-            <button type="button" class="btn-utama" id="btnTambahProduk">
+            <button type="button" class="btn-utama" id="btnTambahProduk" data-url-simpan="{{ route('manajer.produk.simpan') }}">
                 <span>＋</span> Tambah Produk
             </button>
         </div>
@@ -63,15 +63,17 @@
                             <td>
                                 <div class="aksi-grup">
                                     <button type="button" class="btn-aksi btn-edit btnEditProduk"
+                                            data-url-update="{{ route('manajer.produk.update', $item->id_produk) }}"
                                             data-nama-asli="{{ $item->nama_produk }}"
                                             data-stok="{{ $item->stok_produk }}"
                                             data-harga="{{ (int) $item->harga_produk }}">
-                                        ✏️ Edit
+                                        ✏️ Ubah
                                     </button>
-                                    <button type="button" class="btn-aksi btn-hapus btnHapusProduk"
-                                            data-nama-asli="{{ $item->nama_produk }}">
-                                        🗑️ Hapus
-                                    </button>
+                                    <form method="POST" action="{{ route('manajer.produk.hapus', $item->id_produk) }}" class="form-hapus-produk" data-nama="{{ $item->nama_produk }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-aksi btn-hapus">🗑️ Hapus</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -89,21 +91,24 @@
                 <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
             </div>
 
-            <form id="formProduk">
+            <form method="POST" action="{{ route('manajer.produk.simpan') }}" id="formProduk">
+                @csrf
+                <input type="hidden" name="_method" id="methodProduk" value="POST">
+
                 <div class="form-grup">
                     <label class="form-label">Nama Produk</label>
-                    <input type="text" id="inputNamaProduk" class="form-input" placeholder="Contoh: Vitamin Rambut Keratin 100ml" required>
+                    <input type="text" name="nama_produk" id="inputNamaProduk" class="form-input" placeholder="Contoh: Vitamin Rambut Keratin 100ml" required>
                 </div>
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
                         <label class="form-label">Jumlah Stok (pcs)</label>
-                        <input type="number" id="inputStokProduk" class="form-input" min="0" placeholder="Contoh: 20" required>
+                        <input type="number" name="stok_produk" id="inputStokProduk" class="form-input" min="0" placeholder="Contoh: 20" required>
                     </div>
 
                     <div class="form-grup">
                         <label class="form-label">Harga Jual (Rp)</label>
-                        <input type="number" id="inputHargaProduk" class="form-input" min="0" step="1000" placeholder="Contoh: 65000" required>
+                        <input type="number" name="harga_produk" id="inputHargaProduk" class="form-input" min="0" step="1000" placeholder="Contoh: 65000" required>
                     </div>
                 </div>
 

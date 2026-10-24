@@ -1,0 +1,75 @@
+.antrean-penuh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+}
+
+.kartu-antrean-item {
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.antrean-item-atas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nomor-urut {
+    background: #db2777;
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.jadwal-jam {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #9d174d;
+}
+
+.nama-pelanggan-antrean {
+    margin: 2px 0 0;
+    font-size: 17px;
+    color: #111827;
+}
+
+.telp-pelanggan-antrean {
+    margin: 0;
+    font-size: 12.5px;
+    color: #6b7280;
+}
+
+.rincian-layanan-antrean {
+    list-style: none;
+    padding: 10px 0;
+    margin: 4px 0;
+    border-top: 1px dashed #f9a8d4;
+    border-bottom: 1px dashed #f9a8d4;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.rincian-layanan-antrean li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.antrean-item-kaki {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #db2777;
+}

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Input Form
     const inputNama    = document.getElementById('inputNamaSalon');
     const inputSlogan  = document.getElementById('inputSloganSalon');
     const inputAlamat  = document.getElementById('inputAlamatSalon');
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cekKasir     = document.getElementById('cekTampilKasir');
     const cekSosmed    = document.getElementById('cekTampilSosmed');
 
-    // Elemen Pratinjau Struk
     const prevLogo     = document.getElementById('prevLogo');
     const prevNama     = document.getElementById('prevNamaSalon');
     const prevSlogan   = document.getElementById('prevSlogan');
@@ -20,11 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevTelp     = document.getElementById('prevTelp');
     const prevPesan    = document.getElementById('prevPesanKaki');
     const prevIg       = document.getElementById('prevIg');
-    const prevBarisKasir = document.getElementById('prevBarisKasir');
-    const prevBarisIg    = document.getElementById('prevBarisIg');
+    const prevBarisKasir  = document.getElementById('prevBarisKasir');
+    const prevBarisIg     = document.getElementById('prevBarisIg');
     const prevPetugasList = document.querySelectorAll('.prev-petugas');
 
-    // 1. Live Preview Teks
     const ikatTeks = (input, target, bawaan) => {
         input?.addEventListener('input', () => {
             if (target) target.textContent = input.value.trim() || bawaan;
@@ -38,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ikatTeks(inputIg, prevIg, '-');
     ikatTeks(inputPesan, prevPesan, '');
 
-    // 2. Live Preview Checkbox
     cekLogo?.addEventListener('change', () => {
         if (prevLogo) prevLogo.style.display = cekLogo.checked ? 'block' : 'none';
     });
@@ -55,12 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         prevPetugasList.forEach(el => {
             el.style.display = cekPetugas.checked ? 'block' : 'none';
         });
-    });
-
-    // 3. Simpan & Uji Cetak
-    document.getElementById('formStruk')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        window.tampilkanToast('Pengaturan format struk nota berhasil disimpan.');
     });
 
     document.getElementById('btnUjiCetakStruk')?.addEventListener('click', () => {
