@@ -93,13 +93,20 @@ class ManajerController extends Controller
             'password'      => ['nullable', 'string', 'min:6'],
         ]);
 
+        $idLogin = auth('karyawan')->id();
+        $statusAktif = $request->boolean('aktif', true);
+
+        if ((int) $staf->id_karyawan === (int) $idLogin && (! $statusAktif || $data['role_jabatan'] !== 'Manajer')) {
+            return back()->withErrors(['karyawan' => 'Anda tidak dapat menonaktifkan atau mengubah peran akun Manajer yang sedang Anda gunakan.']);
+        }
+
         $update = [
             'nama_staff'    => $data['nama_staff'],
             'username'      => $data['username'],
             'email'         => $data['email'],
             'role_jabatan'  => $data['role_jabatan'],
             'persen_komisi' => $data['persen_komisi'],
-            'aktif'         => $request->boolean('aktif', true),
+            'aktif'         => $statusAktif,
         ];
 
         if (! empty($data['password'])) {
@@ -114,6 +121,10 @@ class ManajerController extends Controller
     public function hapusKaryawan(int $id)
     {
         $staf = Karyawan::findOrFail($id);
+
+        if ((int) $staf->id_karyawan === (int) auth('karyawan')->id()) {
+            return back()->withErrors(['karyawan' => 'Anda tidak dapat menghapus akun Manajer yang sedang Anda gunakan.']);
+        }
 
         // Kondisi tepi (Anti-Bug #9): periksa apakah karyawan masih punya booking aktif di masa mendatang
         $bookingAktif = DB::table('detail_reservasi')
@@ -235,14 +246,18 @@ class ManajerController extends Controller
 
     public function simpanPromo(Request $request)
     {
+        $maksDiskon = $request->input('tipe_diskon') === 'Persentase' ? ['max:100'] : [];
+
         $data = $request->validate([
             'kode_promo'     => ['required', 'string', 'max:40', Rule::unique('promo', 'kode_promo')],
             'nama_promo'     => ['required', 'string', 'max:100'],
             'tipe_diskon'    => ['required', Rule::in(['Persentase', 'Nominal'])],
-            'nilai_diskon'   => ['required', 'numeric', 'min:1'],
+            'nilai_diskon'   => array_merge(['required', 'numeric', 'min:1'], $maksDiskon),
             'min_transaksi'  => ['required', 'numeric', 'min:0'],
             'berlaku_sampai' => ['required', 'date'],
             'aktif'          => ['nullable', 'boolean'],
+        ], [
+            'nilai_diskon.max' => 'Potongan diskon persentase tidak boleh melebihi 100%.',
         ]);
 
         $data['kode_promo']    = strtoupper($data['kode_promo']);
@@ -257,15 +272,18 @@ class ManajerController extends Controller
     public function updatePromo(Request $request, int $id)
     {
         $promo = Promo::findOrFail($id);
+        $maksDiskon = $request->input('tipe_diskon') === 'Persentase' ? ['max:100'] : [];
 
         $data = $request->validate([
             'kode_promo'     => ['required', 'string', 'max:40', Rule::unique('promo', 'kode_promo')->ignore($promo->id_promo, 'id_promo')],
             'nama_promo'     => ['required', 'string', 'max:100'],
             'tipe_diskon'    => ['required', Rule::in(['Persentase', 'Nominal'])],
-            'nilai_diskon'   => ['required', 'numeric', 'min:1'],
+            'nilai_diskon'   => array_merge(['required', 'numeric', 'min:1'], $maksDiskon),
             'min_transaksi'  => ['required', 'numeric', 'min:0'],
             'berlaku_sampai' => ['required', 'date'],
             'aktif'          => ['nullable', 'boolean'],
+        ], [
+            'nilai_diskon.max' => 'Potongan diskon persentase tidak boleh melebihi 100%.',
         ]);
 
         $data['kode_promo'] = strtoupper($data['kode_promo']);
@@ -469,13 +487,22 @@ class ManajerController extends Controller
 
     public function kebijakan()
     {
-        $kebijakan         = PengaturanKebijakan::aktif();
-        $pelangganDiblokir = Pelanggan::whereNotNull('diblokir_sampai')
-            ->where('diblokir_sampai', '>', now())
+        $kebijakan = PengaturanKebijakan::aktif();
+
+        $pelangganDiblokir = Pelanggan::where(function ($q) {
+                $q->where('diblokir_permanen', true)
+                  ->orWhere(function ($sub) {
+                      $sub->whereNotNull('diblokir_sampai')
+                          ->where('diblokir_sampai', '>', now());
+                  });
+            })
+            ->orderByDesc('diblokir_permanen')
             ->orderByDesc('diblokir_sampai')
             ->get();
 
         $pelangganPelanggar = Pelanggan::where('jumlah_pelanggaran', '>', 0)
+            ->orWhere('diblokir_permanen', true)
+            ->orderByDesc('diblokir_permanen')
             ->orderByDesc('jumlah_pelanggaran')
             ->get();
 
@@ -495,17 +522,24 @@ class ManajerController extends Controller
     public function simpanKebijakan(Request $request)
     {
         $data = $request->validate([
-            'batas_pelanggaran'    => ['required', 'integer', 'min:1', 'max:20'],
-            'lama_blokir_hari'     => ['required', 'integer', 'min:1', 'max:90'],
-            'toleransi_bayar_hari' => ['required', 'integer', 'min:1', 'max:14'],
-            'batas_batal_jam'      => ['required', 'integer', 'min:0', 'max:48'],
+            'batas_pelanggaran'        => ['required', 'integer', 'min:1', 'max:20'],
+            'rentang_hari_pelanggaran' => ['nullable', 'integer', 'min:1', 'max:365'],
+            'lama_blokir_hari'         => ['required', 'integer', 'min:1', 'max:90'],
+            'lama_blokir_kedua_hari'   => ['nullable', 'integer', 'min:1', 'max:180'],
+            'toleransi_bayar_hari'     => ['required', 'integer', 'min:1', 'max:14'],
+            'batas_batal_jam'          => ['required', 'integer', 'min:0', 'max:48'],
         ]);
 
+        $data['rentang_hari_pelanggaran'] = $data['rentang_hari_pelanggaran'] ?? 90;
+        $data['lama_blokir_kedua_hari']   = $data['lama_blokir_kedua_hari'] ?? 30;
+        $data['blokir_ketiga_permanen']   = $request->has('blokir_ketiga_permanen')
+            ? $request->boolean('blokir_ketiga_permanen')
+            : true;
         $data['kebijakan_aktif'] = $request->boolean('kebijakan_aktif');
 
         PengaturanKebijakan::aktif()->update($data);
 
-        return back()->with('status', 'Pengaturan kebijakan booking dan pinalti berhasil disimpan.');
+        return back()->with('status', 'Pengaturan kebijakan booking dan pinalti bertingkat berhasil disimpan.');
     }
 
     public function bukaBlokirPelanggan(Request $request, int $idPelanggan)
@@ -521,9 +555,11 @@ class ManajerController extends Controller
 
         DB::transaction(function () use ($pelanggan, $data) {
             $pelanggan->update([
-                'jumlah_pelanggaran' => 0,
-                'diblokir_sampai'    => null,
-                'alasan_blokir'      => null,
+                'jumlah_pelanggaran'     => 0,
+                'diblokir_permanen'      => false,
+                'diblokir_sampai'        => null,
+                'alasan_blokir'          => null,
+                'reset_pelanggaran_pada' => now(),
             ]);
 
             RiwayatPelanggaran::create([
@@ -537,7 +573,7 @@ class ManajerController extends Controller
             NotifikasiPelanggan::kirim(
                 $pelanggan->id_pelanggan,
                 'Blokir Akun Dibuka oleh Manajer',
-                "Pemblokiran akun Anda telah dibuka oleh Manajer dengan catatan: \"{$data['alasan_buka']}\". Jumlah pelanggaran Anda telah direset ke 0.",
+                "Pemblokiran akun Anda telah dibuka oleh Manajer dengan catatan: \"{$data['alasan_buka']}\". Jumlah pelanggaran aktif Anda telah direset ke 0.",
                 'sukses'
             );
         });

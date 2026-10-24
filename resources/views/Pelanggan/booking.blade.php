@@ -19,19 +19,27 @@
     @endif
 
     @if ($kebijakan->kebijakan_aktif && $pelanggan->sedangDiblokir())
-        <!-- Kotak Peringatan Blokir Sementara -->
+        <!-- Kotak Peringatan Blokir -->
         <div class="kotak-blokir">
-            <h2>🚫 Fitur Booking Diblokir Sementara</h2>
+            <h2>🚫 Fitur Booking {{ $pelanggan->diblokir_permanen ? 'Diblokir (Menunggu Konfirmasi Manajer)' : 'Diblokir Sementara' }}</h2>
             <p>
-                Mohon maaf, Anda sementara tidak dapat mengirim permintaan booking baru karena:
+                Mohon maaf, Anda tidak dapat mengirim permintaan booking baru karena:
                 <strong>{{ $pelanggan->alasan_blokir ?: "Mencapai batas {$kebijakan->batas_pelanggaran} kali pelanggaran reservasi." }}</strong>
             </p>
             <div class="info-blokir-detail">
-                <span>📅 Berakhir pada: <strong>{{ $pelanggan->diblokir_sampai->format('d/m/Y H:i') }} WIB</strong></span>
-                <span>⏳ Sisa waktu: <strong>{{ $pelanggan->sisaHariBlokir() }} hari lagi</strong></span>
+                @if ($pelanggan->diblokir_permanen)
+                    <span>🔒 Status: <strong>Blokir Tahap {{ max(3, (int) $pelanggan->jumlah_kali_blokir) }} (Tetap diblokir sampai Manajer membuka manual)</strong></span>
+                @elseif ($pelanggan->diblokir_sampai)
+                    <span>📅 Berakhir pada: <strong>{{ $pelanggan->diblokir_sampai->format('d/m/Y H:i') }} WIB</strong></span>
+                    <span>⏳ Sisa waktu: <strong>{{ $pelanggan->sisaHariBlokir() }} hari lagi</strong></span>
+                @endif
             </div>
             <p class="catatan-blokir">
-                Setelah masa blokir berakhir, jumlah pelanggaran Anda akan direset otomatis ke 0. Jika terdapat kekeliruan, silakan hubungi pihak Salon Rengganis.
+                @if ($pelanggan->diblokir_permanen)
+                    Silakan hubungi Manajer Salon Rengganis untuk mengajukan pembukaan blokir akun secara manual.
+                @else
+                    Setelah masa blokir berakhir, jumlah pelanggaran aktif Anda akan direset otomatis ke 0. Jika terdapat kekeliruan, silakan hubungi pihak Salon Rengganis.
+                @endif
             </p>
         </div>
     @else

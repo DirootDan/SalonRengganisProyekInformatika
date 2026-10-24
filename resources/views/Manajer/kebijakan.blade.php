@@ -22,17 +22,38 @@
                 @method('PUT')
 
                 <div class="form-grup">
-                    <label class="form-label">Batas Maksimal Pelanggaran Sebelum Diblokir</label>
-                    <input type="number" name="batas_pelanggaran" class="form-input" min="1" max="20"
-                           value="{{ $kebijakan->batas_pelanggaran }}" required>
-                    <small class="petunjuk-input">Bawaan: 5 kali pelanggaran (reservasi Diterima tetapi tidak datang / tidak lunas).</small>
+                    <label class="form-label">Rentang Perhitungan Kumulatif Pelanggaran (Hari Terakhir)</label>
+                    <input type="number" name="rentang_hari_pelanggaran" class="form-input" min="1" max="365"
+                           value="{{ $kebijakan->rentang_hari_pelanggaran ?? 90 }}" required>
+                    <small class="petunjuk-input">Bawaan: 90 hari terakhir. Pelanggaran di luar rentang ini otomatis kedaluwarsa.</small>
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Durasi Pemblokiran Akun (Hari)</label>
+                    <label class="form-label">Batas Maksimal Pelanggaran Sebelum Diblokir</label>
+                    <input type="number" name="batas_pelanggaran" class="form-input" min="1" max="20"
+                           value="{{ $kebijakan->batas_pelanggaran }}" required>
+                    <small class="petunjuk-input">Bawaan: 5 kali pelanggaran dalam periode kumulatif.</small>
+                </div>
+
+                <div class="form-grup">
+                    <label class="form-label">Durasi Blokir Pertama (Hari)</label>
                     <input type="number" name="lama_blokir_hari" class="form-input" min="1" max="90"
                            value="{{ $kebijakan->lama_blokir_hari }}" required>
-                    <small class="petunjuk-input">Bawaan: 7 hari. Setelah berakhir, pelanggaran direset otomatis ke 0.</small>
+                    <small class="petunjuk-input">Bawaan: 7 hari untuk pemblokiran ke-1.</small>
+                </div>
+
+                <div class="form-grup">
+                    <label class="form-label">Durasi Blokir Kedua (Hari)</label>
+                    <input type="number" name="lama_blokir_kedua_hari" class="form-input" min="1" max="180"
+                           value="{{ $kebijakan->lama_blokir_kedua_hari ?? 30 }}" required>
+                    <small class="petunjuk-input">Bawaan: 30 hari untuk pemblokiran ke-2.</small>
+                </div>
+
+                <div class="form-grup">
+                    <label class="opsi-saklar-kebijakan">
+                        <input type="checkbox" name="blokir_ketiga_permanen" value="1" @checked($kebijakan->blokir_ketiga_permanen ?? true)>
+                        <span>Blokir Ketiga Tetap Diblokir sampai Manajer Membuka Manual</span>
+                    </label>
                 </div>
 
                 <div class="form-grup">
@@ -72,8 +93,8 @@
                     <div class="info-terblokir">
                         <strong>{{ $p->nama_cust }}</strong>
                         <span>{{ $p->email }} &bull; {{ $p->no_telp }}</span>
-                        <span class="lencana-pelanggaran">Pelanggaran: {{ $p->jumlah_pelanggaran }} / {{ $kebijakan->batas_pelanggaran }}</span>
-                        <small>Berakhir: {{ $p->diblokir_sampai->format('d/m/Y H:i') }} WIB ({{ $p->sisaHariBlokir() }} hari lagi)</small>
+                        <span class="lencana-pelanggaran">Pelanggaran: {{ $p->jumlah_pelanggaran }} / {{ $kebijakan->batas_pelanggaran }} (Blokir ke-{{ max(1, (int) $p->jumlah_kali_blokir) }})</span>
+                        <small>{{ $p->keteranganBlokir() }}</small>
                     </div>
 
                     <form method="POST" action="{{ route('manajer.kebijakan.buka', $p->id_pelanggan) }}" class="form-buka-blokir">

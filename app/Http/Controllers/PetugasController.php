@@ -91,6 +91,14 @@ class PetugasController extends Controller
             abort(403, 'Anda tidak memiliki wewenang untuk mengubah jadwal petugas lain.');
         }
 
+        // Audit Fix #2: Pastikan reservasi induk berstatus Diterima atau Selesai sebelum layanan ditandai Selesai
+        $reservasi = Reservasi::findOrFail($idReservasi);
+        if (! in_array($reservasi->statusTernormalisasi(), [Reservasi::STATUS_DITERIMA, Reservasi::STATUS_SELESAI], true)) {
+            return back()->withErrors([
+                'status' => "Layanan pada reservasi #{$idReservasi} tidak dapat ditandai selesai karena status reservasi saat ini adalah '{$reservasi->statusTernormalisasi()}'.",
+            ]);
+        }
+
         DB::table('detail_reservasi')
             ->where('id_reservasi', $idReservasi)
             ->where('id_layanan', $idLayanan)

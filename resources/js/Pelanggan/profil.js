@@ -86,10 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (valBaru === valKonf) {
-            pwMatchInfo.textContent = '✓ Konfirmasi password cocok';
+            pwMatchInfo.textContent = '✓ Konfirmasi kata sandi cocok';
             pwMatchInfo.className = 'pw-match-info cocok';
         } else {
-            pwMatchInfo.textContent = '✕ Konfirmasi password belum cocok';
+            pwMatchInfo.textContent = '✕ Konfirmasi kata sandi belum cocok';
             pwMatchInfo.className = 'pw-match-info tidak-cocok';
         }
     };

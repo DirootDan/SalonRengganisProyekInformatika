@@ -1,58 +1,115 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Web Manajemen & Reservasi "Salon Rengganis"
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web berbasis **Laravel 12 + Vite + Blade** untuk operasional menyeluruh **Salon Rengganis**, mencakup pemesanan perawatan (*booking*) tanpa pembayaran di muka oleh pelanggan, pengelolaan antrean dan pembayaran (*Point of Sale*) oleh Kasir, jadwal perawatan & laporan komisi untuk Stylist/Therapist, serta panel kendali Manajer lengkap dengan **Sistem Kebijakan Pinalti & Pemblokiran Bertingkat**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 1. Persyaratan Sistem & Instalasi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prasyarat
+- **Laragon** (PHP $\ge$ 8.2, MySQL / MariaDB, Apache / Nginx)
+- **Composer**
+- **Node.js & NPM**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Langkah Instalasi
+1. Pastikan proyek berada di direktori `C:\laragon\www\SalonRengganisProyekInformatika`.
+2. Salin atau pastikan berkas `.env` telah terkonfigurasi dengan basis data MySQL Anda:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=salonrengganisdb
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+3. Pasang dependensi PHP dan JavaScript:
+   ```powershell
+   composer install
+   npm install
+   ```
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 2. Perintah yang Perlu Dijalankan
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Jalankan perintah berikut secara berurutan di terminal proyek:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+```powershell
+# 1. Jalankan seluruh migrasi basis data
+php artisan migrate
 
-## Agentic Development
+# 2. Isi data contoh lengkap (akun tiap peran, layanan, produk, promo, booking berbagai status, & pelanggan hampir terblokir)
+php artisan db:seed
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+# 3. Jalankan server kompilasi aset CSS & JS (Vite)
+npm run dev
 
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+# 4. Jalankan pengujian otomatis (PHPUnit Feature Test)
+php artisan test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Perintah Penjadwalan Evaluasi Booking Hangus (Scheduler)
+- **Uji Coba Manual di Terminal**:
+  ```powershell
+  php artisan booking:evaluasi-hangus
+  ```
+- **Menjalankan Scheduler di Lingkungan Lokal (Laragon)**:
+  ```powershell
+  php artisan schedule:work
+  ```
+- **Mengaktifkan Otomatis di Windows Task Scheduler**:
+  1. Buka aplikasi **Task Scheduler** di Windows $\rightarrow$ klik **Create Basic Task...**
+  2. Isi nama tugas: `Salon Rengganis Booking Scheduler`, pilih pemicu **Daily**, lalu pada pengaturan lanjutan centang **Repeat task every: 1 hour** dengan durasi **Indefinitely**.
+  3. Pilih aksi **Start a program**:
+     - **Program/script**: `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe`
+     - **Add arguments**: `artisan schedule:run`
+     - **Start in**: `C:\laragon\www\SalonRengganisProyekInformatika`
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 3. Daftar Akun Contoh (Hasil Seeder)
 
-## Code of Conduct
+Seluruh akun di bawah ini menggunakan kata sandi bawaan: **`password123`**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### A. Akun Staf & Manajemen (`guard: karyawan`)
+| Peran / Jabatan | Nama Lengkap | Email Login | Username Login | Komisi |
+| :--- | :--- | :--- | :--- | :--- |
+| **Manajer** | Budi Santoso | `manajer@rengganis.com` | `manajer_budi` | 0% |
+| **Kasir** | Ayu Lestari | `kasir@rengganis.com` | `kasir_ayu` | 0% |
+| **Stylist** | Sinta Maharani | `sinta@rengganis.com` | `stylist_sinta` | 15% |
+| **Stylist** | Nadia Putri | `nadia@rengganis.com` | `stylist_nadia` | 15% |
+| **Therapist** | Larasati Dewi | `laras@rengganis.com` | `therapist_laras` | 20% |
+| **Therapist** | Citra Kirana | `citra@rengganis.com` | `therapist_citra` | 20% |
 
-## Security Vulnerabilities
+### B. Akun Pelanggan (`guard: pelanggan`)
+| Status Simulasi | Nama Pelanggan | Email Login | Catatan Demo |
+| :--- | :--- | :--- | :--- |
+| **Pelanggan Aktif** | Rina Anggraini | `rina@gmail.com` | Memiliki riwayat reservasi `Selesai`, `Diterima` (hari ini), dan `Menunggu` (besok) |
+| **Pelanggan Aktif** | Dewi Lestari | `dewi.lestari@gmail.com` | Memiliki reservasi `Menunggu` dan riwayat `Ditolak` beserta alasan |
+| **Pelanggan Aktif** | Siti Nurhaliza | `siti.nurhaliza@yahoo.com` | Memiliki riwayat reservasi `Dibatalkan` secara mandiri |
+| **Hampir Terblokir (4/5)** | Maya Sari | `maya.sari@gmail.com` | Memiliki **4 dari 5 pelanggaran** dalam 90 hari terakhir (tersisa 1 kesempatan sebelum blokir) |
+| **Pelanggan Baru** | Indah Permata | `indah.permata@gmail.com` | Akun bersih tanpa riwayat |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 4. Panduan Singkat Penggunaan Per Peran
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Pelanggan (`/pelanggan/*`)
+- **Navigasi Atas**: Menu utama terdiri atas **Beranda**, **Layanan**, **Booking**, dan **Riwayat**. Di sebelah kanan terdapat ikon **Lonceng Notifikasi (🔔)** dan dropdown **Halo, [Nama] ▾** yang berisi **Profil Saya**, **Ganti Kata Sandi**, dan **Keluar**.
+- **Alur Booking**: Pilih tanggal & jam operasional $\rightarrow$ centang layanan yang diinginkan $\rightarrow$ sistem otomatis memuat daftar **Stylist** (untuk layanan kategori *Rambut*) atau **Therapist** (untuk kategori *Perawatan*) yang tersedia dan tidak bentrok pada jam tersebut.
+- **Pembatalan Gratis**: Pelanggan dapat membatalkan booking berstatus `Menunggu` atau `Diterima` melalui menu **Riwayat** tanpa pinalti selama masih minimal **3 jam** sebelum jadwal kedatangan.
+
+### 2. Manajer (`/manajer/*`)
+- **Manajemen Master Data (CRUD)**: Mengelola data **Karyawan** (beserta persentase komisi & status aktif), **Layanan** (beserta kategori `Rambut`/`Perawatan`), **Produk** (beserta stok), dan **Promo** (`Persentase`/`Nominal`).
+- **Laporan & Ekspor CSV**: Melihat rekap pendapatan, layanan terlaris, kinerja komisi karyawan dengan filter rentang tanggal, serta mengekspor laporan ke berkas CSV.
+- **Pengaturan Struk & Metode Pembayaran**: Mengatur identitas salon pada struk thermal (dengan pratinjau langsung) serta mengaktifkan/menonaktifkan metode pembayaran.
+- **Kebijakan Booking & Buka Blokir Manual**: Mengatur rentang kumulatif pelanggaran (bawaan **90 hari**), batas pelanggaran (**5 kali**), durasi **Blokir ke-1 (7 hari)**, **Blokir ke-2 (30 hari)**, **Blokir ke-3 (tetap diblokir sampai dibuka Manajer)**, serta membuka blokir pelanggan lebih awal dengan alasan wajib.
+
+### 3. Kasir (`/kasir/*`)
+- **Permintaan Booking**: Melihat daftar permintaan reservasi per tab status dengan paginasi, memantau indikator pelanggaran pelanggan, serta **Menerima** atau **Menolak** (wajib mengisi alasan penolakan yang otomatis dikirim ke notifikasi pelanggan).
+- **Antrean Hari Ini**: Memantau daftar antrean aktif yang sedang berjalan hari ini.
+- **Dashboard Transaksi (POS)**: Memilih reservasi aktif atau transaksi langsung (*walk-in*), menambahkan produk, menerapkan kode promo (`CANTIK15` / `HEMAT25`), memilih metode pembayaran aktif, memproses pelunasan, dan mencetak struk.
+
+### 4. Stylist (`/stylist/*`) & Therapist (`/therapist/*`)
+- **Jadwal Reservasi Pribadi**: Melihat daftar perawatan yang ditugaskan khusus kepada dirinya (filter Harian, Mingguan, atau Semua) dan menekan tombol **Tandai Selesai** setelah perawatan selesai dikerjakan.
+- **Laporan Komisi Saya**: Memantau rincian komisi pribadi berdasarkan *snapshot* harga dan persentase komisi dari layanan yang berstatus `Selesai` dan telah dibayar lunas di kasir.

@@ -107,9 +107,34 @@ class KasirController extends Controller
     {
         try {
             DB::transaction(function () use ($idReservasi) {
-                $reservasi = Reservasi::where('id_reservasi', $idReservasi)
+                $reservasi = Reservasi::with('layanan')
+                    ->where('id_reservasi', $idReservasi)
                     ->lockForUpdate()
                     ->firstOrFail();
+
+                // Audit Fix #1: Periksa apakah ada bentrok jadwal dengan reservasi Diterima lainnya pada tanggal & jam yang sama
+                $idPetugas = $reservasi->layanan
+                    ->pluck('pivot.id_karyawan')
+                    ->filter()
+                    ->unique()
+                    ->values()
+                    ->all();
+
+                if (! empty($idPetugas)) {
+                    $bentrok = DB::table('detail_reservasi')
+                        ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
+                        ->where('reservasi.id_reservasi', '!=', $reservasi->id_reservasi)
+                        ->whereDate('reservasi.tgl_booking', $reservasi->tgl_booking->toDateString())
+                        ->where('reservasi.jam_booking', $reservasi->jam_booking)
+                        ->where('reservasi.status', Reservasi::STATUS_DITERIMA)
+                        ->whereIn('detail_reservasi.id_karyawan', $idPetugas)
+                        ->lockForUpdate()
+                        ->exists();
+
+                    if ($bentrok) {
+                        throw new DomainException("Tidak dapat menerima reservasi #{$reservasi->id_reservasi} karena petugas sudah memiliki reservasi Diterima lain pada tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$reservasi->jam_booking}.");
+                    }
+                }
 
                 $reservasi->ubahStatus(Reservasi::STATUS_DITERIMA);
 
@@ -208,6 +233,17 @@ class KasirController extends Controller
                 $idKasir = Auth::guard('karyawan')->id();
                 $reservasi = null;
 
+                // Audit Fix #5: Pastikan metode pembayaran yang dipilih benar-benar aktif di tabel metode_pembayaran
+                if (MetodePembayaran::where('aktif', true)->exists()) {
+                    $metodeValid = MetodePembayaran::where('nama_metode', $data['metode_bayar'])
+                        ->where('aktif', true)
+                        ->exists();
+
+                    if (! $metodeValid) {
+                        throw new DomainException("Metode pembayaran '{$data['metode_bayar']}' sedang tidak aktif atau tidak terdaftar.");
+                    }
+                }
+
                 if (! empty($data['id_reservasi'])) {
                     $reservasi = Reservasi::with('layanan')
                         ->where('id_reservasi', $data['id_reservasi'])
@@ -225,6 +261,14 @@ class KasirController extends Controller
                         throw new DomainException("Reservasi #{$reservasi->id_reservasi} berstatus '{$statusSekarang}' dan tidak dapat diproses pembayarannya.");
                     }
                 } else {
+                    // Audit Fix #5: Pastikan transaksi walk-in memiliki minimal 1 layanan atau 1 produk
+                    $layananIds = array_unique((array) ($data['layanan_ids'] ?? []));
+                    $produkQtyTotal = collect((array) ($data['produk_items'] ?? []))->map(fn ($v) => (int) $v)->sum();
+
+                    if (empty($layananIds) && $produkQtyTotal <= 0) {
+                        throw new DomainException('Pilih minimal satu layanan atau satu produk untuk memproses transaksi langsung (walk-in).');
+                    }
+
                     // Transaksi langsung (walk-in): buat reservasi otomatis atas nama pelanggan pertama
                     $pelangganDefault = Pelanggan::first();
                     if (! $pelangganDefault) {
@@ -239,7 +283,6 @@ class KasirController extends Controller
                         'status'       => Reservasi::STATUS_DITERIMA,
                     ]);
 
-                    $layananIds = array_unique((array) ($data['layanan_ids'] ?? []));
                     $stafWalkIn = Karyawan::find($request->input('id_petugas'));
                     $persenWalkIn = (float) ($stafWalkIn->persen_komisi ?? 15);
 

@@ -23,16 +23,17 @@ class CekBlokirBooking
             return redirect()->route('login');
         }
 
-        // Segarkan data pelanggan dari database (mengantisipasi perubahan blokir saat sedang di tengah proses booking)
+        // Segarkan data pelanggan dari database
         $pelanggan->refresh();
 
-        // Jika masa blokir telah lewat, reset otomatis ke 0 sebelum melanjutkan
-        if ($pelanggan->diblokir_sampai !== null && $pelanggan->diblokir_sampai->isPast()) {
+        // Jika masa blokir sementara telah lewat (dan bukan blokir permanen tahap ke-3), reset otomatis ke 0
+        if (! $pelanggan->diblokir_permanen && $pelanggan->diblokir_sampai !== null && $pelanggan->diblokir_sampai->isPast()) {
             DB::transaction(function () use ($pelanggan) {
                 $pelanggan->update([
-                    'jumlah_pelanggaran' => 0,
-                    'diblokir_sampai'    => null,
-                    'alasan_blokir'      => null,
+                    'jumlah_pelanggaran'     => 0,
+                    'diblokir_sampai'        => null,
+                    'alasan_blokir'          => null,
+                    'reset_pelanggaran_pada' => now(),
                 ]);
 
                 RiwayatPelanggaran::create([
@@ -40,7 +41,7 @@ class CekBlokirBooking
                     'id_reservasi' => null,
                     'jenis'        => 'Reset Otomatis',
                     'tanggal'      => now()->toDateString(),
-                    'keterangan'   => 'Masa pemblokiran telah berakhir; jumlah pelanggaran direset kembali ke 0.',
+                    'keterangan'   => 'Masa pemblokiran sementara telah berakhir; jumlah pelanggaran direset kembali ke 0.',
                 ]);
 
                 NotifikasiPelanggan::kirim(
@@ -58,11 +59,15 @@ class CekBlokirBooking
 
         // Cegah pengiriman permintaan booking (POST) jika pelanggan sedang diblokir dan kebijakan aktif
         if ($kebijakan->kebijakan_aktif && $pelanggan->sedangDiblokir() && $request->isMethod('post')) {
-            $berakhir = $pelanggan->diblokir_sampai->format('d/m/Y H:i');
-            $sisaHari = $pelanggan->sisaHariBlokir();
-            $alasan   = $pelanggan->alasan_blokir ?: 'Mencapai batas pelanggaran reservasi.';
+            $alasan = $pelanggan->alasan_blokir ?: 'Mencapai batas pelanggaran reservasi.';
 
-            $pesan = "Maaf, akun Anda sedang diblokir sementara dari fitur booking karena: {$alasan} Blokir berakhir pada {$berakhir} ({$sisaHari} hari lagi).";
+            if ($pelanggan->diblokir_permanen) {
+                $pesan = "Maaf, akun Anda sedang diblokir secara permanen (Blokir Tahap {$pelanggan->jumlah_kali_blokir}) karena: {$alasan} Silakan hubungi Manajer salon untuk pembukaan blokir manual.";
+            } else {
+                $berakhir = $pelanggan->diblokir_sampai?->format('d/m/Y H:i') ?? '-';
+                $sisaHari = $pelanggan->sisaHariBlokir();
+                $pesan    = "Maaf, akun Anda sedang diblokir sementara dari fitur booking karena: {$alasan} Blokir berakhir pada {$berakhir} ({$sisaHari} hari lagi).";
+            }
 
             if ($request->expectsJson()) {
                 return response()->json(['message' => $pesan], 403);

@@ -119,33 +119,104 @@ body {
 .akun { 
     display: flex; 
     align-items: center; 
-    gap: 12px; 
+    gap: 10px; 
     font-size: 14px; 
     font-weight: 500; 
 }
 
-.akun-profil {
+/* ===== Ikon Lonceng Notifikasi ===== */
+.tombol-lonceng {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1.5px solid #f3e8ee;
+    color: #4b5563;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.tombol-lonceng:hover,
+.tombol-lonceng:focus-visible {
+    background: #fce7f3;
+    border-color: #f9a8d4;
+    color: #db2777;
+    outline: none;
+}
+
+.tombol-lonceng.ada-notif {
+    border-color: #fbcfe8;
+    background: #fdf2f8;
+}
+
+.ikon-lonceng {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.lencana-lonceng {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+}
+
+/* ===== Dropdown Akun Pelanggan ===== */
+.akun-dropdown {
+    position: relative;
+}
+
+.akun-trigger {
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 6px 14px 6px 6px;
     border-radius: 999px;
+    background: #ffffff;
     color: #374151;
-    text-decoration: none;
+    font-family: inherit;
+    font-size: 14px;
     font-weight: 600;
+    cursor: pointer;
     transition: all 0.2s ease;
-    border: 1.5px solid transparent;
+    border: 1.5px solid #f3e8ee;
 }
 
-.akun-profil:hover {
+.akun-trigger:hover,
+.akun-trigger:focus-visible {
     background: #fce7f3;
-    color: #db2777;
-}
-
-.akun-profil.aktif {
-    background: #fdf2f8;
     border-color: #f9a8d4;
     color: #db2777;
+    outline: none;
+}
+
+/* Penanda aktif saat pelanggan berada di halaman profil */
+.akun-trigger.aktif {
+    background: #fdf2f8;
+    border-color: #db2777;
+    color: #db2777;
+    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.12);
+}
+
+.akun-trigger.aktif .akun-avatar {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #db2777;
 }
 
 .akun-avatar {
@@ -160,25 +231,167 @@ body {
     font-size: 14px;
     font-weight: 700;
     box-shadow: 0 2px 8px rgba(219, 39, 119, 0.25);
+    flex-shrink: 0;
 }
 
-.btn-keluar { 
-    padding: 8px 20px; 
-    background: white; 
-    color: #db2777; 
-    border: 2px solid #db2777; 
-    border-radius: 999px; 
-    font-family: inherit; 
-    font-size: 13px; 
-    font-weight: 600; 
-    cursor: pointer; 
-    transition: all 0.2s ease; 
+.akun-sapaan {
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.btn-keluar:hover { 
-    background: #db2777; 
-    color: white; 
-    transform: scale(1.02); 
+.akun-panah {
+    font-size: 12px;
+    color: #9ca3af;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.akun-dropdown.terbuka .akun-panah {
+    transform: rotate(180deg);
+    color: #db2777;
+}
+
+.akun-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 240px;
+    max-width: calc(100vw - 24px);
+    background: #ffffff;
+    border: 1px solid #f3e8ee;
+    border-radius: 18px;
+    padding: 8px;
+    box-shadow: 0 14px 34px rgba(17, 24, 39, 0.12);
+    z-index: 100;
+    animation: munculDropdown 0.16s ease-out;
+}
+
+@keyframes munculDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.akun-menu-kepala {
+    padding: 10px 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.akun-menu-nama {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.akun-menu-email {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.akun-menu-pemisah {
+    height: 1px;
+    background: #f3f4f6;
+    margin: 6px 4px;
+}
+
+.akun-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    color: #374151;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.akun-menu-item:hover,
+.akun-menu-item:focus-visible {
+    background: #fdf2f8;
+    color: #db2777;
+    outline: none;
+}
+
+.akun-menu-item.item-aktif {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+.item-ikon {
+    font-size: 15px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.form-menu-keluar {
+    margin: 0;
+}
+
+/* Warna merah lembut untuk tombol Keluar di dalam dropdown */
+.akun-menu-keluar {
+    color: #e11d48;
+    background: #fff1f2;
+}
+
+.akun-menu-keluar:hover,
+.akun-menu-keluar:focus-visible {
+    background: #ffe4e6;
+    color: #be123c;
+}
+
+@media (max-width: 768px) {
+    .topbar-inner {
+        padding: 12px 16px;
+        gap: 10px;
+    }
+
+    .menu {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .menu a {
+        padding: 8px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .akun-sapaan {
+        max-width: 115px;
+        font-size: 13px;
+    }
+
+    .akun-menu {
+        right: 0;
+        width: 220px;
+        max-width: calc(100vw - 24px);
+    }
 }
 
 /* ===== Layout Umum ===== */

@@ -101,7 +101,7 @@ class PelangganController extends Controller
 
         if ($kebijakan->kebijakan_aktif && $pelanggan->sedangDiblokir()) {
             return back()->withErrors([
-                'blokir' => 'Akun Anda sedang diblokir sementara dari fitur booking hingga ' . $pelanggan->diblokir_sampai->format('d/m/Y H:i') . '.',
+                'blokir' => 'Akun Anda sedang diblokir dari fitur booking (' . $pelanggan->keteranganBlokir() . ').',
             ]);
         }
 

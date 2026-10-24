@@ -45,10 +45,12 @@
             </div>
         </aside>
 
-        <!-- Area Pengaturan Tab (Edit Data Diri & Ganti Password) -->
+        <!-- Area Pengaturan Tab (Edit Data Diri & Ganti Kata Sandi) -->
         <section class="profil-konten">
             @php
-                $bukaTabPassword = $errors->has('password_lama') || $errors->has('password');
+                $bukaTabPassword = request()->query('tab') === 'password'
+                    || $errors->has('password_lama')
+                    || $errors->has('password');
             @endphp
 
             <div class="profil-tabs">
@@ -56,7 +58,7 @@
                     👤 Data Diri
                 </button>
                 <button type="button" class="tab-btn {{ $bukaTabPassword ? 'aktif' : '' }}" data-target="tab-password">
-                    🔒 Ganti Password
+                    🔒 Ganti Kata Sandi
                 </button>
             </div>
 
@@ -98,10 +100,10 @@
                 </form>
             </div>
 
-            <!-- Panel 2: Ganti Password -->
+            <!-- Panel 2: Ganti Kata Sandi -->
             <div class="tab-panel {{ $bukaTabPassword ? 'aktif' : '' }}" id="tab-password">
                 <div class="panel-header">
-                    <h3>Ubah Password Akun</h3>
+                    <h3>Ubah Kata Sandi Akun</h3>
                     <p>Gunakan kombinasi minimal 6 karakter agar akun Anda tetap aman.</p>
                 </div>
 
@@ -110,35 +112,35 @@
                     @method('PUT')
 
                     <div class="form-group">
-                        <label for="password_lama" class="label">Password Saat Ini</label>
+                        <label for="password_lama" class="label">Kata Sandi Saat Ini</label>
                         <div class="input-password-wrap">
                             <input type="password" id="password_lama" name="password_lama" class="input-profil"
-                                   placeholder="Masukkan password saat ini" required>
-                            <button type="button" class="toggle-pw" data-input="password_lama" aria-label="Tampilkan Password">👁️</button>
+                                   placeholder="Masukkan kata sandi saat ini" required>
+                            <button type="button" class="toggle-pw" data-input="password_lama" aria-label="Tampilkan Kata Sandi">👁️</button>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="password" class="label">Password Baru</label>
+                        <label for="password" class="label">Kata Sandi Baru</label>
                         <div class="input-password-wrap">
                             <input type="password" id="password" name="password" class="input-profil"
                                    placeholder="Minimal 6 karakter" minlength="6" required>
-                            <button type="button" class="toggle-pw" data-input="password" aria-label="Tampilkan Password">👁️</button>
+                            <button type="button" class="toggle-pw" data-input="password" aria-label="Tampilkan Kata Sandi">👁️</button>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="password_confirmation" class="label">Konfirmasi Password Baru</label>
+                        <label for="password_confirmation" class="label">Konfirmasi Kata Sandi Baru</label>
                         <div class="input-password-wrap">
                             <input type="password" id="password_confirmation" name="password_confirmation" class="input-profil"
-                                   placeholder="Ulangi password baru" minlength="6" required>
-                            <button type="button" class="toggle-pw" data-input="password_confirmation" aria-label="Tampilkan Password">👁️</button>
+                                   placeholder="Ulangi kata sandi baru" minlength="6" required>
+                            <button type="button" class="toggle-pw" data-input="password_confirmation" aria-label="Tampilkan Kata Sandi">👁️</button>
                         </div>
                         <small id="pwMatchInfo" class="pw-match-info"></small>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn" id="btnSimpanPassword">Perbarui Password</button>
+                        <button type="submit" class="btn" id="btnSimpanPassword">Perbarui Kata Sandi</button>
                     </div>
                 </form>
             </div>

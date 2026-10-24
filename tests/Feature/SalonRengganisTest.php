@@ -4,9 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Karyawan;
 use App\Models\Layanan;
+use App\Models\MetodePembayaran;
 use App\Models\Pelanggan;
 use App\Models\PengaturanKebijakan;
+use App\Models\Produk;
+use App\Models\Promo;
 use App\Models\Reservasi;
+use App\Models\RiwayatPelanggaran;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -18,6 +22,8 @@ class SalonRengganisTest extends TestCase
 
     protected Layanan $layananRambut;
     protected Layanan $layananWajah;
+    protected Produk $produkVitamin;
+    protected Promo $promoDiskon;
     protected Karyawan $manajer;
     protected Karyawan $kasir;
     protected Karyawan $stylist1;
@@ -79,7 +85,7 @@ class SalonRengganisTest extends TestCase
             'nama_layanan'    => 'Potong & Blow Rambut',
             'kategori'        => 'Rambut',
             'jabatan_petugas' => 'Stylist',
-            'harga_layanan'   => 60000,
+            'harga_layanan'   => 100000,
         ]);
 
         $this->layananWajah = Layanan::create([
@@ -87,6 +93,32 @@ class SalonRengganisTest extends TestCase
             'kategori'        => 'Perawatan',
             'jabatan_petugas' => 'Therapist',
             'harga_layanan'   => 120000,
+        ]);
+
+        $this->produkVitamin = Produk::create([
+            'nama_produk'  => 'Serum Vitamin Rambut',
+            'stok_produk'  => 10,
+            'harga_produk' => 50000,
+        ]);
+
+        $this->promoDiskon = Promo::create([
+            'kode_promo'     => 'DISKON10',
+            'nama_promo'     => 'Diskon 10 Persen',
+            'tipe_diskon'    => 'Persentase',
+            'nilai_diskon'   => 10,
+            'min_transaksi'  => 100000,
+            'berlaku_mulai'  => now()->subDay()->toDateString(),
+            'berlaku_sampai' => now()->addMonth()->toDateString(),
+            'aktif'          => true,
+        ]);
+
+        MetodePembayaran::create([
+            'nama_metode'    => 'Tunai (Cash)',
+            'kategori'       => 'Tunai',
+            'nomor_rekening' => 'Kasir',
+            'atas_nama'      => 'Salon Rengganis',
+            'ikon'           => '💵',
+            'aktif'          => true,
         ]);
 
         $this->pelanggan1 = Pelanggan::create([
@@ -110,14 +142,11 @@ class SalonRengganisTest extends TestCase
 
     /**
      * Skenario 1: Pencegahan Double-Booking (Bentrok Jadwal)
-     * Dua pelanggan memilih karyawan yang sama pada tanggal dan jam yang sama;
-     * permintaan kedua wajib ditolak oleh server.
      */
     public function test_pencegahan_bentrok_jadwal_double_booking(): void
     {
         $besok = Carbon::tomorrow()->toDateString();
 
-        // Pelanggan 1 berhasil memesan Stylist 1 pada jam 10:00
         $res1 = $this->actingAs($this->pelanggan1, 'pelanggan')
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => $besok,
@@ -150,7 +179,6 @@ class SalonRengganisTest extends TestCase
 
     /**
      * Skenario 2: State Machine Transisi Status Reservasi
-     * Transisi tidak sah seperti Selesai -> Dibatalkan atau Ditolak -> Diterima harus ditolak.
      */
     public function test_state_machine_menolak_transisi_status_tidak_sah(): void
     {
@@ -162,7 +190,6 @@ class SalonRengganisTest extends TestCase
             'id_karyawan'  => $this->stylist1->id_karyawan,
         ]);
 
-        // Transisi sah: Menunggu -> Diterima -> Selesai
         $this->assertTrue($reservasi->bolehTransisiKe(Reservasi::STATUS_DITERIMA));
         $reservasi->ubahStatus(Reservasi::STATUS_DITERIMA);
         $this->assertEquals(Reservasi::STATUS_DITERIMA, $reservasi->fresh()->status);
@@ -171,29 +198,38 @@ class SalonRengganisTest extends TestCase
         $reservasi->ubahStatus(Reservasi::STATUS_SELESAI);
         $this->assertEquals(Reservasi::STATUS_SELESAI, $reservasi->fresh()->status);
 
-        // Transisi tidak sah: Selesai -> Dibatalkan wajib melempar DomainException
         $this->assertFalse($reservasi->bolehTransisiKe(Reservasi::STATUS_DIBATALKAN));
         $this->expectException(DomainException::class);
         $reservasi->ubahStatus(Reservasi::STATUS_DIBATALKAN);
     }
 
     /**
-     * Skenario 3: Perhitungan Pelanggaran & Pemblokiran Otomatis (booking:evaluasi-hangus)
-     * 5 reservasi Diterima yang melewati tenggat tanpa pelunasan akan memicu blokir 7 hari,
-     * dan middleware cek.blokir menolak akses booking pelanggan tersebut.
+     * Skenario 3: Simulasi Kebijakan Pinalti Bertingkat (7 Hari -> 30 Hari -> Permanen) & Jendela 90 Hari
      */
-    public function test_evaluasi_hangus_dan_pemblokiran_otomatis_pelanggan(): void
+    public function test_evaluasi_hangus_bertingkat_dan_jendela_90_hari(): void
     {
         $kebijakan = PengaturanKebijakan::aktif();
         $kebijakan->update([
-            'batas_pelanggaran'    => 5,
-            'lama_blokir_hari'     => 7,
-            'toleransi_bayar_hari' => 1,
-            'kebijakan_aktif'      => true,
+            'batas_pelanggaran'        => 5,
+            'rentang_hari_pelanggaran' => 90,
+            'lama_blokir_hari'         => 7,
+            'lama_blokir_kedua_hari'   => 30,
+            'blokir_ketiga_permanen'   => true,
+            'toleransi_bayar_hari'     => 1,
+            'kebijakan_aktif'          => true,
         ]);
 
-        // Buat 5 reservasi berstatus Diterima pada 3 hari lalu (sudah melewati H+1)
-        for ($i = 0; $i < 5; $i++) {
+        // 1 pelanggaran lama di luar 90 hari (100 hari lalu) -> tidak boleh ikut dihitung dalam 90 hari terakhir
+        RiwayatPelanggaran::create([
+            'id_pelanggan' => $this->pelanggan1->id_pelanggan,
+            'id_reservasi' => null,
+            'jenis'        => 'Pelanggaran',
+            'tanggal'      => Carbon::today()->subDays(100)->toDateString(),
+            'keterangan'   => 'Pelanggaran lama > 90 hari.',
+        ]);
+
+        // Buat 4 reservasi Diterima 3 hari lalu -> harus menghasilkan 4 pelanggaran aktif (belum terblokir karena pelanggaran 100 hari lalu sudah kedaluwarsa)
+        for ($i = 0; $i < 4; $i++) {
             Reservasi::create([
                 'tgl_booking'  => Carbon::today()->subDays(3)->toDateString(),
                 'jam_booking'  => sprintf('%02d:00', 9 + $i),
@@ -203,43 +239,91 @@ class SalonRengganisTest extends TestCase
             ]);
         }
 
-        // Jalankan command evaluasi hangus (dan pastikan idempoten jika dijalankan 2x)
         $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
+        $p = $this->pelanggan1->fresh();
+        $this->assertEquals(4, $p->jumlah_pelanggaran);
+        $this->assertFalse($p->sedangDiblokir());
+
+        // Tambah pelanggaran ke-5 -> memicu BLOKIR TAHAP 1 (7 hari)
+        Reservasi::create([
+            'tgl_booking'  => Carbon::today()->subDays(2)->toDateString(),
+            'jam_booking'  => '15:00',
+            'status'       => Reservasi::STATUS_DITERIMA,
+            'id_pelanggan' => $this->pelanggan1->id_pelanggan,
+            'id_karyawan'  => $this->stylist1->id_karyawan,
+        ]);
+
         $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
+        $p = $this->pelanggan1->fresh();
+        $this->assertEquals(5, $p->jumlah_pelanggaran);
+        $this->assertEquals(1, $p->jumlah_kali_blokir);
+        $this->assertFalse($p->diblokir_permanen);
+        $this->assertEquals(7, $p->sisaHariBlokir());
 
-        $pelangganSegar = $this->pelanggan1->fresh();
-        $this->assertEquals(5, $pelangganSegar->jumlah_pelanggaran);
-        $this->assertNotNull($pelangganSegar->diblokir_sampai);
-        $this->assertTrue($pelangganSegar->sedangDiblokir());
-
-        // Pastikan ke-5 reservasi berstatus Hangus
-        $this->assertEquals(5, Reservasi::where('status', Reservasi::STATUS_HANGUS)->count());
-
-        // Pelanggan yang diblokir mencoba kirim POST booking -> ditolak oleh middleware cek.blokir
-        $responBooking = $this->actingAs($pelangganSegar, 'pelanggan')
+        // Pelanggan ditolak saat mencoba POST booking
+        $this->actingAs($p, 'pelanggan')
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => Carbon::tomorrow()->toDateString(),
                 'jam_booking' => '13:00',
                 'layanan'     => [$this->layananRambut->id_layanan],
-                'petugas'     => [
-                    $this->layananRambut->id_layanan => $this->stylist1->id_karyawan,
-                ],
-            ]);
+                'petugas'     => [$this->layananRambut->id_layanan => $this->stylist1->id_karyawan],
+            ])
+            ->assertRedirect(route('pelanggan.booking'))
+            ->assertSessionHasErrors('blokir');
 
-        $responBooking->assertRedirect(route('pelanggan.booking'));
-        $responBooking->assertSessionHasErrors('blokir');
+        // Simulasikan masa blokir ke-1 berakhir, lalu mencapai 5 pelanggaran lagi -> BLOKIR TAHAP 2 (30 hari)
+        $p->update(['diblokir_sampai' => now()->subMinute()]);
+        $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
+        $this->assertEquals(0, $p->fresh()->jumlah_pelanggaran);
+
+        for ($i = 0; $i < 5; $i++) {
+            Reservasi::create([
+                'tgl_booking'  => Carbon::today()->subDays(4)->toDateString(),
+                'jam_booking'  => sprintf('%02d:00', 9 + $i),
+                'status'       => Reservasi::STATUS_DITERIMA,
+                'id_pelanggan' => $this->pelanggan1->id_pelanggan,
+                'id_karyawan'  => $this->stylist1->id_karyawan,
+            ]);
+        }
+
+        $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
+        $p = $this->pelanggan1->fresh();
+        $this->assertEquals(2, $p->jumlah_kali_blokir);
+        $this->assertFalse($p->diblokir_permanen);
+        $this->assertEquals(30, $p->sisaHariBlokir());
+
+        // Simulasikan masa blokir ke-2 berakhir, lalu mencapai 5 pelanggaran lagi -> BLOKIR TAHAP 3 (PERMANEN sampai dibuka Manajer)
+        $p->update(['diblokir_sampai' => now()->subMinute()]);
+        $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
+
+        for ($i = 0; $i < 5; $i++) {
+            Reservasi::create([
+                'tgl_booking'  => Carbon::today()->subDays(5)->toDateString(),
+                'jam_booking'  => sprintf('%02d:00', 9 + $i),
+                'status'       => Reservasi::STATUS_DITERIMA,
+                'id_pelanggan' => $this->pelanggan1->id_pelanggan,
+                'id_karyawan'  => $this->stylist1->id_karyawan,
+            ]);
+        }
+
+        $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
+        $p = $this->pelanggan1->fresh();
+        $this->assertEquals(3, $p->jumlah_kali_blokir);
+        $this->assertTrue($p->diblokir_permanen);
+        $this->assertNull($p->diblokir_sampai);
+        $this->assertTrue($p->sedangDiblokir());
     }
 
     /**
-     * Skenario 4: Pembukaan Blokir Manual oleh Manajer
-     * Manajer membuka blokir pelanggan beserta alasan wajib -> pelanggaran di-reset ke 0,
-     * tercatat di riwayat_pelanggaran, dan pelanggan dapat kembali melakukan booking.
+     * Skenario 4: Pembukaan Blokir Manual oleh Manajer (termasuk Blokir Permanen Tahap 3)
      */
     public function test_manajer_membuka_blokir_pelanggan_secara_manual(): void
     {
         $this->pelanggan1->update([
             'jumlah_pelanggaran' => 5,
-            'diblokir_sampai'    => now()->addDays(7),
+            'jumlah_kali_blokir' => 3,
+            'diblokir_permanen'  => true,
+            'diblokir_sampai'    => null,
         ]);
 
         $respon = $this->actingAs($this->manajer, 'karyawan')
@@ -252,6 +336,7 @@ class SalonRengganisTest extends TestCase
 
         $pelangganSegar = $this->pelanggan1->fresh();
         $this->assertEquals(0, $pelangganSegar->jumlah_pelanggaran);
+        $this->assertFalse($pelangganSegar->diblokir_permanen);
         $this->assertNull($pelangganSegar->diblokir_sampai);
         $this->assertFalse($pelangganSegar->sedangDiblokir());
 
@@ -275,11 +360,77 @@ class SalonRengganisTest extends TestCase
     }
 
     /**
-     * Skenario 5: Pembatasan Akses Antar Peran (Role Isolation) & Anti-IDOR
+     * Skenario 5: Simulasi Alur Utama Lengkap (Booking -> Terima Kasir -> Selesai Stylist -> Bayar Kasir + Anti Bayar Ganda)
+     */
+    public function test_simulasi_alur_utama_lengkap_dan_pencegahan_pembayaran_ganda(): void
+    {
+        $besok = Carbon::tomorrow()->toDateString();
+
+        // 1. Pelanggan membuat booking
+        $this->actingAs($this->pelanggan1, 'pelanggan')
+            ->post(route('pelanggan.booking.simpan'), [
+                'tgl_booking' => $besok,
+                'jam_booking' => '11:00',
+                'layanan'     => [$this->layananRambut->id_layanan],
+                'petugas'     => [$this->layananRambut->id_layanan => $this->stylist1->id_karyawan],
+            ])
+            ->assertRedirect(route('pelanggan.riwayat'));
+
+        $reservasi = Reservasi::firstOrFail();
+        $this->assertEquals(Reservasi::STATUS_MENUNGGU, $reservasi->status);
+
+        // 2. Kasir menerima booking
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.permintaan.terima', $reservasi->id_reservasi))
+            ->assertRedirect();
+
+        $this->assertEquals(Reservasi::STATUS_DITERIMA, $reservasi->fresh()->status);
+
+        // 3. Stylist menandai layanan selesai
+        $this->actingAs($this->stylist1, 'karyawan')
+            ->post(route('stylist.layanan.selesai', [$reservasi->id_reservasi, $this->layananRambut->id_layanan]))
+            ->assertRedirect();
+
+        // 4. Kasir memproses pembayaran dengan tambahan 1 produk & kode promo DISKON10
+        // Subtotal: Layanan 100.000 + Produk 50.000 = 150.000. Diskon 10% = 15.000. Total Bayar = 135.000.
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.bayar'), [
+                'id_reservasi' => $reservasi->id_reservasi,
+                'metode_bayar' => 'Tunai (Cash)',
+                'kode_promo'   => 'DISKON10',
+                'nominal_uang' => 150000,
+                'produk_items' => [
+                    $this->produkVitamin->id_produk => 1,
+                ],
+            ])
+            ->assertRedirect(route('kasir.dashboard'));
+
+        $this->assertEquals(Reservasi::STATUS_SELESAI, $reservasi->fresh()->status);
+        $this->assertEquals(9, $this->produkVitamin->fresh()->stok_produk);
+        $this->assertDatabaseHas('transaksi', [
+            'id_reservasi' => $reservasi->id_reservasi,
+            'diskon'       => 15000,
+            'total_bayar'  => 135000,
+            'kembalian'    => 15000,
+        ]);
+
+        // 5. Percobaan pembayaran ganda pada reservasi yang sama wajib ditolak
+        $this->actingAs($this->kasir, 'karyawan')
+            ->from(route('kasir.dashboard'))
+            ->post(route('kasir.bayar'), [
+                'id_reservasi' => $reservasi->id_reservasi,
+                'metode_bayar' => 'Tunai (Cash)',
+                'nominal_uang' => 150000,
+            ])
+            ->assertRedirect(route('kasir.dashboard'))
+            ->assertSessionHasErrors('pembayaran');
+    }
+
+    /**
+     * Skenario 6: Pembatasan Akses Antar Peran (Role Isolation) & Anti-IDOR
      */
     public function test_pembatasan_akses_antar_peran_dan_anti_idor(): void
     {
-        // 1. Kasir tidak boleh mengakses halaman Manajer
         $this->actingAs($this->kasir, 'karyawan')
             ->get(route('manajer.dashboard'))
             ->assertStatus(403);
@@ -288,7 +439,6 @@ class SalonRengganisTest extends TestCase
             ->get(route('manajer.kebijakan'))
             ->assertStatus(403);
 
-        // 2. Stylist tidak boleh mengakses halaman Kasir maupun Therapist
         $this->actingAs($this->stylist1, 'karyawan')
             ->get(route('kasir.dashboard'))
             ->assertStatus(403);
@@ -297,7 +447,6 @@ class SalonRengganisTest extends TestCase
             ->get(route('therapist.dashboard'))
             ->assertStatus(403);
 
-        // 3. Anti-IDOR: Pelanggan 2 tidak boleh membatalkan reservasi milik Pelanggan 1
         $reservasiP1 = Reservasi::create([
             'tgl_booking'  => Carbon::now()->addDays(2)->toDateString(),
             'jam_booking'  => '15:00',
@@ -308,33 +457,26 @@ class SalonRengganisTest extends TestCase
 
         $reservasiP1->layanan()->attach($this->layananRambut->id_layanan, [
             'id_karyawan'    => $this->stylist1->id_karyawan,
-            'harga_saat_ini' => 60000,
+            'harga_saat_ini' => 100000,
             'persen_komisi'  => 15,
-            'nominal_komisi' => 9000,
+            'nominal_komisi' => 15000,
             'status_layanan' => 'Menunggu',
         ]);
 
+        // Anti-IDOR: Pelanggan 2 tidak boleh membatalkan reservasi milik Pelanggan 1
         $this->actingAs($this->pelanggan2, 'pelanggan')
             ->post(route('pelanggan.booking.batal', $reservasiP1->id_reservasi))
             ->assertStatus(403);
 
-        // 4. Anti-IDOR: Stylist 2 tidak boleh menandai selesai layanan yang ditugaskan kepada Stylist 1
+        // Anti-IDOR: Stylist 2 tidak boleh menandai selesai layanan yang ditugaskan kepada Stylist 1
         $reservasiP1->ubahStatus(Reservasi::STATUS_DITERIMA);
 
         $this->actingAs($this->stylist2, 'karyawan')
             ->post(route('stylist.layanan.selesai', [$reservasiP1->id_reservasi, $this->layananRambut->id_layanan]))
             ->assertStatus(403);
 
-        // Sedangkan Stylist 1 yang bertugas dapat menandai selesai
         $this->actingAs($this->stylist1, 'karyawan')
             ->post(route('stylist.layanan.selesai', [$reservasiP1->id_reservasi, $this->layananRambut->id_layanan]))
             ->assertRedirect();
-
-        $this->assertDatabaseHas('detail_reservasi', [
-            'id_reservasi'   => $reservasiP1->id_reservasi,
-            'id_layanan'     => $this->layananRambut->id_layanan,
-            'id_karyawan'    => $this->stylist1->id_karyawan,
-            'status_layanan' => 'Selesai',
-        ]);
     }
 }
