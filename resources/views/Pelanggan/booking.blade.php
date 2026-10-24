@@ -36,3 +36,7 @@
         <button type="submit" id="submitBtn" class="btn btn-penuh">KIRIM BOOKING</button>
     </form>
 @endsection
+
+@push('scripts')
+    @vite(['resources/js/pelanggan/booking.js'])
+@endpush

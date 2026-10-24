@@ -5,19 +5,27 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-           input: [
-    'resources/css/app.css',
-    'resources/js/app.js',
-    'resources/css/Login/loginpage.css',
-    'resources/css/Login/registerpage.css',
-    'resources/css/Login/lupapassword.css',
-    'resources/css/Login/resetpassword.css',
-    'resources/js/loginpage.js',
-    'resources/css/pelanggan/dashboard.css',
-    'resources/css/pelanggan/layanan.css',
-    'resources/css/pelanggan/riwayat.css'
-
-],
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+                
+                // Auth
+                'resources/css/Login/loginpage.css',
+                'resources/css/Login/registerpage.css',
+                'resources/css/Login/lupapassword.css',
+                'resources/css/Login/resetpassword.css',
+                'resources/js/loginpage.js',
+                
+                // Pelanggan CSS
+                'resources/css/pelanggan/dashboard.css',
+                'resources/css/pelanggan/layanan.css',
+                'resources/css/pelanggan/riwayat.css',
+                
+                // Pelanggan JS (Baru Ditambahkan)
+                'resources/js/pelanggan/beranda.js',
+                'resources/js/pelanggan/booking.js',
+                'resources/js/pelanggan/riwayat.js'
+            ],
             refresh: true,
         }),
         tailwindcss(),

@@ -31,8 +31,12 @@
         </div>
     @empty
         <div class="kosong">
-            Belum ada reservasi.
+            Belum ada reservasi.<br>
             <a href="{{ route('pelanggan.booking') }}">Buat booking pertama Anda</a>
         </div>
     @endforelse
 @endsection
+
+@push('scripts')
+    @vite(['resources/js/pelanggan/riwayat.js'])
+@endpush

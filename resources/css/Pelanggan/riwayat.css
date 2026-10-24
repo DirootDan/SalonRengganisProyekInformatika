@@ -1,69 +1,67 @@
 /* ===== Riwayat ===== */
 .reservasi-item {
     background: white;
-    border-radius: 16px;
-    padding: 20px 24px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease;
 }
+
+.reservasi-item:hover { transform: scale(1.01); }
 
 .reservasi-atas {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px dashed #f3f4f6;
 }
 
 .reservasi-tgl {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 18px;
+    color: #111827;
 }
 
 .reservasi-no {
-    font-size: 12px;
+    font-size: 13px;
     color: #9ca3af;
+    margin-top: 4px;
 }
 
 .status {
-    padding: 4px 12px;
+    padding: 6px 16px;
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 600;
-    background: #e5e7eb;
-    color: #374151;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-.status-pending {
-    background: #fef3c7;
-    color: #b45309;
-}
-
-.status-selesai {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.status-batal {
-    background: #fee2e2;
-    color: #ef4444;
-}
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-selesai { background: #dcfce7; color: #16a34a; }
+.status-batal { background: #fee2e2; color: #ef4444; }
 
 .reservasi-layanan {
     list-style: none;
-    margin: 0 0 12px;
+    margin: 0 0 16px;
     padding: 0;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .reservasi-layanan li {
     display: flex;
     justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px dashed #f3f4f6;
+    padding: 10px 0;
+    color: #4b5563;
 }
 
 .reservasi-total {
     text-align: right;
-    font-weight: 700;
+    font-weight: 800;
+    font-size: 20px;
     color: #db2777;
+    margin-top: 8px;
 }

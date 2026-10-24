@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('judul', 'Salon Rengganis')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/pelanggan/dashboard.css', 'resources/css/pelanggan/layanan.css', 'resources/css/pelanggan/riwayat.css', 'resources/js/loginpage.js'])
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/pelanggan/dashboard.css', 'resources/css/pelanggan/layanan.css', 'resources/css/pelanggan/riwayat.css'])
 </head>
 <body>
 
@@ -21,7 +21,8 @@
 
             <div class="akun">
                 <span>Halo, {{ auth('pelanggan')->user()->nama_cust }}</span>
-                <form method="POST" action="{{ route('pelanggan.logout') }}">
+                
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="btn-keluar">Keluar</button>
                 </form>
@@ -39,5 +40,7 @@
 
     <footer class="footer">Salon Rengganis &bull; Terima kasih sudah mempercayakan kecantikan Anda</footer>
 
+    <!-- Tempat untuk memuat JS spesifik dari tiap halaman -->
+    @stack('scripts')
 </body>
 </html>

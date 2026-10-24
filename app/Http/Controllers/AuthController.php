@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
+use App\Models\Pelanggan;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,53 +12,116 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    /* ================= LOGIN KARYAWAN ================= */
+    /* ================= TAMPILAN HALAMAN ================= */
 
     public function showLogin()
     {
-        $user = Auth::guard('karyawan')->user();
-
-        if ($user && $user->rutePeran()) {
-            return redirect()->route($user->rutePeran());
+        if (Auth::guard('karyawan')->check()) {
+            $user = Auth::guard('karyawan')->user();
+            return redirect()->route($user->rutePeran() ?? 'login');
         }
 
-        return view('karyawan.loginpage');
+        if (Auth::guard('pelanggan')->check()) {
+            return redirect()->route('pelanggan.beranda');
+        }
+
+        // Disesuaikan dengan folder Auth dan file loginpage.blade.php
+        return view('Auth.loginpage'); 
     }
+
+    public function showRegister()
+    {
+        if (Auth::guard('pelanggan')->check() || Auth::guard('karyawan')->check()) {
+            return redirect('/');
+        }
+        
+        // Disesuaikan dengan folder Auth dan file registerpage.blade.php
+        return view('Auth.registerpage'); 
+    }
+
+    public function showLupaPassword()
+    {
+        // Disesuaikan dengan folder Auth dan file lupapassword.blade.php
+        return view('Auth.lupapassword'); 
+    }
+
+    public function showResetPassword(Request $request, string $token)
+    {
+        // Disesuaikan dengan folder Auth dan file resetpassword.blade.php
+        return view('Auth.resetpassword', [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]);
+    }
+
+    /* ================= LOGIN GABUNGAN ================= */
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
+        $request->validate([
+            'login_id' => ['required', 'string'],
             'password' => ['required', 'string'],
         ], $this->pesan(), $this->atribut());
 
-        if (Auth::guard('karyawan')->attempt($credentials)) {
+        $loginId = $request->input('login_id');
+        $password = $request->input('password');
+
+        if (Auth::guard('karyawan')->attempt(['username' => $loginId, 'password' => $password])) {
             $user = Auth::guard('karyawan')->user();
 
-            // Jabatan tidak dikenali -> tolak
             if (! $user->rutePeran()) {
                 Auth::guard('karyawan')->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
                 return back()
-                    ->withErrors(['username' => 'Jabatan akun ini belum dikenali. Hubungi manajer.'])
-                    ->onlyInput('username');
+                    ->withErrors(['login_id' => 'Jabatan akun ini belum dikenali. Hubungi manajer.'])
+                    ->onlyInput('login_id');
             }
 
             $request->session()->regenerate();
-
             return redirect()->intended(route($user->rutePeran()));
         }
 
+        if (Auth::guard('pelanggan')->attempt(['email' => $loginId, 'password' => $password])) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('pelanggan.beranda'));
+        }
+
         return back()
-            ->withErrors(['username' => 'Username atau password salah.'])
-            ->onlyInput('username');
+            ->withErrors(['login_id' => 'Username/Email atau password salah.'])
+            ->onlyInput('login_id');
     }
+
+    /* ================= REGISTER PELANGGAN ================= */
+    
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'nama_cust' => ['required', 'string', 'max:100'],
+            'no_telp'   => ['required', 'regex:/^[0-9+\-\s]{8,20}$/'],
+            'email'     => ['required', 'email', 'max:100', 'unique:pelanggan,email'],
+            'password'  => ['required', 'string', 'min:6', 'confirmed'],
+        ], $this->pesan(), $this->atribut());
+
+        $pelanggan = Pelanggan::create($data); 
+
+        Auth::guard('pelanggan')->login($pelanggan);
+        $request->session()->regenerate();
+
+        return redirect()->route('pelanggan.beranda')
+            ->with('status', 'Akun berhasil dibuat. Selamat datang!');
+    }
+
+    /* ================= LOGOUT GABUNGAN ================= */
 
     public function logout(Request $request)
     {
-        Auth::guard('karyawan')->logout();
+        if (Auth::guard('karyawan')->check()) {
+            Auth::guard('karyawan')->logout();
+        } elseif (Auth::guard('pelanggan')->check()) {
+            Auth::guard('pelanggan')->logout();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -65,12 +129,7 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    /* ================= LUPA PASSWORD ================= */
-
-    public function showLupaPassword()
-    {
-        return view('karyawan.lupapassword');
-    }
+    /* ================= LUPA & RESET PASSWORD GABUNGAN ================= */
 
     public function kirimLinkReset(Request $request)
     {
@@ -78,28 +137,24 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ], $this->pesan(), $this->atribut());
 
-        $status = Password::broker('karyawan')->sendResetLink(
-            $request->only('email')
-        );
+        $email = $request->input('email');
+        
+        $broker = null;
+        if (Karyawan::where('email', $email)->exists()) {
+            $broker = 'karyawan';
+        } elseif (Pelanggan::where('email', $email)->exists()) {
+            $broker = 'pelanggan';
+        } else {
+            return back()->withErrors(['email' => 'Email tidak terdaftar.'])->onlyInput('email');
+        }
+
+        $status = Password::broker($broker)->sendResetLink(['email' => $email]);
 
         if ($status === Password::RESET_LINK_SENT) {
             return back()->with('status', 'Link reset password sudah dikirim ke email Anda.');
         }
 
-        $pesan = match ($status) {
-            Password::RESET_THROTTLED => 'Terlalu sering mencoba. Tunggu sebentar lalu coba lagi.',
-            default                   => 'Email tidak terdaftar.',
-        };
-
-        return back()->withErrors(['email' => $pesan])->onlyInput('email');
-    }
-
-    public function showResetPassword(Request $request, string $token)
-    {
-        return view('karyawan.resetpassword', [
-            'token' => $token,
-            'email' => $request->query('email'),
-        ]);
+        return back()->withErrors(['email' => 'Terlalu sering mencoba. Tunggu sebentar.'])->onlyInput('email');
     }
 
     public function resetPassword(Request $request)
@@ -110,28 +165,35 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ], $this->pesan(), $this->atribut());
 
-        $status = Password::broker('karyawan')->reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (Karyawan $karyawan, string $password) {
-                $karyawan->forceFill(['password' => $password]);
-                $karyawan->setRememberToken(Str::random(60));
-                $karyawan->save();
+        $email = $request->input('email');
 
-                event(new PasswordReset($karyawan));
+        $broker = null;
+        if (Karyawan::where('email', $email)->exists()) {
+            $broker = 'karyawan';
+        } elseif (Pelanggan::where('email', $email)->exists()) {
+            $broker = 'pelanggan';
+        } else {
+            return back()->withErrors(['email' => 'Email tidak terdaftar.'])->onlyInput('email');
+        }
+
+        $status = Password::broker($broker)->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, string $password) {
+                $user->forceFill(['password' => $password]);
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+                event(new PasswordReset($user));
             }
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')
-                ->with('status', 'Password berhasil diganti. Silakan login.');
+            return redirect()->route('login')->with('status', 'Password berhasil diganti. Silakan login.');
         }
 
-        return back()
-            ->withErrors(['email' => 'Link reset tidak valid atau sudah kedaluwarsa.'])
-            ->onlyInput('email');
+        return back()->withErrors(['email' => 'Link reset tidak valid atau sudah kedaluwarsa.'])->onlyInput('email');
     }
 
-    /* ================= BANTUAN ================= */
+    /* ================= HELPER PESAN & ATRIBUT ================= */
 
     private function pesan(): array
     {
@@ -140,18 +202,21 @@ class AuthController extends Controller
             'email'      => 'Format email tidak valid.',
             'min'        => ':attribute minimal :min karakter.',
             'max'        => ':attribute maksimal :max karakter.',
-            'unique'     => ':attribute sudah dipakai.',
+            'unique'     => ':attribute sudah terdaftar.',
             'confirmed'  => 'Konfirmasi password tidak sama.',
-            'alpha_dash' => 'Username hanya boleh huruf, angka, strip, dan underscore.',
+            'regex'      => 'Format :attribute tidak valid.',
+            'alpha_dash' => 'Hanya boleh huruf, angka, strip, dan underscore.',
         ];
     }
 
     private function atribut(): array
     {
         return [
-            'email'    => 'Email',
-            'username' => 'Username',
-            'password' => 'Password',
+            'login_id'  => 'Username / Email',
+            'nama_cust' => 'Nama lengkap',
+            'no_telp'   => 'No. telepon',
+            'email'     => 'Email',
+            'password'  => 'Password',
         ];
     }
 }

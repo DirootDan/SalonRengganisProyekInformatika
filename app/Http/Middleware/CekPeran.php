@@ -11,9 +11,15 @@ class CekPeran
 {
     public function handle(Request $request, Closure $next, string ...$peran): Response
     {
+        // 1. Cek apakah yang akses sama sekali bukan karyawan
+        if (! Auth::guard('karyawan')->check()) {
+            return redirect()->route('login')->withErrors(['login_id' => 'Silakan login sebagai karyawan untuk mengakses halaman ini.']);
+        }
+
         $user = Auth::guard('karyawan')->user();
 
-        if (! $user || ! in_array($user->role_jabatan, $peran, true)) {
+        // 2. Cek apakah jabatannya sesuai dengan peran yang diizinkan
+        if (! in_array($user->role_jabatan, $peran, true)) {
             abort(403, 'Anda tidak punya akses ke halaman ini.');
         }
 

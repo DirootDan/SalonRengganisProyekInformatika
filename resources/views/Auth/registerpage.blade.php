@@ -22,7 +22,8 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('pelanggan.register.proses') }}" id="loginForm">
+        <!-- Rute disesuaikan menjadi register.proses -->
+        <form method="POST" action="{{ route('register.proses') }}" id="loginForm">
             @csrf
 
             <label for="nama_cust" class="field-label">Nama Lengkap</label>
@@ -49,7 +50,8 @@
         </form>
 
         <div class="link-row">
-            <a href="{{ route('pelanggan.login') }}">Sudah punya akun? Login</a>
+            <!-- Rute disesuaikan menjadi login -->
+            <a href="{{ route('login') }}">Sudah punya akun? Login</a>
         </div>
     </div>
 

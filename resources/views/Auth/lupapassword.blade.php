@@ -12,7 +12,7 @@
     <div class="login-card">
         <div class="logo">🔑</div>
         <h2>Lupa Password</h2>
-        <p class="subtitle">Masukan email Anda, kami kirimkan link untuk membuat password baru</p>
+        <p class="subtitle">Masukkan email akun Anda (Karyawan/Pelanggan) untuk menerima link reset password</p>
 
         @if (session('status'))
             <div class="success-msg">✅ {{ session('status') }}</div>
@@ -22,7 +22,7 @@
             <div class="error-msg">⚠️ {{ $errors->first() }}</div>
         @endif
 
-        <form method="POST" action="{{ route('pelanggan.password.email') }}" id="loginForm">
+        <form method="POST" action="{{ route('password.email') }}" id="loginForm">
             @csrf
 
             <label for="email" class="field-label">Email</label>
@@ -33,7 +33,7 @@
         </form>
 
         <div class="link-row center">
-            <a href="{{ route('pelanggan.login') }}">Kembali ke Login</a>
+            <a href="{{ route('login') }}">Kembali ke Login</a>
         </div>
     </div>
 
