@@ -20,11 +20,13 @@ export default defineConfig({
                 'resources/css/pelanggan/dashboard.css',
                 'resources/css/pelanggan/layanan.css',
                 'resources/css/pelanggan/riwayat.css',
+                'resources/css/pelanggan/profil.css',
                 
                 // Pelanggan JS (Baru Ditambahkan)
                 'resources/js/pelanggan/beranda.js',
                 'resources/js/pelanggan/booking.js',
-                'resources/js/pelanggan/riwayat.js'
+                'resources/js/pelanggan/riwayat.js',
+                'resources/js/pelanggan/profil.js'
             ],
             refresh: true,
         }),

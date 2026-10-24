@@ -67,4 +67,7 @@ Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth:pelanggan')->gr
     Route::get('/booking', [PelangganController::class, 'booking'])->name('booking');
     Route::post('/booking', [PelangganController::class, 'simpanBooking'])->name('booking.simpan');
     Route::get('/riwayat', [PelangganController::class, 'riwayat'])->name('riwayat');
+    Route::get('/profil', [PelangganController::class, 'profil'])->name('profil');
+    Route::put('/profil', [PelangganController::class, 'updateProfil'])->name('profil.update');
+    Route::put('/profil/password', [PelangganController::class, 'updatePassword'])->name('profil.password');
 });

@@ -69,9 +69,47 @@ body {
 .akun { 
     display: flex; 
     align-items: center; 
-    gap: 16px; 
+    gap: 12px; 
     font-size: 14px; 
     font-weight: 500; 
+}
+
+.akun-profil {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 6px;
+    border-radius: 999px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1.5px solid transparent;
+}
+
+.akun-profil:hover {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+.akun-profil.aktif {
+    background: #fdf2f8;
+    border-color: #f9a8d4;
+    color: #db2777;
+}
+
+.akun-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #db2777, #ec4899);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(219, 39, 119, 0.25);
 }
 
 .btn-keluar { 

@@ -6,6 +6,7 @@
     <title>@yield('judul', 'Salon Rengganis')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/pelanggan/dashboard.css', 'resources/css/pelanggan/layanan.css', 'resources/css/pelanggan/riwayat.css'])
+    @stack('styles')
 </head>
 <body>
 
@@ -26,7 +27,10 @@
             </nav>
 
             <div class="akun">
-                <span>Halo, {{ auth('pelanggan')->user()->nama_cust }}</span>
+                <a href="{{ route('pelanggan.profil') }}" class="akun-profil {{ request()->routeIs('pelanggan.profil') ? 'aktif' : '' }}" title="Pengaturan Profil">
+                    <span class="akun-avatar">{{ strtoupper(substr(auth('pelanggan')->user()->nama_cust, 0, 1)) }}</span>
+                    <span>Halo, {{ auth('pelanggan')->user()->nama_cust }}</span>
+                </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
