@@ -144,6 +144,7 @@
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -235,4 +236,81 @@
     margin-top: 28px;
     display: flex;
     justify-content: flex-end;
+}
+
+/* ===== Foto Profil ===== */
+.profil-kartu-info [hidden] {
+    display: none !important;
+}
+
+.profil-avatar-besar {
+    overflow: hidden;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.foto-aksi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.foto-aksi form {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-foto {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 2px solid #fbcfe8;
+    background: #fdf2f8;
+    color: #db2777;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-foto:hover {
+    background: #fce7f3;
+}
+
+.btn-foto-simpan {
+    background: #db2777;
+    border-color: #db2777;
+    color: white;
+}
+
+.btn-foto-simpan:hover {
+    background: #be185d;
+}
+
+.btn-foto-hapus {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+}
+
+.foto-hint {
+    margin: 0;
+    font-size: 11px;
+    color: #9ca3af;
 }

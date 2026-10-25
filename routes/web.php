@@ -143,4 +143,8 @@ Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth:pelanggan')->gr
     Route::get('/profil', [PelangganController::class, 'profil'])->name('profil');
     Route::put('/profil', [PelangganController::class, 'updateProfil'])->name('profil.update');
     Route::put('/profil/password', [PelangganController::class, 'updatePassword'])->name('profil.password');
+
+    // Foto profil
+    Route::post('/profil/foto', [PelangganController::class, 'updateFoto'])->name('profil.foto');
+    Route::delete('/profil/foto', [PelangganController::class, 'hapusFoto'])->name('profil.foto.hapus');
 });

@@ -21,9 +21,39 @@
     <div class="profil-wrapper">
         <!-- Kartu Ringkasan Pengguna -->
         <aside class="profil-kartu-info">
+            <!-- Foto Profil (atau inisial jika belum punya foto) -->
             <div class="profil-avatar-besar" id="avatarInisial">
-                {{ strtoupper(substr($pelanggan->nama_cust, 0, 1)) }}
+                <img id="avatarImg" class="avatar-img" alt="Foto profil {{ $pelanggan->nama_cust }}"
+                     src="{{ $pelanggan->foto_profil ? asset('storage/' . $pelanggan->foto_profil) : '' }}"
+                     {{ $pelanggan->foto_profil ? '' : 'hidden' }}>
+                <span id="avatarHuruf" {{ $pelanggan->foto_profil ? 'hidden' : '' }}>
+                    {{ strtoupper(substr($pelanggan->nama_cust, 0, 1)) }}
+                </span>
             </div>
+
+            <!-- Aksi Foto Profil: tambah/ganti & hapus -->
+            <div class="foto-aksi">
+                <form method="POST" action="{{ route('pelanggan.profil.foto') }}" enctype="multipart/form-data" id="formFoto">
+                    @csrf
+                    <input type="file" name="foto_profil" id="inputFoto" accept="image/png,image/jpeg,image/webp" hidden>
+                    <button type="button" class="btn-foto" id="btnPilihFoto">
+                        📷 {{ $pelanggan->foto_profil ? 'Ganti Foto' : 'Tambah Foto' }}
+                    </button>
+                    <button type="submit" class="btn-foto btn-foto-simpan" id="btnSimpanFoto" hidden>Simpan Foto</button>
+                </form>
+
+                @if ($pelanggan->foto_profil)
+                    <form method="POST" action="{{ route('pelanggan.profil.foto.hapus') }}"
+                          onsubmit="return confirm('Hapus foto profil Anda?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-foto-hapus">Hapus Foto</button>
+                    </form>
+                @endif
+
+                <p class="foto-hint">JPG, PNG, atau WEBP. Maks. 2 MB.</p>
+            </div>
+
             <h2 class="profil-nama" id="previewNama">{{ $pelanggan->nama_cust }}</h2>
             <span class="profil-badge">Pelanggan Setia</span>
 

@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class PelangganController extends Controller
@@ -354,5 +355,51 @@ class PelangganController extends Controller
 
         return redirect()->route('pelanggan.profil')
             ->with('status', 'Kata sandi akun Anda berhasil diperbarui.');
+    }
+
+    /* ===== FOTO PROFIL ===== */
+
+    public function updateFoto(Request $request)
+    {
+        /** @var Pelanggan $pelanggan */
+        $pelanggan = Auth::guard('pelanggan')->user();
+
+        $request->validate([
+            'foto_profil' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'foto_profil.required' => 'Pilih foto terlebih dahulu.',
+            'foto_profil.image'    => 'File harus berupa gambar.',
+            'foto_profil.mimes'    => 'Format foto harus JPG, PNG, atau WEBP.',
+            'foto_profil.max'      => 'Ukuran foto maksimal 2 MB.',
+            'foto_profil.uploaded' => 'Foto gagal diunggah. Pastikan ukurannya tidak lebih dari 2 MB.',
+        ]);
+
+        // Hapus foto lama agar penyimpanan tidak menumpuk
+        if ($pelanggan->foto_profil) {
+            Storage::disk('public')->delete($pelanggan->foto_profil);
+        }
+
+        // Satu folder per akun: storage/app/public/foto-profil/{id_pelanggan}/namaacak.jpg
+        $pelanggan->foto_profil = $request->file('foto_profil')
+            ->store('foto-profil/' . $pelanggan->id_pelanggan, 'public');
+        $pelanggan->save();
+
+        return redirect()->route('pelanggan.profil')
+            ->with('status', 'Foto profil berhasil diperbarui.');
+    }
+
+    public function hapusFoto()
+    {
+        /** @var Pelanggan $pelanggan */
+        $pelanggan = Auth::guard('pelanggan')->user();
+
+        if ($pelanggan->foto_profil) {
+            Storage::disk('public')->delete($pelanggan->foto_profil);
+            $pelanggan->foto_profil = null;
+            $pelanggan->save();
+        }
+
+        return redirect()->route('pelanggan.profil')
+            ->with('status', 'Foto profil berhasil dihapus.');
     }
 }

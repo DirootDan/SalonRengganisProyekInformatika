@@ -26,14 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewNama = document.getElementById('previewNama');
     const previewEmail = document.getElementById('previewEmail');
     const previewTelp = document.getElementById('previewTelp');
-    const avatarInisial = document.getElementById('avatarInisial');
+    // Hanya huruf inisial yang diubah, agar foto profil (<img>) tidak ikut terhapus
+    const avatarHuruf = document.getElementById('avatarHuruf');
 
     if (inputNama && previewNama) {
         inputNama.addEventListener('input', (e) => {
             const val = e.target.value.trim();
             previewNama.textContent = val || 'Nama Pelanggan';
-            if (avatarInisial) {
-                avatarInisial.textContent = val ? val.charAt(0).toUpperCase() : '?';
+            if (avatarHuruf) {
+                avatarHuruf.textContent = val ? val.charAt(0).toUpperCase() : '?';
             }
         });
     }
@@ -97,5 +98,53 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pwBaru && pwKonfirmasi) {
         pwBaru.addEventListener('input', cekKecocokanPassword);
         pwKonfirmasi.addEventListener('input', cekKecocokanPassword);
+    }
+
+    // 5. Foto Profil: pilih file, validasi di browser, dan preview sebelum disimpan
+    const inputFoto = document.getElementById('inputFoto');
+    const btnPilihFoto = document.getElementById('btnPilihFoto');
+    const btnSimpanFoto = document.getElementById('btnSimpanFoto');
+    const avatarImg = document.getElementById('avatarImg');
+
+    if (inputFoto && btnPilihFoto && btnSimpanFoto && avatarImg && avatarHuruf) {
+        // Simpan kondisi awal supaya bisa dikembalikan jika file yang dipilih tidak valid
+        const srcAwal = avatarImg.getAttribute('src') || '';
+        const adaFotoAwal = !avatarImg.hidden;
+        let urlPreview = null;
+
+        const resetPreview = () => {
+            inputFoto.value = '';
+            avatarImg.setAttribute('src', srcAwal);
+            avatarImg.hidden = !adaFotoAwal;
+            avatarHuruf.hidden = adaFotoAwal;
+            btnSimpanFoto.hidden = true;
+        };
+
+        btnPilihFoto.addEventListener('click', () => inputFoto.click());
+
+        inputFoto.addEventListener('change', () => {
+            const file = inputFoto.files[0];
+            if (!file) return;
+
+            if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+                alert('Format foto harus JPG, PNG, atau WEBP.');
+                resetPreview();
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran foto maksimal 2 MB.');
+                resetPreview();
+                return;
+            }
+
+            if (urlPreview) URL.revokeObjectURL(urlPreview);
+            urlPreview = URL.createObjectURL(file);
+
+            avatarImg.src = urlPreview;
+            avatarImg.hidden = false;
+            avatarHuruf.hidden = true;
+            btnSimpanFoto.hidden = false;
+        });
     }
 });
