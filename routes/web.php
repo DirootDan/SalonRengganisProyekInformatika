@@ -80,7 +80,7 @@ Route::middleware(['auth:karyawan', 'peran:Manajer'])
         Route::post('/kebijakan-booking/buka-blokir/{idPelanggan}', [ManajerController::class, 'bukaBlokirPelanggan'])->name('kebijakan.buka');
     });
 
-// MODUL 3: Area Kasir (Murni Kasir)
+// MODUL 3: Area Kasir 
 Route::middleware(['auth:karyawan', 'peran:Kasir'])
     ->prefix('kasir')->name('kasir.')->group(function () {
         Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
