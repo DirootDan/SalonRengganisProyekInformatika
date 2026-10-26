@@ -32,7 +32,7 @@ Route::middleware('auth:karyawan')->get('/dashboard', function () {
     return redirect()->route($rute ?? 'login');
 })->name('dashboard');
 
-// MODUL 2: Area Manajer (Murni Manajer, tanpa mode kasir)
+// MODUL 2: Area Manajer 
 Route::middleware(['auth:karyawan', 'peran:Manajer'])
     ->prefix('manajer')->name('manajer.')->group(function () {
         Route::get('/dashboard', [ManajerController::class, 'dashboard'])->name('dashboard');

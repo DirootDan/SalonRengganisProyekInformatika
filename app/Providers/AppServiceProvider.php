@@ -15,13 +15,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Link reset password: pelanggan dan karyawan punya halaman berbeda
+        // Link reset password gabungan untuk pelanggan maupun karyawan
         ResetPassword::createUrlUsing(function ($user, string $token) {
-            $rute = $user instanceof Pelanggan
-                ? 'pelanggan.password.reset'
-                : 'password.reset';
-
-            return route($rute, [
+            return route('password.reset', [
                 'token' => $token,
                 'email' => $user->getEmailForPasswordReset(),
             ]);
