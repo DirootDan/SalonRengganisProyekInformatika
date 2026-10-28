@@ -135,7 +135,7 @@
                     @forelse ($reservasiBaru as $r)
                         <tr>
                             <td><strong>#{{ $r->id_reservasi }}</strong></td>
-                            <td>{{ $pelangganMap[$r->id_pelanggan] ?? 'Pelanggan' }}</td>
+                            <td>{{ $r->pelanggan?->nama_cust ?? 'Pelanggan' }}</td>
                             <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }})</td>
                             <td>{{ $r->layanan->pluck('nama_layanan')->join(', ') ?: '-' }}</td>
                             <td><strong>Rp {{ number_format($r->layanan->sum('harga_layanan'), 0, ',', '.') }}</strong></td>

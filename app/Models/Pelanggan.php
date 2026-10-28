@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -17,6 +18,7 @@ class Pelanggan extends Authenticatable
         'nama_cust',
         'no_telp',
         'email',
+        'foto_profil',
         'password',
         'jumlah_pelanggaran',
         'jumlah_kali_blokir',
@@ -58,6 +60,31 @@ class Pelanggan extends Authenticatable
         return $this->hasMany(NotifikasiPelanggan::class, 'id_pelanggan', 'id_pelanggan');
     }
 
+    /**
+     * Scope query untuk menyaring pelanggan yang sedang dalam masa blokir aktif (sementara maupun permanen).
+     */
+    public function scopeDiblokirAktif(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->where('diblokir_permanen', true)
+              ->orWhere(function (Builder $sub) {
+                  $sub->whereNotNull('diblokir_sampai')
+                      ->where('diblokir_sampai', '>', now());
+              });
+        });
+    }
+
+    /**
+     * Scope query dengan pengelompokan kondisi tertutup agar aman jika digabung dengan klausa where lainnya.
+     */
+    public function scopeMemilikiPelanggaran(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->where('jumlah_pelanggaran', '>', 0)
+              ->orWhere('diblokir_permanen', true);
+        });
+    }
+
     public function sedangDiblokir(): bool
     {
         if ($this->diblokir_permanen) {
@@ -95,15 +122,18 @@ class Pelanggan extends Authenticatable
      */
     public function hitungPelanggaranAktifDalamRentang(?int $rentangHari = null): int
     {
-        $rentang = $rentangHari ?? PengaturanKebijakan::aktif()->rentang_hari_pelanggaran ?? 90;
+        $rentang = $rentangHari ?? PengaturanKebijakan::aktif()->rentang_hari_pelanggaran ?? PengaturanKebijakan::DEFAULT_RENTANG_HARI;
         $batasTanggal = now()->subDays($rentang)->toDateString();
 
         $idResetTerakhir = (int) $this->riwayatPelanggaran()
-            ->whereIn('jenis', ['Reset Otomatis', 'Buka Blokir Manual'])
+            ->whereIn('jenis', [
+                RiwayatPelanggaran::JENIS_RESET_OTOMATIS,
+                RiwayatPelanggaran::JENIS_BUKA_MANUAL,
+            ])
             ->max('id_pelanggaran');
 
         return $this->riwayatPelanggaran()
-            ->where('jenis', 'Pelanggaran')
+            ->where('jenis', RiwayatPelanggaran::JENIS_PELANGGARAN)
             ->where('id_pelanggaran', '>', $idResetTerakhir)
             ->whereDate('tanggal', '>=', $batasTanggal)
             ->count();

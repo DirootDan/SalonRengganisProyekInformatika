@@ -118,7 +118,7 @@
                         <tr>
                             <td><strong>#INV-{{ str_pad($r->id_reservasi, 4, '0', STR_PAD_LEFT) }}</strong></td>
                             <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }})</td>
-                            <td>{{ $pelangganMap[$r->id_pelanggan] ?? 'Pelanggan' }}</td>
+                            <td>{{ $r->pelanggan?->nama_cust ?? 'Pelanggan' }}</td>
                             <td>{{ $r->layanan->pluck('nama_layanan')->join(', ') ?: '-' }}</td>
                             <td>{{ $r->transaksi->metode_bayar ?? '-' }}</td>
                             <td class="nominal-tebal">Rp {{ number_format($totalBaris, 0, ',', '.') }}</td>

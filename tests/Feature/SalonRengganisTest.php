@@ -479,4 +479,78 @@ class SalonRengganisTest extends TestCase
             ->post(route('stylist.layanan.selesai', [$reservasiP1->id_reservasi, $this->layananRambut->id_layanan]))
             ->assertRedirect();
     }
+
+    /**
+     * Skenario 7: Pengujian Controller Manajer Terpisah (SRP, Form Request, Route Model Binding, & LaporanService)
+     */
+    public function test_manajer_crud_dan_laporan_terpisah_berfungsi_penuh(): void
+    {
+        $manajer = $this->actingAs($this->manajer, 'karyawan');
+
+        // 1. DashboardController
+        $manajer->get(route('manajer.dashboard'))->assertStatus(200);
+
+        // 2. KaryawanController (store, update, destroy dengan Route Model Binding)
+        $manajer->post(route('manajer.karyawan.simpan'), [
+            'nama_staff'    => 'Staf Baru Uji',
+            'username'      => 'staf_uji_baru',
+            'email'         => 'staf.uji@salonrengganis.com',
+            'role_jabatan'  => 'Stylist',
+            'persen_komisi' => 12,
+            'password'      => 'password123',
+        ])->assertRedirect()->assertSessionHas('status');
+
+        $stafBaru = Karyawan::where('username', 'staf_uji_baru')->firstOrFail();
+
+        $manajer->put(route('manajer.karyawan.update', $stafBaru), [
+            'nama_staff'    => 'Staf Baru Diperbarui',
+            'username'      => 'staf_uji_baru',
+            'email'         => 'staf.uji@salonrengganis.com',
+            'role_jabatan'  => 'Stylist',
+            'persen_komisi' => 18,
+            'aktif'         => 1,
+        ])->assertRedirect()->assertSessionHas('status');
+
+        $this->assertEquals('Staf Baru Diperbarui', $stafBaru->fresh()->nama_staff);
+
+        $manajer->delete(route('manajer.karyawan.hapus', $stafBaru))
+            ->assertRedirect()
+            ->assertSessionHas('status');
+        $this->assertSoftDeleted('karyawan', ['id_karyawan' => $stafBaru->id_karyawan]);
+
+        // 3. LayananController & ProdukController
+        $manajer->put(route('manajer.layanan.update', $this->layananRambut), [
+            'nama_layanan'    => 'Potong & Cuci Blow',
+            'kategori'        => 'Rambut',
+            'jabatan_petugas' => 'Stylist',
+            'harga_layanan'   => 120000,
+        ])->assertRedirect()->assertSessionHas('status');
+        $this->assertEquals(120000, (float) $this->layananRambut->fresh()->harga_layanan);
+
+        $manajer->put(route('manajer.produk.update', $this->produkVitamin), [
+            'nama_produk'  => 'Vitamin Rambut Premium',
+            'stok_produk'  => 25,
+            'harga_produk' => 55000,
+        ])->assertRedirect()->assertSessionHas('status');
+        $this->assertEquals(25, $this->produkVitamin->fresh()->stok_produk);
+
+        // 4. PromoController (termasuk validasi Rule::when diskon persentase > 100%)
+        $manajer->post(route('manajer.promo.simpan'), [
+            'kode_promo'     => 'SALAH150',
+            'nama_promo'     => 'Promo Tidak Valid',
+            'tipe_diskon'    => 'Persentase',
+            'nilai_diskon'   => 150,
+            'min_transaksi'  => 50000,
+            'berlaku_sampai' => Carbon::now()->addMonth()->toDateString(),
+        ])->assertSessionHasErrors('nilai_diskon');
+
+        // 5. LaporanController & Ekspor CSV Streaming
+        $manajer->get(route('manajer.laporan'))->assertStatus(200);
+        $manajer->get(route('manajer.laporan.ekspor'))->assertStatus(200);
+
+        // 6. MetodePembayaranController, StrukController, & KebijakanBookingController
+        $manajer->get(route('manajer.metode'))->assertStatus(200);
+        $manajer->get(route('manajer.struk'))->assertStatus(200);
+        $manajer->get(route('manajer.kebijakan'))->assertStatus(200);
+    }
 }

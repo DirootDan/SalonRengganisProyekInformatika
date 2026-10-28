@@ -10,6 +10,12 @@ class RiwayatPelanggaran extends Model
     protected $table = 'riwayat_pelanggaran';
     protected $primaryKey = 'id_pelanggaran';
 
+    public const JENIS_PELANGGARAN    = 'Pelanggaran';
+    public const JENIS_BUKA_MANUAL    = 'Buka Blokir Manual';
+    public const JENIS_RESET_OTOMATIS = 'Reset Otomatis';
+
+    public const BATAS_LOG_TERBARU    = 25;
+
     protected $fillable = [
         'id_pelanggan',
         'id_reservasi',

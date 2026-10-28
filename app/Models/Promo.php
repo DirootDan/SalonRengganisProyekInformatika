@@ -12,6 +12,11 @@ class Promo extends Model
     protected $table = 'promo';
     protected $primaryKey = 'id_promo';
 
+    public const TIPE_PERSENTASE    = 'Persentase';
+    public const TIPE_NOMINAL       = 'Nominal';
+    public const DAFTAR_TIPE        = [self::TIPE_PERSENTASE, self::TIPE_NOMINAL];
+    public const MAKS_PERSEN_DISKON = 100;
+
     protected $fillable = [
         'kode_promo',
         'nama_promo',
@@ -52,8 +57,8 @@ class Promo extends Model
             return 0;
         }
 
-        if ($this->tipe_diskon === 'Persentase') {
-            return round($subtotal * ((float) $this->nilai_diskon / 100), 2);
+        if ($this->tipe_diskon === self::TIPE_PERSENTASE) {
+            return round($subtotal * ((float) $this->nilai_diskon / self::MAKS_PERSEN_DISKON), 2);
         }
 
         return min($subtotal, (float) $this->nilai_diskon);

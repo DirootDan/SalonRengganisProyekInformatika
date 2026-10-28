@@ -2,7 +2,15 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KasirController;
-use App\Http\Controllers\ManajerController;
+use App\Http\Controllers\Manajer\DashboardController as ManajerDashboardController;
+use App\Http\Controllers\Manajer\KaryawanController as ManajerKaryawanController;
+use App\Http\Controllers\Manajer\KebijakanBookingController as ManajerKebijakanBookingController;
+use App\Http\Controllers\Manajer\LaporanController as ManajerLaporanController;
+use App\Http\Controllers\Manajer\LayananController as ManajerLayananController;
+use App\Http\Controllers\Manajer\MetodePembayaranController as ManajerMetodePembayaranController;
+use App\Http\Controllers\Manajer\ProdukController as ManajerProdukController;
+use App\Http\Controllers\Manajer\PromoController as ManajerPromoController;
+use App\Http\Controllers\Manajer\StrukController as ManajerStrukController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PetugasController;
 use Illuminate\Support\Facades\Auth;
@@ -32,52 +40,52 @@ Route::middleware('auth:karyawan')->get('/dashboard', function () {
     return redirect()->route($rute ?? 'login');
 })->name('dashboard');
 
-// MODUL 2: Area Manajer 
+// MODUL 2: Area Manajer (Dipecah per tanggung jawab / Single Responsibility Principle)
 Route::middleware(['auth:karyawan', 'peran:Manajer'])
     ->prefix('manajer')->name('manajer.')->group(function () {
-        Route::get('/dashboard', [ManajerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [ManajerDashboardController::class, 'index'])->name('dashboard');
 
-        // CRUD Karyawan
-        Route::get('/karyawan', [ManajerController::class, 'karyawan'])->name('karyawan');
-        Route::post('/karyawan', [ManajerController::class, 'simpanKaryawan'])->name('karyawan.simpan');
-        Route::put('/karyawan/{id}', [ManajerController::class, 'updateKaryawan'])->name('karyawan.update');
-        Route::delete('/karyawan/{id}', [ManajerController::class, 'hapusKaryawan'])->name('karyawan.hapus');
+        // CRUD Karyawan (Route Model Binding: {karyawan})
+        Route::get('/karyawan', [ManajerKaryawanController::class, 'index'])->name('karyawan');
+        Route::post('/karyawan', [ManajerKaryawanController::class, 'store'])->name('karyawan.simpan');
+        Route::put('/karyawan/{karyawan}', [ManajerKaryawanController::class, 'update'])->name('karyawan.update');
+        Route::delete('/karyawan/{karyawan}', [ManajerKaryawanController::class, 'destroy'])->name('karyawan.hapus');
 
-        // CRUD Layanan
-        Route::get('/layanan', [ManajerController::class, 'layanan'])->name('layanan');
-        Route::post('/layanan', [ManajerController::class, 'simpanLayanan'])->name('layanan.simpan');
-        Route::put('/layanan/{id}', [ManajerController::class, 'updateLayanan'])->name('layanan.update');
-        Route::delete('/layanan/{id}', [ManajerController::class, 'hapusLayanan'])->name('layanan.hapus');
+        // CRUD Layanan (Route Model Binding: {layanan})
+        Route::get('/layanan', [ManajerLayananController::class, 'index'])->name('layanan');
+        Route::post('/layanan', [ManajerLayananController::class, 'store'])->name('layanan.simpan');
+        Route::put('/layanan/{layanan}', [ManajerLayananController::class, 'update'])->name('layanan.update');
+        Route::delete('/layanan/{layanan}', [ManajerLayananController::class, 'destroy'])->name('layanan.hapus');
 
-        // CRUD Produk
-        Route::get('/produk', [ManajerController::class, 'produk'])->name('produk');
-        Route::post('/produk', [ManajerController::class, 'simpanProduk'])->name('produk.simpan');
-        Route::put('/produk/{id}', [ManajerController::class, 'updateProduk'])->name('produk.update');
-        Route::delete('/produk/{id}', [ManajerController::class, 'hapusProduk'])->name('produk.hapus');
+        // CRUD Produk (Route Model Binding: {produk})
+        Route::get('/produk', [ManajerProdukController::class, 'index'])->name('produk');
+        Route::post('/produk', [ManajerProdukController::class, 'store'])->name('produk.simpan');
+        Route::put('/produk/{produk}', [ManajerProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/produk/{produk}', [ManajerProdukController::class, 'destroy'])->name('produk.hapus');
 
-        // CRUD Promo
-        Route::get('/promo', [ManajerController::class, 'promo'])->name('promo');
-        Route::post('/promo', [ManajerController::class, 'simpanPromo'])->name('promo.simpan');
-        Route::put('/promo/{id}', [ManajerController::class, 'updatePromo'])->name('promo.update');
-        Route::delete('/promo/{id}', [ManajerController::class, 'hapusPromo'])->name('promo.hapus');
+        // CRUD Promo (Route Model Binding: {promo})
+        Route::get('/promo', [ManajerPromoController::class, 'index'])->name('promo');
+        Route::post('/promo', [ManajerPromoController::class, 'store'])->name('promo.simpan');
+        Route::put('/promo/{promo}', [ManajerPromoController::class, 'update'])->name('promo.update');
+        Route::delete('/promo/{promo}', [ManajerPromoController::class, 'destroy'])->name('promo.hapus');
 
-        // Laporan & Ekspor
-        Route::get('/laporan', [ManajerController::class, 'laporan'])->name('laporan');
-        Route::get('/laporan/ekspor', [ManajerController::class, 'eksporLaporanCsv'])->name('laporan.ekspor');
+        // Laporan & Ekspor CSV
+        Route::get('/laporan', [ManajerLaporanController::class, 'index'])->name('laporan');
+        Route::get('/laporan/ekspor', [ManajerLaporanController::class, 'eksporCsv'])->name('laporan.ekspor');
 
-        // Metode Pembayaran & Struk Nota
-        Route::get('/metode-pembayaran', [ManajerController::class, 'metodePembayaran'])->name('metode');
-        Route::post('/metode-pembayaran', [ManajerController::class, 'simpanMetode'])->name('metode.simpan');
-        Route::put('/metode-pembayaran/{id}', [ManajerController::class, 'updateMetode'])->name('metode.update');
-        Route::patch('/metode-pembayaran/{id}/toggle', [ManajerController::class, 'toggleMetode'])->name('metode.toggle');
+        // Metode Pembayaran & Struk Nota (Route Model Binding: {metode})
+        Route::get('/metode-pembayaran', [ManajerMetodePembayaranController::class, 'index'])->name('metode');
+        Route::post('/metode-pembayaran', [ManajerMetodePembayaranController::class, 'store'])->name('metode.simpan');
+        Route::put('/metode-pembayaran/{metode}', [ManajerMetodePembayaranController::class, 'update'])->name('metode.update');
+        Route::patch('/metode-pembayaran/{metode}/toggle', [ManajerMetodePembayaranController::class, 'toggle'])->name('metode.toggle');
 
-        Route::get('/struk', [ManajerController::class, 'struk'])->name('struk');
-        Route::put('/struk', [ManajerController::class, 'simpanStruk'])->name('struk.simpan');
+        Route::get('/struk', [ManajerStrukController::class, 'edit'])->name('struk');
+        Route::put('/struk', [ManajerStrukController::class, 'update'])->name('struk.simpan');
 
-        // Pengaturan Kebijakan Booking & Buka Blokir Pelanggan
-        Route::get('/kebijakan-booking', [ManajerController::class, 'kebijakan'])->name('kebijakan');
-        Route::put('/kebijakan-booking', [ManajerController::class, 'simpanKebijakan'])->name('kebijakan.simpan');
-        Route::post('/kebijakan-booking/buka-blokir/{idPelanggan}', [ManajerController::class, 'bukaBlokirPelanggan'])->name('kebijakan.buka');
+        // Pengaturan Kebijakan Booking & Buka Blokir Pelanggan (Route Model Binding: {pelanggan})
+        Route::get('/kebijakan-booking', [ManajerKebijakanBookingController::class, 'edit'])->name('kebijakan');
+        Route::put('/kebijakan-booking', [ManajerKebijakanBookingController::class, 'update'])->name('kebijakan.simpan');
+        Route::post('/kebijakan-booking/buka-blokir/{pelanggan}', [ManajerKebijakanBookingController::class, 'bukaBlokir'])->name('kebijakan.buka');
     });
 
 // MODUL 3: Area Kasir 

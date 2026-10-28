@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Karyawan extends Authenticatable
 {
@@ -12,6 +14,18 @@ class Karyawan extends Authenticatable
 
     protected $table = 'karyawan';
     protected $primaryKey = 'id_karyawan';
+
+    public const JABATAN_MANAJER   = 'Manajer';
+    public const JABATAN_KASIR     = 'Kasir';
+    public const JABATAN_STYLIST   = 'Stylist';
+    public const JABATAN_THERAPIST = 'Therapist';
+
+    public const DAFTAR_JABATAN = [
+        self::JABATAN_MANAJER,
+        self::JABATAN_KASIR,
+        self::JABATAN_STYLIST,
+        self::JABATAN_THERAPIST,
+    ];
 
     protected $fillable = [
         'nama_staff',
@@ -28,9 +42,9 @@ class Karyawan extends Authenticatable
     {
         static::creating(function (Karyawan $karyawan) {
             if (empty($karyawan->username)) {
-                $base = !empty($karyawan->email)
+                $base = ! empty($karyawan->email)
                     ? explode('@', $karyawan->email)[0]
-                    : \Illuminate\Support\Str::slug($karyawan->nama_staff, '_');
+                    : Str::slug($karyawan->nama_staff, '_');
                 $karyawan->username = $base . '_' . substr(uniqid(), -4);
             }
         });
@@ -63,11 +77,37 @@ class Karyawan extends Authenticatable
     public function rutePeran(): ?string
     {
         return match ($this->role_jabatan) {
-            'Manajer'   => 'manajer.dashboard',
-            'Kasir'     => 'kasir.dashboard',
-            'Stylist'   => 'stylist.dashboard',
-            'Therapist' => 'therapist.dashboard',
-            default     => null,
+            self::JABATAN_MANAJER   => 'manajer.dashboard',
+            self::JABATAN_KASIR     => 'kasir.dashboard',
+            self::JABATAN_STYLIST   => 'stylist.dashboard',
+            self::JABATAN_THERAPIST => 'therapist.dashboard',
+            default                 => null,
         };
+    }
+
+    /**
+     * Hitung jumlah reservasi yang masih berjalan dan ditugaskan pada karyawan ini
+     * agar manajer mendapat peringatan pengalihan tugas sebelum menonaktifkan akun.
+     */
+    public function jumlahBookingAktif(): int
+    {
+        return DB::table('detail_reservasi')
+            ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
+            ->where('detail_reservasi.id_karyawan', $this->id_karyawan)
+            ->whereIn('reservasi.status', [Reservasi::STATUS_MENUNGGU, Reservasi::STATUS_DITERIMA])
+            ->count();
+    }
+
+    /**
+     * Nonaktifkan dan arsipkan karyawan tanpa merusak integritas riwayat transaksi masa lalu.
+     */
+    public function nonaktifkanDanArsipkan(): int
+    {
+        $bookingAktif = $this->jumlahBookingAktif();
+
+        $this->update(['aktif' => false]);
+        $this->delete();
+
+        return $bookingAktif;
     }
 }
