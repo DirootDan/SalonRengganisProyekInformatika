@@ -552,5 +552,12 @@ class SalonRengganisTest extends TestCase
         $manajer->get(route('manajer.metode'))->assertStatus(200);
         $manajer->get(route('manajer.struk'))->assertStatus(200);
         $manajer->get(route('manajer.kebijakan'))->assertStatus(200);
+        $manajer->put(route('manajer.kebijakan.simpan'), [
+            'batas_pelanggaran'    => 5,
+            'lama_blokir_hari'     => 7,
+            'toleransi_bayar_hari' => 1,
+            'batas_batal_jam'      => 3,
+            'kebijakan_aktif'      => 1,
+        ])->assertRedirect()->assertSessionHas('status');
     }
 }

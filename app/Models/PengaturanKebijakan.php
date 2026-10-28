@@ -8,13 +8,14 @@ class PengaturanKebijakan extends Model
 {
     protected $table = 'pengaturan_kebijakan';
 
-    public const DEFAULT_BATAS_PELANGGARAN    = 5;
-    public const DEFAULT_RENTANG_HARI         = 90;
-    public const DEFAULT_BLOKIR_PERTAMA_HARI  = 7;
-    public const DEFAULT_BLOKIR_KEDUA_HARI    = 30;
-    public const DEFAULT_BLOKIR_KETIGA_TETAP  = true;
-    public const DEFAULT_TOLERANSI_BAYAR_HARI = 1;
-    public const DEFAULT_BATAS_BATAL_JAM      = 3;
+    public const DEFAULT_BATAS_PELANGGARAN      = 5;
+    public const DEFAULT_RENTANG_HARI           = 90;
+    public const DEFAULT_BLOKIR_PERTAMA_HARI    = 7;
+    public const DEFAULT_BLOKIR_KEDUA_HARI      = 30;
+    public const DEFAULT_BLOKIR_KETIGA_PERMANEN = true;
+    public const DEFAULT_BLOKIR_KETIGA_TETAP    = true;
+    public const DEFAULT_TOLERANSI_BAYAR_HARI   = 1;
+    public const DEFAULT_BATAS_BATAL_JAM        = 3;
 
     protected $fillable = [
         'batas_pelanggaran',

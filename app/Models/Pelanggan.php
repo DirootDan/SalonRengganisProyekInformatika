@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static Builder diblokirAktif()
+ * @method static Builder memilikiPelanggaran()
+ */
 class Pelanggan extends Authenticatable
 {
     use Notifiable;
