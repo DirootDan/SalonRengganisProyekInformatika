@@ -21,15 +21,25 @@ class SalonRengganisTest extends TestCase
     use RefreshDatabase;
 
     protected Layanan $layananRambut;
+
     protected Layanan $layananWajah;
+
     protected Produk $produkVitamin;
+
     protected Promo $promoDiskon;
+
     protected Karyawan $manajer;
+
     protected Karyawan $kasir;
+
     protected Karyawan $stylist1;
+
     protected Karyawan $stylist2;
+
     protected Karyawan $therapist1;
+
     protected Pelanggan $pelanggan1;
+
     protected Pelanggan $pelanggan2;
 
     protected function setUp(): void
@@ -37,106 +47,106 @@ class SalonRengganisTest extends TestCase
         parent::setUp();
 
         $this->manajer = Karyawan::create([
-            'nama_staff'    => 'Budi Manajer',
-            'jabatan'       => 'Manajer',
+            'nama_staff' => 'Budi Manajer',
+            'jabatan' => 'Manajer',
             'persen_komisi' => 0,
-            'aktif'         => true,
-            'email'         => 'manajer@test.com',
-            'password'      => 'password123',
+            'aktif' => true,
+            'email' => 'manajer@test.com',
+            'password' => 'password123',
         ]);
 
         $this->kasir = Karyawan::create([
-            'nama_staff'    => 'Ayu Kasir',
-            'jabatan'       => 'Kasir',
+            'nama_staff' => 'Ayu Kasir',
+            'jabatan' => 'Kasir',
             'persen_komisi' => 0,
-            'aktif'         => true,
-            'email'         => 'kasir@test.com',
-            'password'      => 'password123',
+            'aktif' => true,
+            'email' => 'kasir@test.com',
+            'password' => 'password123',
         ]);
 
         $this->stylist1 = Karyawan::create([
-            'nama_staff'    => 'Sinta Stylist',
-            'jabatan'       => 'Stylist',
+            'nama_staff' => 'Sinta Stylist',
+            'jabatan' => 'Stylist',
             'persen_komisi' => 15,
-            'aktif'         => true,
-            'email'         => 'sinta@test.com',
-            'password'      => 'password123',
+            'aktif' => true,
+            'email' => 'sinta@test.com',
+            'password' => 'password123',
         ]);
 
         $this->stylist2 = Karyawan::create([
-            'nama_staff'    => 'Nadia Stylist',
-            'jabatan'       => 'Stylist',
+            'nama_staff' => 'Nadia Stylist',
+            'jabatan' => 'Stylist',
             'persen_komisi' => 15,
-            'aktif'         => true,
-            'email'         => 'nadia@test.com',
-            'password'      => 'password123',
+            'aktif' => true,
+            'email' => 'nadia@test.com',
+            'password' => 'password123',
         ]);
 
         $this->therapist1 = Karyawan::create([
-            'nama_staff'    => 'Laras Therapist',
-            'jabatan'       => 'Therapist',
+            'nama_staff' => 'Laras Therapist',
+            'jabatan' => 'Therapist',
             'persen_komisi' => 20,
-            'aktif'         => true,
-            'email'         => 'laras@test.com',
-            'password'      => 'password123',
+            'aktif' => true,
+            'email' => 'laras@test.com',
+            'password' => 'password123',
         ]);
 
         $this->layananRambut = Layanan::create([
-            'nama_layanan'    => 'Potong & Blow Rambut',
-            'kategori'        => 'Rambut',
+            'nama_layanan' => 'Potong & Blow Rambut',
+            'kategori' => 'Rambut',
             'jabatan_petugas' => 'Stylist',
-            'harga_layanan'   => 100000,
+            'harga_layanan' => 100000,
         ]);
 
         $this->layananWajah = Layanan::create([
-            'nama_layanan'    => 'Facial Glowing',
-            'kategori'        => 'Perawatan',
+            'nama_layanan' => 'Facial Glowing',
+            'kategori' => 'Perawatan',
             'jabatan_petugas' => 'Therapist',
-            'harga_layanan'   => 120000,
+            'harga_layanan' => 120000,
         ]);
 
         $this->produkVitamin = Produk::create([
-            'nama_produk'  => 'Serum Vitamin Rambut',
-            'stok_produk'  => 10,
+            'nama_produk' => 'Serum Vitamin Rambut',
+            'stok_produk' => 10,
             'harga_produk' => 50000,
         ]);
 
         $this->promoDiskon = Promo::create([
-            'kode_promo'     => 'DISKON10',
-            'nama_promo'     => 'Diskon 10 Persen',
-            'tipe_diskon'    => 'Persentase',
-            'nilai_diskon'   => 10,
-            'min_transaksi'  => 100000,
-            'berlaku_mulai'  => now()->subDay()->toDateString(),
+            'kode_promo' => 'DISKON10',
+            'nama_promo' => 'Diskon 10 Persen',
+            'tipe_diskon' => 'Persentase',
+            'nilai_diskon' => 10,
+            'min_transaksi' => 100000,
+            'berlaku_mulai' => now()->subDay()->toDateString(),
             'berlaku_sampai' => now()->addMonth()->toDateString(),
-            'aktif'          => true,
+            'aktif' => true,
         ]);
 
         MetodePembayaran::create([
-            'nama_metode'    => 'Tunai (Cash)',
-            'kategori'       => 'Tunai',
+            'nama_metode' => 'Tunai (Cash)',
+            'kategori' => 'Tunai',
             'nomor_rekening' => 'Kasir',
-            'atas_nama'      => 'Salon Rengganis',
-            'ikon'           => '💵',
-            'aktif'          => true,
+            'atas_nama' => 'Salon Rengganis',
+            'ikon' => '💵',
+            'aktif' => true,
         ]);
 
         $this->pelanggan1 = Pelanggan::create([
-            'nama_cust'          => 'Rina Pelanggan',
-            'no_telp'            => '0812111111',
-            'email'              => 'rina@test.com',
-            'password'           => 'password123',
+            'nama_cust' => 'Rina Pelanggan',
+            'no_telp' => '0812111111',
+            'email' => 'rina@test.com',
+            'password' => 'password123',
             'jumlah_pelanggaran' => 0,
-            'diblokir_sampai'    => null,
+            'diblokir_sampai' => null,
         ]);
 
         $this->pelanggan2 = Pelanggan::create([
-            'nama_cust'          => 'Dewi Pelanggan',
-            'no_telp'            => '0812222222',
-            'email'              => 'dewi@test.com',
-            'password'           => 'password123',
+            'nama_cust' => 'Dewi Pelanggan',
+            'no_telp' => '0812222222',
+            'email' => 'dewi@test.com',
+            'password' => 'password123',
             'jumlah_pelanggaran' => 0,
-            'diblokir_sampai'    => null,
+            'diblokir_sampai' => null,
         ]);
     }
 
@@ -151,8 +161,8 @@ class SalonRengganisTest extends TestCase
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => $besok,
                 'jam_booking' => '10:00',
-                'layanan'     => [$this->layananRambut->id_layanan],
-                'petugas'     => [
+                'layanan' => [$this->layananRambut->id_layanan],
+                'petugas' => [
                     $this->layananRambut->id_layanan => $this->stylist1->id_karyawan,
                 ],
             ]);
@@ -166,8 +176,8 @@ class SalonRengganisTest extends TestCase
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => $besok,
                 'jam_booking' => '10:00',
-                'layanan'     => [$this->layananRambut->id_layanan],
-                'petugas'     => [
+                'layanan' => [$this->layananRambut->id_layanan],
+                'petugas' => [
                     $this->layananRambut->id_layanan => $this->stylist1->id_karyawan,
                 ],
             ]);
@@ -183,11 +193,11 @@ class SalonRengganisTest extends TestCase
     public function test_state_machine_menolak_transisi_status_tidak_sah(): void
     {
         $reservasi = Reservasi::create([
-            'tgl_booking'  => Carbon::tomorrow()->toDateString(),
-            'jam_booking'  => '11:00',
-            'status'       => Reservasi::STATUS_MENUNGGU,
+            'tgl_booking' => Carbon::tomorrow()->toDateString(),
+            'jam_booking' => '11:00',
+            'status' => Reservasi::STATUS_MENUNGGU,
             'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-            'id_karyawan'  => $this->stylist1->id_karyawan,
+            'id_karyawan' => $this->stylist1->id_karyawan,
         ]);
 
         $this->assertTrue($reservasi->bolehTransisiKe(Reservasi::STATUS_DITERIMA));
@@ -210,32 +220,32 @@ class SalonRengganisTest extends TestCase
     {
         $kebijakan = PengaturanKebijakan::aktif();
         $kebijakan->update([
-            'batas_pelanggaran'        => 5,
+            'batas_pelanggaran' => 5,
             'rentang_hari_pelanggaran' => 90,
-            'lama_blokir_hari'         => 7,
-            'lama_blokir_kedua_hari'   => 30,
-            'blokir_ketiga_permanen'   => true,
-            'toleransi_bayar_hari'     => 1,
-            'kebijakan_aktif'          => true,
+            'lama_blokir_hari' => 7,
+            'lama_blokir_kedua_hari' => 30,
+            'blokir_ketiga_permanen' => true,
+            'toleransi_bayar_hari' => 1,
+            'kebijakan_aktif' => true,
         ]);
 
         // 1 pelanggaran lama di luar 90 hari (100 hari lalu) -> tidak boleh ikut dihitung dalam 90 hari terakhir
         RiwayatPelanggaran::create([
             'id_pelanggan' => $this->pelanggan1->id_pelanggan,
             'id_reservasi' => null,
-            'jenis'        => 'Pelanggaran',
-            'tanggal'      => Carbon::today()->subDays(100)->toDateString(),
-            'keterangan'   => 'Pelanggaran lama > 90 hari.',
+            'jenis' => 'Pelanggaran',
+            'tanggal' => Carbon::today()->subDays(100)->toDateString(),
+            'keterangan' => 'Pelanggaran lama > 90 hari.',
         ]);
 
         // Buat 4 reservasi Diterima 3 hari lalu -> harus menghasilkan 4 pelanggaran aktif (belum terblokir karena pelanggaran 100 hari lalu sudah kedaluwarsa)
         for ($i = 0; $i < 4; $i++) {
             Reservasi::create([
-                'tgl_booking'  => Carbon::today()->subDays(3)->toDateString(),
-                'jam_booking'  => sprintf('%02d:00', 9 + $i),
-                'status'       => Reservasi::STATUS_DITERIMA,
+                'tgl_booking' => Carbon::today()->subDays(3)->toDateString(),
+                'jam_booking' => sprintf('%02d:00', 9 + $i),
+                'status' => Reservasi::STATUS_DITERIMA,
                 'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-                'id_karyawan'  => $this->stylist1->id_karyawan,
+                'id_karyawan' => $this->stylist1->id_karyawan,
             ]);
         }
 
@@ -246,11 +256,11 @@ class SalonRengganisTest extends TestCase
 
         // Tambah pelanggaran ke-5 -> memicu BLOKIR TAHAP 1 (7 hari)
         Reservasi::create([
-            'tgl_booking'  => Carbon::today()->subDays(2)->toDateString(),
-            'jam_booking'  => '15:00',
-            'status'       => Reservasi::STATUS_DITERIMA,
+            'tgl_booking' => Carbon::today()->subDays(2)->toDateString(),
+            'jam_booking' => '15:00',
+            'status' => Reservasi::STATUS_DITERIMA,
             'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-            'id_karyawan'  => $this->stylist1->id_karyawan,
+            'id_karyawan' => $this->stylist1->id_karyawan,
         ]);
 
         $this->artisan('booking:evaluasi-hangus')->assertExitCode(0);
@@ -265,8 +275,8 @@ class SalonRengganisTest extends TestCase
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => Carbon::tomorrow()->toDateString(),
                 'jam_booking' => '13:00',
-                'layanan'     => [$this->layananRambut->id_layanan],
-                'petugas'     => [$this->layananRambut->id_layanan => $this->stylist1->id_karyawan],
+                'layanan' => [$this->layananRambut->id_layanan],
+                'petugas' => [$this->layananRambut->id_layanan => $this->stylist1->id_karyawan],
             ])
             ->assertRedirect(route('pelanggan.booking'))
             ->assertSessionHasErrors('blokir');
@@ -278,11 +288,11 @@ class SalonRengganisTest extends TestCase
 
         for ($i = 0; $i < 5; $i++) {
             Reservasi::create([
-                'tgl_booking'  => Carbon::today()->subDays(4)->toDateString(),
-                'jam_booking'  => sprintf('%02d:00', 9 + $i),
-                'status'       => Reservasi::STATUS_DITERIMA,
+                'tgl_booking' => Carbon::today()->subDays(4)->toDateString(),
+                'jam_booking' => sprintf('%02d:00', 9 + $i),
+                'status' => Reservasi::STATUS_DITERIMA,
                 'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-                'id_karyawan'  => $this->stylist1->id_karyawan,
+                'id_karyawan' => $this->stylist1->id_karyawan,
             ]);
         }
 
@@ -298,11 +308,11 @@ class SalonRengganisTest extends TestCase
 
         for ($i = 0; $i < 5; $i++) {
             Reservasi::create([
-                'tgl_booking'  => Carbon::today()->subDays(5)->toDateString(),
-                'jam_booking'  => sprintf('%02d:00', 9 + $i),
-                'status'       => Reservasi::STATUS_DITERIMA,
+                'tgl_booking' => Carbon::today()->subDays(5)->toDateString(),
+                'jam_booking' => sprintf('%02d:00', 9 + $i),
+                'status' => Reservasi::STATUS_DITERIMA,
                 'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-                'id_karyawan'  => $this->stylist1->id_karyawan,
+                'id_karyawan' => $this->stylist1->id_karyawan,
             ]);
         }
 
@@ -322,8 +332,8 @@ class SalonRengganisTest extends TestCase
         $this->pelanggan1->update([
             'jumlah_pelanggaran' => 5,
             'jumlah_kali_blokir' => 3,
-            'diblokir_permanen'  => true,
-            'diblokir_sampai'    => null,
+            'diblokir_permanen' => true,
+            'diblokir_sampai' => null,
         ]);
 
         $respon = $this->actingAs($this->manajer, 'karyawan')
@@ -342,7 +352,7 @@ class SalonRengganisTest extends TestCase
 
         $this->assertDatabaseHas('riwayat_pelanggaran', [
             'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-            'jenis'        => 'Buka Blokir Manual',
+            'jenis' => 'Buka Blokir Manual',
         ]);
 
         // Pastikan pelanggan kini dapat memesan layanan kembali
@@ -350,8 +360,8 @@ class SalonRengganisTest extends TestCase
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => Carbon::tomorrow()->toDateString(),
                 'jam_booking' => '14:00',
-                'layanan'     => [$this->layananRambut->id_layanan],
-                'petugas'     => [
+                'layanan' => [$this->layananRambut->id_layanan],
+                'petugas' => [
                     $this->layananRambut->id_layanan => $this->stylist1->id_karyawan,
                 ],
             ]);
@@ -371,8 +381,8 @@ class SalonRengganisTest extends TestCase
             ->post(route('pelanggan.booking.simpan'), [
                 'tgl_booking' => $besok,
                 'jam_booking' => '11:00',
-                'layanan'     => [$this->layananRambut->id_layanan],
-                'petugas'     => [$this->layananRambut->id_layanan => $this->stylist1->id_karyawan],
+                'layanan' => [$this->layananRambut->id_layanan],
+                'petugas' => [$this->layananRambut->id_layanan => $this->stylist1->id_karyawan],
             ])
             ->assertRedirect(route('pelanggan.riwayat'));
 
@@ -397,7 +407,7 @@ class SalonRengganisTest extends TestCase
             ->post(route('kasir.bayar'), [
                 'id_reservasi' => $reservasi->id_reservasi,
                 'metode_bayar' => 'Tunai (Cash)',
-                'kode_promo'   => 'DISKON10',
+                'kode_promo' => 'DISKON10',
                 'nominal_uang' => 150000,
                 'produk_items' => [
                     $this->produkVitamin->id_produk => 1,
@@ -409,9 +419,9 @@ class SalonRengganisTest extends TestCase
         $this->assertEquals(9, $this->produkVitamin->fresh()->stok_produk);
         $this->assertDatabaseHas('transaksi', [
             'id_reservasi' => $reservasi->id_reservasi,
-            'diskon'       => 15000,
-            'total_bayar'  => 135000,
-            'kembalian'    => 15000,
+            'diskon' => 15000,
+            'total_bayar' => 135000,
+            'kembalian' => 15000,
         ]);
 
         // 5. Percobaan pembayaran ganda pada reservasi yang sama wajib ditolak
@@ -448,17 +458,17 @@ class SalonRengganisTest extends TestCase
             ->assertStatus(403);
 
         $reservasiP1 = Reservasi::create([
-            'tgl_booking'  => Carbon::now()->addDays(2)->toDateString(),
-            'jam_booking'  => '15:00',
-            'status'       => Reservasi::STATUS_MENUNGGU,
+            'tgl_booking' => Carbon::now()->addDays(2)->toDateString(),
+            'jam_booking' => '15:00',
+            'status' => Reservasi::STATUS_MENUNGGU,
             'id_pelanggan' => $this->pelanggan1->id_pelanggan,
-            'id_karyawan'  => $this->stylist1->id_karyawan,
+            'id_karyawan' => $this->stylist1->id_karyawan,
         ]);
 
         $reservasiP1->layanan()->attach($this->layananRambut->id_layanan, [
-            'id_karyawan'    => $this->stylist1->id_karyawan,
+            'id_karyawan' => $this->stylist1->id_karyawan,
             'harga_saat_ini' => 100000,
-            'persen_komisi'  => 15,
+            'persen_komisi' => 15,
             'nominal_komisi' => 15000,
             'status_layanan' => 'Menunggu',
         ]);
@@ -492,23 +502,23 @@ class SalonRengganisTest extends TestCase
 
         // 2. KaryawanController (store, update, destroy dengan Route Model Binding)
         $manajer->post(route('manajer.karyawan.simpan'), [
-            'nama_staff'    => 'Staf Baru Uji',
-            'username'      => 'staf_uji_baru',
-            'email'         => 'staf.uji@salonrengganis.com',
-            'role_jabatan'  => 'Stylist',
+            'nama_staff' => 'Staf Baru Uji',
+            'username' => 'staf_uji_baru',
+            'email' => 'staf.uji@salonrengganis.com',
+            'role_jabatan' => 'Stylist',
             'persen_komisi' => 12,
-            'password'      => 'password123',
+            'password' => 'password123',
         ])->assertRedirect()->assertSessionHas('status');
 
         $stafBaru = Karyawan::where('username', 'staf_uji_baru')->firstOrFail();
 
         $manajer->put(route('manajer.karyawan.update', $stafBaru), [
-            'nama_staff'    => 'Staf Baru Diperbarui',
-            'username'      => 'staf_uji_baru',
-            'email'         => 'staf.uji@salonrengganis.com',
-            'role_jabatan'  => 'Stylist',
+            'nama_staff' => 'Staf Baru Diperbarui',
+            'username' => 'staf_uji_baru',
+            'email' => 'staf.uji@salonrengganis.com',
+            'role_jabatan' => 'Stylist',
             'persen_komisi' => 18,
-            'aktif'         => 1,
+            'aktif' => 1,
         ])->assertRedirect()->assertSessionHas('status');
 
         $this->assertEquals('Staf Baru Diperbarui', $stafBaru->fresh()->nama_staff);
@@ -520,27 +530,27 @@ class SalonRengganisTest extends TestCase
 
         // 3. LayananController & ProdukController
         $manajer->put(route('manajer.layanan.update', $this->layananRambut), [
-            'nama_layanan'    => 'Potong & Cuci Blow',
-            'kategori'        => 'Rambut',
+            'nama_layanan' => 'Potong & Cuci Blow',
+            'kategori' => 'Rambut',
             'jabatan_petugas' => 'Stylist',
-            'harga_layanan'   => 120000,
+            'harga_layanan' => 120000,
         ])->assertRedirect()->assertSessionHas('status');
         $this->assertEquals(120000, (float) $this->layananRambut->fresh()->harga_layanan);
 
         $manajer->put(route('manajer.produk.update', $this->produkVitamin), [
-            'nama_produk'  => 'Vitamin Rambut Premium',
-            'stok_produk'  => 25,
+            'nama_produk' => 'Vitamin Rambut Premium',
+            'stok_produk' => 25,
             'harga_produk' => 55000,
         ])->assertRedirect()->assertSessionHas('status');
         $this->assertEquals(25, $this->produkVitamin->fresh()->stok_produk);
 
         // 4. PromoController (termasuk validasi Rule::when diskon persentase > 100%)
         $manajer->post(route('manajer.promo.simpan'), [
-            'kode_promo'     => 'SALAH150',
-            'nama_promo'     => 'Promo Tidak Valid',
-            'tipe_diskon'    => 'Persentase',
-            'nilai_diskon'   => 150,
-            'min_transaksi'  => 50000,
+            'kode_promo' => 'SALAH150',
+            'nama_promo' => 'Promo Tidak Valid',
+            'tipe_diskon' => 'Persentase',
+            'nilai_diskon' => 150,
+            'min_transaksi' => 50000,
             'berlaku_sampai' => Carbon::now()->addMonth()->toDateString(),
         ])->assertSessionHasErrors('nilai_diskon');
 
@@ -553,11 +563,11 @@ class SalonRengganisTest extends TestCase
         $manajer->get(route('manajer.struk'))->assertStatus(200);
         $manajer->get(route('manajer.kebijakan'))->assertStatus(200);
         $manajer->put(route('manajer.kebijakan.simpan'), [
-            'batas_pelanggaran'    => 5,
-            'lama_blokir_hari'     => 7,
+            'batas_pelanggaran' => 5,
+            'lama_blokir_hari' => 7,
             'toleransi_bayar_hari' => 1,
-            'batas_batal_jam'      => 3,
-            'kebijakan_aktif'      => 1,
+            'batas_batal_jam' => 3,
+            'kebijakan_aktif' => 1,
         ])->assertRedirect()->assertSessionHas('status');
     }
 }

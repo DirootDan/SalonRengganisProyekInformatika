@@ -1,9 +1,2 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.form-selesai').forEach((form) => {
-        form.addEventListener('submit', (e) => {
-            if (!confirm('Tandai layanan perawatan ini sebagai Selesai dikerjakan?')) {
-                e.preventDefault();
-            }
-        });
-    });
-});
+// Konfirmasi penyelesaian layanan ditangani oleh komponen <x-confirm-modal>
+document.addEventListener('DOMContentLoaded', () => {});

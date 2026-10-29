@@ -1,0 +1,231 @@
+/* =========================================================
+   Komponen Modal Konfirmasi (<x-confirm-modal>)
+   Sesuai docs/design.md — Warm Rose & Cream Salon Rengganis
+   ========================================================= */
+
+.cm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(31, 41, 55, 0.55);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.cm-backdrop[hidden] {
+    display: none;
+}
+
+.cm-backdrop.cm-terbuka {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cm-dialog {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f3d5de;
+    box-shadow: 0 20px 45px rgba(31, 41, 55, 0.22);
+    padding: 22px;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 0.18s ease;
+    font-family: 'Poppins', sans-serif;
+    color: #1f2937;
+    box-sizing: border-box;
+}
+
+.cm-backdrop.cm-terbuka .cm-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.cm-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.cm-ikon-lingkaran {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cm-ikon-bahaya {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.cm-ikon-peringatan {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.cm-header-teks {
+    flex: 1;
+    min-width: 0;
+}
+
+.cm-judul {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.35;
+}
+
+.cm-item-nama {
+    margin: 4px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #b91c1c;
+    word-break: break-word;
+}
+
+.cm-btn-silang {
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.cm-btn-silang:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.cm-btn-silang:focus-visible {
+    outline: 2px solid #b84b6b;
+    outline-offset: 2px;
+}
+
+.cm-body {
+    margin-top: 14px;
+}
+
+.cm-deskripsi {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #4b5563;
+}
+
+.cm-dampak {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 12.5px;
+    line-height: 1.45;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.cm-dampak[hidden] {
+    display: none;
+}
+
+.cm-dampak-ikon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.cm-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cm-btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.cm-btn:focus-visible {
+    outline: 2px solid #b84b6b;
+    outline-offset: 2px;
+}
+
+.cm-btn-batal {
+    background: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+.cm-btn-batal:hover {
+    background: #e5e7eb;
+}
+
+.cm-btn-bahaya {
+    background: #b91c1c;
+    color: #ffffff;
+}
+
+.cm-btn-bahaya:hover:not(:disabled) {
+    background: #991b1b;
+}
+
+.cm-btn-peringatan {
+    background: #b45309;
+    color: #ffffff;
+}
+
+.cm-btn-peringatan:hover:not(:disabled) {
+    background: #92400e;
+}
+
+.cm-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Responsif Mobile 375px */
+@media (max-width: 480px) {
+    .cm-backdrop {
+        padding: 12px;
+    }
+
+    .cm-dialog {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .cm-footer {
+        flex-direction: column-reverse;
+    }
+
+    .cm-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

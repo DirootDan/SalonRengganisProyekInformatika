@@ -56,13 +56,4 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('tampil');
         });
     });
-
-    document.querySelectorAll('.form-hapus-staf').forEach(f => {
-        f.addEventListener('submit', (e) => {
-            const nama = f.dataset.nama;
-            if (!confirm(`Apakah Anda yakin ingin menonaktifkan/menghapus karyawan "${nama}"?`)) {
-                e.preventDefault();
-            }
-        });
-    });
 });

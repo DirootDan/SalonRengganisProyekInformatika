@@ -54,13 +54,4 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('tampil');
         });
     });
-
-    document.querySelectorAll('.form-hapus-promo').forEach(f => {
-        f.addEventListener('submit', (e) => {
-            const kode = f.dataset.kode;
-            if (!confirm(`Hapus voucer promo "${kode}"?`)) {
-                e.preventDefault();
-            }
-        });
-    });
 });

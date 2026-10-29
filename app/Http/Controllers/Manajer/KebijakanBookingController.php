@@ -48,8 +48,8 @@ class KebijakanBookingController extends Controller
         $data = $request->validated();
 
         $data['rentang_hari_pelanggaran'] = $data['rentang_hari_pelanggaran'] ?? PengaturanKebijakan::DEFAULT_RENTANG_HARI;
-        $data['lama_blokir_kedua_hari']   = $data['lama_blokir_kedua_hari'] ?? PengaturanKebijakan::DEFAULT_BLOKIR_KEDUA_HARI;
-        $data['blokir_ketiga_permanen']   = $request->has('blokir_ketiga_permanen')
+        $data['lama_blokir_kedua_hari'] = $data['lama_blokir_kedua_hari'] ?? PengaturanKebijakan::DEFAULT_BLOKIR_KEDUA_HARI;
+        $data['blokir_ketiga_permanen'] = $request->has('blokir_ketiga_permanen')
             ? $request->boolean('blokir_ketiga_permanen')
             : PengaturanKebijakan::DEFAULT_BLOKIR_KETIGA_PERMANEN;
         $data['kebijakan_aktif'] = $request->boolean('kebijakan_aktif');

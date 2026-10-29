@@ -30,18 +30,18 @@ class CekBlokirBooking
         if (! $pelanggan->diblokir_permanen && $pelanggan->diblokir_sampai !== null && $pelanggan->diblokir_sampai->isPast()) {
             DB::transaction(function () use ($pelanggan) {
                 $pelanggan->update([
-                    'jumlah_pelanggaran'     => 0,
-                    'diblokir_sampai'        => null,
-                    'alasan_blokir'          => null,
+                    'jumlah_pelanggaran' => 0,
+                    'diblokir_sampai' => null,
+                    'alasan_blokir' => null,
                     'reset_pelanggaran_pada' => now(),
                 ]);
 
                 RiwayatPelanggaran::create([
                     'id_pelanggan' => $pelanggan->id_pelanggan,
                     'id_reservasi' => null,
-                    'jenis'        => 'Reset Otomatis',
-                    'tanggal'      => now()->toDateString(),
-                    'keterangan'   => 'Masa pemblokiran sementara telah berakhir; jumlah pelanggaran direset kembali ke 0.',
+                    'jenis' => 'Reset Otomatis',
+                    'tanggal' => now()->toDateString(),
+                    'keterangan' => 'Masa pemblokiran sementara telah berakhir; jumlah pelanggaran direset kembali ke 0.',
                 ]);
 
                 NotifikasiPelanggan::kirim(
@@ -66,7 +66,7 @@ class CekBlokirBooking
             } else {
                 $berakhir = $pelanggan->diblokir_sampai?->format('d/m/Y H:i') ?? '-';
                 $sisaHari = $pelanggan->sisaHariBlokir();
-                $pesan    = "Maaf, akun Anda sedang diblokir sementara dari fitur booking karena: {$alasan} Blokir berakhir pada {$berakhir} ({$sisaHari} hari lagi).";
+                $pesan = "Maaf, akun Anda sedang diblokir sementara dari fitur booking karena: {$alasan} Blokir berakhir pada {$berakhir} ({$sisaHari} hari lagi).";
             }
 
             if ($request->expectsJson()) {

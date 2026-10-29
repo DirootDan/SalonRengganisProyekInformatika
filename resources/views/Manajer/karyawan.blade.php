@@ -76,10 +76,15 @@
                                         ✏️ Ubah
                                     </button>
 
-                                    <form method="POST" action="{{ route('manajer.karyawan.hapus', $staf->id_karyawan) }}" class="form-hapus-staf" data-nama="{{ $staf->nama_staff }}">
+                                    <form method="POST" action="{{ route('manajer.karyawan.hapus', $staf->id_karyawan) }}"
+                                          class="form-hapus-staf"
+                                          data-nama="{{ $staf->nama_staff }}"
+                                          data-booking="{{ $staf->jumlahBookingAktif() }}"
+                                          data-confirm-title="Konfirmasi Nonaktifkan & Arsipkan Karyawan"
+                                          data-confirm-item="{{ $staf->nama_staff }} ({{ $staf->role_jabatan }})">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-aksi btn-hapus">🗑️ Hapus</button>
+                                        <button type="submit" class="btn-aksi btn-hapus">Hapus</button>
                                     </form>
                                 </div>
                             </td>

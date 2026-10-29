@@ -154,11 +154,80 @@
     }
 }
 
+.pos-katalog-kepala {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
 .pos-tab-bar {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
     flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.btn-buka-modal-antrean {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    color: #9d174d;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-buka-modal-antrean:hover {
+    background: #fce7f3;
+    border-color: #db2777;
+}
+
+.sub-keranjang {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.label-baris-pelanggan {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.tautan-pilih-antrean {
+    background: transparent;
+    border: none;
+    color: #db2777;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.modal-kotak-lebar {
+    max-width: 680px;
+}
+
+.antrean-list-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 .pos-tab {
@@ -366,4 +435,46 @@
 
 .baris-kembalian strong {
     font-size: 17px;
+}
+
+
+/* ===== Dropdown Petugas per Layanan & Peringatan Petugas Nonaktif di POS ===== */
+.peringatan-petugas-pos {
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    color: #991b1b;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.keranjang-petugas-baris {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-petugas-kecil {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.select-petugas-pos {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1.5px solid #d1d5db;
+    font-size: 12.5px;
+    background: #ffffff;
+    color: #111827;
+}
+
+.select-petugas-pos-galat {
+    border-color: #dc2626;
+    background: #fef2f2;
+    color: #991b1b;
 }

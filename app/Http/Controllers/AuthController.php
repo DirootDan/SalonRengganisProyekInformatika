@@ -18,6 +18,7 @@ class AuthController extends Controller
     {
         if (Auth::guard('karyawan')->check()) {
             $user = Auth::guard('karyawan')->user();
+
             return redirect()->route($user->rutePeran() ?? 'login');
         }
 
@@ -26,7 +27,7 @@ class AuthController extends Controller
         }
 
         // Disesuaikan dengan folder Auth dan file loginpage.blade.php
-        return view('Auth.loginpage'); 
+        return view('Auth.loginpage');
     }
 
     public function showRegister()
@@ -34,15 +35,15 @@ class AuthController extends Controller
         if (Auth::guard('pelanggan')->check() || Auth::guard('karyawan')->check()) {
             return redirect('/');
         }
-        
+
         // Disesuaikan dengan folder Auth dan file registerpage.blade.php
-        return view('Auth.registerpage'); 
+        return view('Auth.registerpage');
     }
 
     public function showLupaPassword()
     {
         // Disesuaikan dengan folder Auth dan file lupapassword.blade.php
-        return view('Auth.lupapassword'); 
+        return view('Auth.lupapassword');
     }
 
     public function showResetPassword(Request $request, string $token)
@@ -80,11 +81,13 @@ class AuthController extends Controller
             }
 
             $request->session()->regenerate();
+
             return redirect()->intended(route($user->rutePeran()));
         }
 
         if (Auth::guard('pelanggan')->attempt(['email' => $loginId, 'password' => $password])) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('pelanggan.beranda'));
         }
 
@@ -94,17 +97,17 @@ class AuthController extends Controller
     }
 
     /* ================= REGISTER PELANGGAN ================= */
-    
+
     public function register(Request $request)
     {
         $data = $request->validate([
             'nama_cust' => ['required', 'string', 'max:100'],
-            'no_telp'   => ['required', 'regex:/^[0-9+\-\s]{8,20}$/'],
-            'email'     => ['required', 'email', 'max:100', 'unique:pelanggan,email'],
-            'password'  => ['required', 'string', 'min:6', 'confirmed'],
+            'no_telp' => ['required', 'regex:/^[0-9+\-\s]{8,20}$/'],
+            'email' => ['required', 'email', 'max:100', 'unique:pelanggan,email'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ], $this->pesan(), $this->atribut());
 
-        $pelanggan = Pelanggan::create($data); 
+        $pelanggan = Pelanggan::create($data);
 
         Auth::guard('pelanggan')->login($pelanggan);
         $request->session()->regenerate();
@@ -138,7 +141,7 @@ class AuthController extends Controller
         ], $this->pesan(), $this->atribut());
 
         $email = $request->input('email');
-        
+
         $broker = null;
         if (Karyawan::where('email', $email)->exists()) {
             $broker = 'karyawan';
@@ -160,8 +163,8 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'token'    => ['required'],
-            'email'    => ['required', 'email'],
+            'token' => ['required'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ], $this->pesan(), $this->atribut());
 
@@ -198,13 +201,13 @@ class AuthController extends Controller
     private function pesan(): array
     {
         return [
-            'required'   => ':attribute wajib diisi.',
-            'email'      => 'Format email tidak valid.',
-            'min'        => ':attribute minimal :min karakter.',
-            'max'        => ':attribute maksimal :max karakter.',
-            'unique'     => ':attribute sudah terdaftar.',
-            'confirmed'  => 'Konfirmasi password tidak sama.',
-            'regex'      => 'Format :attribute tidak valid.',
+            'required' => ':attribute wajib diisi.',
+            'email' => 'Format email tidak valid.',
+            'min' => ':attribute minimal :min karakter.',
+            'max' => ':attribute maksimal :max karakter.',
+            'unique' => ':attribute sudah terdaftar.',
+            'confirmed' => 'Konfirmasi password tidak sama.',
+            'regex' => 'Format :attribute tidak valid.',
             'alpha_dash' => 'Hanya boleh huruf, angka, strip, dan underscore.',
         ];
     }
@@ -212,11 +215,11 @@ class AuthController extends Controller
     private function atribut(): array
     {
         return [
-            'login_id'  => 'Username / Email',
+            'login_id' => 'Username / Email',
             'nama_cust' => 'Nama lengkap',
-            'no_telp'   => 'No. telepon',
-            'email'     => 'Email',
-            'password'  => 'Password',
+            'no_telp' => 'No. telepon',
+            'email' => 'Email',
+            'password' => 'Password',
         ];
     }
 }

@@ -97,11 +97,15 @@
                         <small>{{ $p->keteranganBlokir() }}</small>
                     </div>
 
-                    <form method="POST" action="{{ route('manajer.kebijakan.buka', $p->id_pelanggan) }}" class="form-buka-blokir">
+                    <form method="POST" action="{{ route('manajer.kebijakan.buka', $p->id_pelanggan) }}"
+                          class="form-buka-blokir"
+                          data-nama="{{ $p->nama_cust }}"
+                          data-confirm-title="Konfirmasi Buka Blokir Pelanggan"
+                          data-confirm-item="{{ $p->nama_cust }} ({{ $p->email }})">
                         @csrf
                         <input type="text" name="alasan_buka" class="form-input input-alasan-kecil"
                                placeholder="Wajib isi alasan buka blokir..." required minlength="5">
-                        <button type="submit" class="btn-aksi btn-edit">🔓 Buka Blokir</button>
+                        <button type="submit" class="btn-aksi btn-edit">Buka Blokir</button>
                     </form>
                 </div>
             @empty

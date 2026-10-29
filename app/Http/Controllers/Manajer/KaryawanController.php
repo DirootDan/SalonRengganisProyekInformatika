@@ -61,13 +61,17 @@ class KaryawanController extends Controller
             ]);
         }
 
-        $bookingAktif = $karyawan->nonaktifkanDanArsipkan();
+        $bookingAktif = $karyawan->jumlahBookingAktif();
+
+        if ($bookingAktif > 0) {
+            return back()->withErrors([
+                'karyawan' => "Karyawan {$karyawan->nama_staff} tidak dapat dihapus karena masih memiliki {$bookingAktif} reservasi aktif (Menunggu/Diterima). Silakan alihkan atau selesaikan reservasi tersebut terlebih dahulu.",
+            ]);
+        }
+
+        $karyawan->nonaktifkanDanArsipkan();
         Cache::forget(DashboardController::CACHE_KEY_RINGKASAN);
 
-        $catatan = $bookingAktif > 0
-            ? " Perhatian: karyawan ini memiliki {$bookingAktif} reservasi aktif yang perlu dialihkan."
-            : '';
-
-        return back()->with('status', "Karyawan {$karyawan->nama_staff} berhasil dinonaktifkan/dihapus.{$catatan}");
+        return back()->with('status', "Karyawan {$karyawan->nama_staff} berhasil dinonaktifkan dan diarsipkan.");
     }
 }

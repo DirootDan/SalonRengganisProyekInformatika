@@ -37,6 +37,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 /* ===== AREA KARYAWAN ===== */
 Route::middleware('auth:karyawan')->get('/dashboard', function () {
     $rute = Auth::guard('karyawan')->user()->rutePeran();
+
     return redirect()->route($rute ?? 'login');
 })->name('dashboard');
 
@@ -88,7 +89,7 @@ Route::middleware(['auth:karyawan', 'peran:Manajer'])
         Route::post('/kebijakan-booking/buka-blokir/{pelanggan}', [ManajerKebijakanBookingController::class, 'bukaBlokir'])->name('kebijakan.buka');
     });
 
-// MODUL 3: Area Kasir 
+// MODUL 3: Area Kasir
 Route::middleware(['auth:karyawan', 'peran:Kasir'])
     ->prefix('kasir')->name('kasir.')->group(function () {
         Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');

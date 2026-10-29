@@ -80,7 +80,11 @@ export default defineConfig({
                 'resources/css/Karyawan/Stylist/dashboard.css',
                 'resources/css/Karyawan/Therapist/dashboard.css',
                 'resources/js/Karyawan/Stylist/dashboard.js',
-                'resources/js/Karyawan/Therapist/dashboard.js'
+                'resources/js/Karyawan/Therapist/dashboard.js',
+
+                // Komponen Bersama
+                'resources/css/components/confirm-modal.css',
+                'resources/js/components/confirm-modal.js'
             ],
             refresh: true,
         }),

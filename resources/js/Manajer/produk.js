@@ -46,13 +46,4 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('tampil');
         });
     });
-
-    document.querySelectorAll('.form-hapus-produk').forEach(f => {
-        f.addEventListener('submit', (e) => {
-            const nama = f.dataset.nama;
-            if (!confirm(`Hapus produk "${nama}" dari katalog?`)) {
-                e.preventDefault();
-            }
-        });
-    });
 });

@@ -30,7 +30,13 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('manajer.metode.toggle', $m->id_metode) }}">
+                    <form method="POST" action="{{ route('manajer.metode.toggle', $m->id_metode) }}"
+                          class="form-toggle-metode"
+                          data-nama="{{ $m->nama_metode }}"
+                          data-confirm-title="Konfirmasi Status Metode Pembayaran"
+                          data-confirm-item="{{ $m->nama_metode }} ({{ $m->kategori }})"
+                          data-confirm-description="Apakah Anda yakin ingin {{ $m->aktif ? 'menonaktifkan' : 'mengaktifkan' }} metode pembayaran '{{ $m->nama_metode }}' di meja Kasir?"
+                          data-confirm-button="Ya, {{ $m->aktif ? 'Nonaktifkan' : 'Aktifkan' }}">
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="btn-aksi {{ $m->aktif ? 'btn-hapus' : 'btn-edit' }}">

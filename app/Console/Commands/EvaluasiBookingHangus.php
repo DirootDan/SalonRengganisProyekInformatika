@@ -30,18 +30,18 @@ class EvaluasiBookingHangus extends Command
         foreach ($pelangganBerakhir as $pelanggan) {
             DB::transaction(function () use ($pelanggan) {
                 $pelanggan->update([
-                    'jumlah_pelanggaran'     => 0,
-                    'diblokir_sampai'        => null,
-                    'alasan_blokir'          => null,
+                    'jumlah_pelanggaran' => 0,
+                    'diblokir_sampai' => null,
+                    'alasan_blokir' => null,
                     'reset_pelanggaran_pada' => now(),
                 ]);
 
                 RiwayatPelanggaran::create([
                     'id_pelanggan' => $pelanggan->id_pelanggan,
                     'id_reservasi' => null,
-                    'jenis'        => 'Reset Otomatis',
-                    'tanggal'      => now()->toDateString(),
-                    'keterangan'   => 'Masa pemblokiran sementara telah berakhir; jumlah pelanggaran aktif direset ke 0.',
+                    'jenis' => 'Reset Otomatis',
+                    'tanggal' => now()->toDateString(),
+                    'keterangan' => 'Masa pemblokiran sementara telah berakhir; jumlah pelanggaran aktif direset ke 0.',
                 ]);
 
                 NotifikasiPelanggan::kirim(
@@ -70,6 +70,7 @@ class EvaluasiBookingHangus extends Command
 
         if (! $kebijakan->kebijakan_aktif) {
             $this->info('Kebijakan pinalti sedang dinonaktifkan oleh Manajer.');
+
             return self::SUCCESS;
         }
 
@@ -107,7 +108,7 @@ class EvaluasiBookingHangus extends Command
 
                 $r->ubahStatus(Reservasi::STATUS_HANGUS, [
                     'pelanggaran_dihitung' => true,
-                    'alasan_penolakan'     => 'Melewati batas waktu pembayaran H+' . $kebijakan->toleransi_bayar_hari . ' pukul 23:59.',
+                    'alasan_penolakan' => 'Melewati batas waktu pembayaran H+'.$kebijakan->toleransi_bayar_hari.' pukul 23:59.',
                 ]);
 
                 $pelanggan = Pelanggan::where('id_pelanggan', $r->id_pelanggan)
@@ -124,9 +125,9 @@ class EvaluasiBookingHangus extends Command
                 RiwayatPelanggaran::create([
                     'id_pelanggan' => $pelanggan->id_pelanggan,
                     'id_reservasi' => $r->id_reservasi,
-                    'jenis'        => 'Pelanggaran',
-                    'tanggal'      => $tanggalPelanggaran,
-                    'keterangan'   => "Reservasi #{$r->id_reservasi} tanggal {$r->tgl_booking->format('d/m/Y')} hangus karena tidak diselesaikan pembayarannya.",
+                    'jenis' => 'Pelanggaran',
+                    'tanggal' => $tanggalPelanggaran,
+                    'keterangan' => "Reservasi #{$r->id_reservasi} tanggal {$r->tgl_booking->format('d/m/Y')} hangus karena tidak diselesaikan pembayarannya.",
                 ]);
 
                 // Hitung kumulatif pelanggaran dalam 90 hari terakhir (atau sesuai pengaturan Manajer)
@@ -141,8 +142,8 @@ class EvaluasiBookingHangus extends Command
                         $hariBlokir = (int) ($kebijakan->lama_blokir_hari ?: 7);
                         $diblokirSampai = now()->addDays($hariBlokir);
                         $pelanggan->diblokir_permanen = false;
-                        $pelanggan->diblokir_sampai   = $diblokirSampai;
-                        $pelanggan->alasan_blokir     = "Blokir Tahap 1 ({$hariBlokir} hari): mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran dalam {$rentangHari} hari terakhir.";
+                        $pelanggan->diblokir_sampai = $diblokirSampai;
+                        $pelanggan->alasan_blokir = "Blokir Tahap 1 ({$hariBlokir} hari): mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran dalam {$rentangHari} hari terakhir.";
                         $pelanggan->save();
 
                         NotifikasiPelanggan::kirim(
@@ -156,8 +157,8 @@ class EvaluasiBookingHangus extends Command
                         $hariBlokir = (int) ($kebijakan->lama_blokir_kedua_hari ?: 30);
                         $diblokirSampai = now()->addDays($hariBlokir);
                         $pelanggan->diblokir_permanen = false;
-                        $pelanggan->diblokir_sampai   = $diblokirSampai;
-                        $pelanggan->alasan_blokir     = "Blokir Tahap 2 ({$hariBlokir} hari): kembali mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran dalam {$rentangHari} hari terakhir.";
+                        $pelanggan->diblokir_sampai = $diblokirSampai;
+                        $pelanggan->alasan_blokir = "Blokir Tahap 2 ({$hariBlokir} hari): kembali mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran dalam {$rentangHari} hari terakhir.";
                         $pelanggan->save();
 
                         NotifikasiPelanggan::kirim(
@@ -170,8 +171,8 @@ class EvaluasiBookingHangus extends Command
                     } else {
                         if ($kebijakan->blokir_ketiga_permanen) {
                             $pelanggan->diblokir_permanen = true;
-                            $pelanggan->diblokir_sampai   = null;
-                            $pelanggan->alasan_blokir     = "Blokir Tahap {$tahapBlokir} (Permanen): mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran berulang. Akun tetap diblokir hingga dibuka manual oleh Manajer.";
+                            $pelanggan->diblokir_sampai = null;
+                            $pelanggan->alasan_blokir = "Blokir Tahap {$tahapBlokir} (Permanen): mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran berulang. Akun tetap diblokir hingga dibuka manual oleh Manajer.";
                             $pelanggan->save();
 
                             NotifikasiPelanggan::kirim(
@@ -185,8 +186,8 @@ class EvaluasiBookingHangus extends Command
                             $hariBlokir = (int) ($kebijakan->lama_blokir_kedua_hari ?: 30);
                             $diblokirSampai = now()->addDays($hariBlokir);
                             $pelanggan->diblokir_permanen = false;
-                            $pelanggan->diblokir_sampai   = $diblokirSampai;
-                            $pelanggan->alasan_blokir     = "Blokir Tahap {$tahapBlokir} ({$hariBlokir} hari): mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran.";
+                            $pelanggan->diblokir_sampai = $diblokirSampai;
+                            $pelanggan->alasan_blokir = "Blokir Tahap {$tahapBlokir} ({$hariBlokir} hari): mencapai {$pelanggan->jumlah_pelanggaran} pelanggaran.";
                             $pelanggan->save();
                         }
                     }

@@ -48,7 +48,10 @@
                         </td>
                         <td>
                             @if ($item->status_layanan !== 'Selesai')
-                                <form method="POST" action="{{ route('therapist.layanan.selesai', [$item->id_reservasi, $item->id_layanan]) }}" class="form-selesai">
+                                <form method="POST" action="{{ route('therapist.layanan.selesai', [$item->id_reservasi, $item->id_layanan]) }}"
+                                      class="form-selesai"
+                                      data-confirm-title="Konfirmasi Penyelesaian Layanan"
+                                      data-confirm-item="{{ $item->nama_layanan }} (#{{ $item->id_reservasi }})">
                                     @csrf
                                     <button type="submit" class="btn-selesai">✓ Tandai Selesai</button>
                                 </form>

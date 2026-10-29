@@ -16,6 +16,7 @@ class Pelanggan extends Authenticatable
     use Notifiable;
 
     protected $table = 'pelanggan';
+
     protected $primaryKey = 'id_pelanggan';
 
     protected $fillable = [
@@ -40,11 +41,11 @@ class Pelanggan extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password'               => 'hashed',
-            'jumlah_pelanggaran'     => 'integer',
-            'jumlah_kali_blokir'     => 'integer',
-            'diblokir_permanen'      => 'boolean',
-            'diblokir_sampai'        => 'datetime',
+            'password' => 'hashed',
+            'jumlah_pelanggaran' => 'integer',
+            'jumlah_kali_blokir' => 'integer',
+            'diblokir_permanen' => 'boolean',
+            'diblokir_sampai' => 'datetime',
             'reset_pelanggaran_pada' => 'datetime',
         ];
     }
@@ -71,10 +72,10 @@ class Pelanggan extends Authenticatable
     {
         return $query->where(function (Builder $q) {
             $q->where('diblokir_permanen', true)
-              ->orWhere(function (Builder $sub) {
-                  $sub->whereNotNull('diblokir_sampai')
-                      ->where('diblokir_sampai', '>', now());
-              });
+                ->orWhere(function (Builder $sub) {
+                    $sub->whereNotNull('diblokir_sampai')
+                        ->where('diblokir_sampai', '>', now());
+                });
         });
     }
 
@@ -85,7 +86,7 @@ class Pelanggan extends Authenticatable
     {
         return $query->where(function (Builder $q) {
             $q->where('jumlah_pelanggaran', '>', 0)
-              ->orWhere('diblokir_permanen', true);
+                ->orWhere('diblokir_permanen', true);
         });
     }
 
@@ -114,10 +115,10 @@ class Pelanggan extends Authenticatable
         }
 
         if ($this->diblokir_permanen) {
-            return 'Diblokir Permanen (Blokir ke-' . max(3, (int) $this->jumlah_kali_blokir) . ' — menunggu pembukaan manual oleh Manajer)';
+            return 'Diblokir Permanen (Blokir ke-'.max(3, (int) $this->jumlah_kali_blokir).' — menunggu pembukaan manual oleh Manajer)';
         }
 
-        return 'Diblokir Sementara hingga ' . $this->diblokir_sampai->format('d/m/Y H:i') . ' WIB (' . $this->sisaHariBlokir() . ' hari lagi)';
+        return 'Diblokir Sementara hingga '.$this->diblokir_sampai->format('d/m/Y H:i').' WIB ('.$this->sisaHariBlokir().' hari lagi)';
     }
 
     /**

@@ -18,10 +18,10 @@ class LaporanService
      */
     public function rentangTanggal(Request $request): array
     {
-        $tglMulai   = $request->query('mulai', now()->startOfMonth()->toDateString());
+        $tglMulai = $request->query('mulai', now()->startOfMonth()->toDateString());
         $tglSelesai = $request->query('selesai', now()->endOfMonth()->toDateString());
 
-        $waktuMulai   = Carbon::parse($tglMulai)->startOfDay();
+        $waktuMulai = Carbon::parse($tglMulai)->startOfDay();
         $waktuSelesai = Carbon::parse($tglSelesai)->endOfDay();
 
         return [$tglMulai, $tglSelesai, $waktuMulai, $waktuSelesai];
@@ -32,7 +32,7 @@ class LaporanService
      */
     public function ringkasanLaporan(string $tglMulai, string $tglSelesai, Carbon $waktuMulai, Carbon $waktuSelesai): array
     {
-        $reservasi = Reservasi::with(['layanan', 'pelanggan', 'transaksi'])
+        $reservasi = Reservasi::with(['layanan', 'produkAddon', 'pelanggan', 'transaksi'])
             ->whereBetween('tgl_booking', [$tglMulai, $tglSelesai])
             ->latest('tgl_booking')
             ->latest('id_reservasi')
@@ -51,7 +51,7 @@ class LaporanService
             ->first();
 
         $totalPendapatan = (float) ($ringkasanTransaksi->total_pendapatan ?? 0);
-        $totalKomisi     = (float) ($ringkasanTransaksi->total_komisi ?? 0);
+        $totalKomisi = (float) ($ringkasanTransaksi->total_komisi ?? 0);
 
         $kinerjaKaryawan = DB::table('detail_reservasi')
             ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
@@ -94,7 +94,7 @@ class LaporanService
     public function eksporCsv(string $tglMulai, string $tglSelesai): StreamedResponse
     {
         $headers = [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"laporan-salon-rengganis-{$tglMulai}-{$tglSelesai}.csv\"",
         ];
 
@@ -102,18 +102,22 @@ class LaporanService
             $out = fopen('php://output', 'w');
             fputcsv($out, ['ID Reservasi', 'Tanggal', 'Jam', 'Pelanggan', 'Rincian Layanan', 'Total (Rp)', 'Status']);
 
-            $kueriReservasi = Reservasi::with(['layanan', 'pelanggan', 'transaksi'])
+            $kueriReservasi = Reservasi::with(['layanan', 'produkAddon', 'pelanggan', 'transaksi'])
                 ->whereBetween('tgl_booking', [$tglMulai, $tglSelesai])
                 ->latest('tgl_booking');
 
             foreach ($kueriReservasi->cursor() as $r) {
-                $total = $r->transaksi ? $r->transaksi->total_bayar : $r->layanan->sum('harga_layanan');
+                $total = $r->transaksi ? $r->transaksi->total_bayar : $r->estimasiTotalAkhir();
+                $rincianLayanan = $r->layanan->pluck('nama_layanan')->join(', ');
+                $rincianProduk = $r->produkAddon->map(fn ($p) => $p->nama_produk.' (x'.$p->pivot->jumlah.')')->join(', ');
+                $rincianItem = trim($rincianLayanan.($rincianProduk ? ' + '.$rincianProduk : ''));
+
                 fputcsv($out, [
-                    '#' . $r->id_reservasi,
+                    '#'.$r->id_reservasi,
                     $r->tgl_booking->format('d/m/Y'),
                     $r->jam_booking,
                     $r->pelanggan?->nama_cust ?? 'Pelanggan',
-                    $r->layanan->pluck('nama_layanan')->join(', '),
+                    $rincianItem,
                     (int) $total,
                     $r->statusTernormalisasi(),
                 ]);

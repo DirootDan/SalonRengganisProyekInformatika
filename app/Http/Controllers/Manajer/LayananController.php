@@ -22,7 +22,7 @@ class LayananController extends Controller
         Layanan::create($data);
         Cache::forget(DashboardController::CACHE_KEY_RINGKASAN);
 
-        return back()->with('status', "Layanan {$data['nama_layanan']} berhasil ditambahkan.");
+        return back()->with('status', "Layanan {$data['nama_layanan']} ({$data['durasi_menit']} menit + jeda {$data['jeda_menit']} menit) berhasil ditambahkan.");
     }
 
     public function update(LayananRequest $request, Layanan $layanan)
@@ -34,6 +34,14 @@ class LayananController extends Controller
 
     public function destroy(Layanan $layanan)
     {
+        $reservasiAktif = $layanan->jumlahReservasiAktif();
+
+        if ($reservasiAktif > 0) {
+            return back()->withErrors([
+                'layanan' => "Layanan '{$layanan->nama_layanan}' tidak dapat dihapus karena masih terikat pada {$reservasiAktif} reservasi aktif (Menunggu/Diterima).",
+            ]);
+        }
+
         // Diarsipkan dengan soft-delete agar histori transaksi/reservasi lama tetap dapat membaca nama layanan ini
         $layanan->delete();
         Cache::forget(DashboardController::CACHE_KEY_RINGKASAN);

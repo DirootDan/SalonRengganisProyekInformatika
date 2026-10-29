@@ -1,182 +1,468 @@
-/* ===== Halaman Booking: Langkah ===== */
-.langkah-judul {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 12px;
+/* =========================================================
+   Halaman Booking Pelanggan — Gaya Portal Reservasi Modern
+   (Traveloka Xperience / Fresha Two-Column Layout)
+   ========================================================= */
+
+/* Perlebar container khusus halaman booking agar muat 2 kolom lega */
+.container {
+    max-width: 1200px;
+    margin: 32px auto 60px;
 }
 
-.langkah-no {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: #db2777;
-    color: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
+/* ===== Hero Banner ===== */
+.booking-hero {
+    background: linear-gradient(135deg, #9d174d 0%, #db2777 55%, #ec4899 100%);
+    border-radius: 24px;
+    padding: 32px 36px;
+    color: #ffffff;
+    margin-bottom: 28px;
+    box-shadow: 0 14px 34px rgba(157, 23, 77, 0.18);
 }
 
-.langkah-ket {
-    margin: -4px 0 16px;
-    font-size: 13px;
-    color: #6b7280;
+.booking-hero-lencana {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    margin-bottom: 10px;
+}
+
+.booking-hero-judul {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.booking-hero-sub {
+    margin: 0;
+    font-size: 14.5px;
+    color: #fce7f3;
+    max-width: 780px;
     line-height: 1.6;
 }
 
-.baris-waktu {
+/* ===== Grid 2 Kolom (Kiri Eksplorasi, Kanan Sticky Checkout) ===== */
+.booking-portal-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 26px;
+    align-items: start;
 }
 
-@media (max-width: 600px) {
-    .baris-waktu {
+@media (max-width: 980px) {
+    .booking-portal-grid {
         grid-template-columns: 1fr;
     }
 }
 
-.select-jam {
-    width: 100%;
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    border: 2px solid #f3f4f6;
-    border-radius: 16px;
-    font-size: 15px;
-    font-family: inherit;
-    background: #f9fafb;
-    color: #111827;
-    cursor: pointer;
+.portal-kiri {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.select-jam:focus {
-    outline: none;
+.portal-kartu {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 28px 30px;
+    border: 1.5px solid #fce7f3;
+    box-shadow: 0 8px 26px rgba(17, 24, 39, 0.035);
+}
+
+.portal-kartu-kepala {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.langkah-no {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: #db2777;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+}
+
+.portal-seksi-judul {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.portal-seksi-sub {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.55;
+}
+
+/* ===== Seksi 1: Tanggal & Input Jam Dinamis (Bisa Menit Spesifik) ===== */
+.jadwal-baris-tanggal {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+    .jadwal-baris-tanggal {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-tanggal-modern,
+.input-waktu-modern {
+    width: 100%;
+    padding: 12px 16px !important;
+    margin-bottom: 10px !important;
+    border: 2px solid #f3e8ee !important;
+    border-radius: 14px !important;
+    font-size: 15px !important;
+    font-weight: 700;
+    background: #fdf2f8 !important;
+    color: #111827;
+}
+
+.baris-time-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.baris-time-picker .input-waktu-modern {
+    flex: 1;
+    min-width: 140px;
+    margin-bottom: 0 !important;
+}
+
+.kotak-Menit-Cepat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    padding: 6px 10px;
+    border-radius: 12px;
+}
+
+.label-menit-kecil {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.grup-menit-cepat {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-menit-cepat {
+    padding: 5px 8px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-menit-cepat:hover,
+.btn-menit-cepat.aktif {
+    background: #db2777;
+    color: #ffffff;
     border-color: #db2777;
-    background: white;
+}
+
+.petunjuk-waktu-spesifik {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.45;
+}
+
+.chip-tanggal-grup {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.chip-tanggal {
+    flex: 1;
+    min-width: 105px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    color: #374151;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.chip-tanggal:hover {
+    border-color: #f472b6;
+    background: #fdf2f8;
+}
+
+.chip-tanggal.aktif {
+    background: #db2777;
+    color: #ffffff;
+    border-color: #db2777;
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.22);
+}
+
+.slot-jam-wadah {
+    border-top: 1.5px dashed #f3f4f6;
+    padding-top: 18px;
+}
+
+.slot-jam-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.tanpa-margin {
+    margin: 0 !important;
 }
 
 .status-ketersediaan {
-    display: block;
-    margin: -14px 0 22px;
     font-size: 12.5px;
     color: #15803d;
-    font-weight: 500;
+    font-weight: 600;
+    background: #dcfce7;
+    padding: 4px 12px;
+    border-radius: 999px;
 }
 
-.opsi-kategori {
-    font-size: 11.5px;
-    color: #9ca3af;
+.select-jam-tersembunyi {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
 }
 
-.peringatan-pinalti {
-    background: #fffbeb;
-    border: 1.5px solid #fcd34d;
-    color: #92400e;
-    border-radius: 18px;
-    padding: 16px 20px;
-    margin: 0 auto 24px;
-    max-width: 680px;
-    font-size: 13.5px;
-    line-height: 1.6;
+.grid-slot-jam {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 10px;
 }
 
-.kotak-blokir {
-    background: white;
-    border: 2px solid #fecaca;
-    border-radius: 24px;
-    padding: 36px 32px;
-    max-width: 640px;
-    margin: 0 auto;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.08);
-}
-
-.kotak-blokir h2 {
-    margin: 0 0 12px;
-    color: #b91c1c;
-    font-size: 22px;
-}
-
-.kotak-blokir p {
-    color: #4b5563;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.info-blokir-detail {
+.chip-jam {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    background: #fef2f2;
-    padding: 14px 18px;
+    gap: 2px;
+    padding: 10px 8px;
     border-radius: 14px;
-    margin: 18px 0;
-    font-size: 14px;
-    color: #991b1b;
+    border: 1.5px solid #e5e7eb;
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.18s ease;
 }
 
-.catatan-blokir {
-    font-size: 12.5px !important;
-    color: #6b7280 !important;
+.chip-jam:hover:not(.penuh) {
+    border-color: #db2777;
+    background: #fdf2f8;
+    transform: translateY(-1px);
 }
 
-/* ===== Daftar Layanan (menimpa gaya bawaan dashboard.css) ===== */
-.daftar-opsi {
-    align-items: start;
-    max-height: 440px;
+.chip-jam.aktif {
+    background: #db2777;
+    color: #ffffff;
+    border-color: #db2777;
+    box-shadow: 0 6px 16px rgba(219, 39, 119, 0.26);
+}
+
+.chip-jam-angka {
+    font-size: 14.5px;
+    font-weight: 700;
+}
+
+.chip-jam-status {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #16a34a;
+}
+
+.chip-jam.aktif .chip-jam-status {
+    color: #fce7f3;
+}
+
+.chip-jam.penuh {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.chip-jam.penuh .chip-jam-status {
+    color: #ef4444;
+}
+
+/* ===== Seksi 2: Tab Kategori Stylist vs Therapist ===== */
+.tab-kategori-booking {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 680px) {
+    .tab-kategori-booking {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tab-kat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 2px solid #f3f4f6;
+    background: #f9fafb;
+    color: #374151;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-kat-item:hover {
+    border-color: #fbcfe8;
+    background: #fdf2f8;
+}
+
+.tab-kat-item.aktif {
+    border-color: #db2777;
+    background: #fdf2f8;
+    box-shadow: 0 6px 18px rgba(219, 39, 119, 0.1);
+}
+
+.tab-kat-ikon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tab-kat-teks {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tab-kat-teks strong {
+    font-size: 13.5px;
+    color: #111827;
+}
+
+.tab-kat-teks small {
+    font-size: 11.5px;
+    color: #6b7280;
+}
+
+/* ===== Kartu Tiket Layanan Modern (Tanpa Scrollbar Sempit) ===== */
+.daftar-opsi-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
 }
 
 .opsi-blok {
-    background: white;
+    background: #ffffff;
     border: 2px solid #f3f4f6;
-    border-radius: 16px;
-    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 18px;
+    transition: all 0.2s ease;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .opsi-blok:hover {
-    border-color: #fce7f3;
+    border-color: #f9a8d4;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(219, 39, 119, 0.07);
 }
 
 .opsi-blok.terpilih {
     border-color: #db2777;
-    background: #fdf2f8;
-    box-shadow: 0 6px 18px rgba(219, 39, 119, 0.08);
+    background: #fffbfd;
+    box-shadow: 0 10px 24px rgba(219, 39, 119, 0.12);
 }
 
 .opsi-blok.galat {
     border-color: #ef4444;
 }
 
-/* Kartu label di dalam blok tidak lagi memiliki border sendiri */
-.opsi-blok .opsi,
-.opsi-blok .opsi:hover,
-.opsi-blok .opsi:has(input:checked) {
+.opsi-blok .opsi {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 18px 14px;
     border: none;
     background: transparent;
-    border-radius: 0;
+    cursor: pointer;
 }
 
-.opsi-blok .opsi:has(input:disabled) {
-    cursor: not-allowed;
-    opacity: 0.6;
+.opsi-blok .opsi input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
-/* ===== Lencana Jabatan ===== */
+.opsi-baris-atas {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
 .lencana-jabatan {
     font-size: 11px;
     font-weight: 700;
-    padding: 4px 10px;
+    padding: 3px 10px;
     border-radius: 999px;
-    letter-spacing: 0.3px;
-    flex-shrink: 0;
 }
 
 .lencana-stylist {
@@ -189,79 +475,582 @@
     color: #15803d;
 }
 
+.lencana-durasi {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 3px 8px;
+    border-radius: 999px;
+}
+
+.opsi-nama {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.35;
+}
+
+.opsi-kategori {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.opsi-kanan-harga {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.opsi-harga {
+    color: #db2777;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+.indikator-pilih {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #fdf2f8;
+    color: #db2777;
+    border: 1.5px solid #fbcfe8;
+    transition: all 0.15s ease;
+}
+
+.opsi-blok.terpilih .indikator-pilih {
+    background: #db2777;
+    color: #ffffff;
+    border-color: #db2777;
+}
+
 .pilih-petugas {
     max-height: 0;
     opacity: 0;
-    padding: 0 20px;
-    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    padding: 0 18px;
+    background: #fdf2f8;
+    border-top: 1px dashed transparent;
+    transition: all 0.25s ease;
+    overflow: hidden;
 }
 
 .opsi-blok.terpilih .pilih-petugas {
-    max-height: 120px;
+    max-height: 130px;
     opacity: 1;
-    padding: 0 20px 16px;
+    padding: 12px 18px 16px;
+    border-top-color: #fbcfe8;
 }
 
 .petugas-label {
     display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #6b7280;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #9d174d;
     margin-bottom: 6px;
 }
 
 .select-petugas {
     width: 100%;
-    padding: 10px 14px;
-    border: 2px solid #fbcfe8;
-    border-radius: 12px;
+    padding: 9px 12px;
+    border: 1.5px solid #f9a8d4;
+    border-radius: 10px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
     color: #111827;
-    background: white;
+    background: #ffffff;
     cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.select-petugas:focus {
-    outline: none;
+/* ===== Seksi 3: Produk Add-On (Pencarian + Filter + Paginasi) ===== */
+.baris-filter-katalog {
+    margin-bottom: 16px;
+}
+
+.toolbar-produk-addon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.toolbar-produk-addon .search-input {
+    flex: 1;
+    min-width: 240px;
+}
+
+.filter-produk-grup {
+    display: flex;
+    gap: 8px;
+}
+
+.chip-filter-produk {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    color: #374151;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.chip-filter-produk:hover {
+    border-color: #f472b6;
+    background: #fdf2f8;
+}
+
+.chip-filter-produk.aktif {
+    background: #db2777;
+    color: #ffffff;
     border-color: #db2777;
-    box-shadow: 0 0 0 4px rgba(219, 39, 119, 0.1);
 }
 
-.petugas-kosong {
+.katalog-paginasi {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1.5px dashed #f3f4f6;
+}
+
+.info-halaman-katalog {
+    font-size: 12.5px;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.tombol-halaman-grup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-halaman {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-halaman:hover:not(:disabled) {
+    border-color: #db2777;
+    color: #db2777;
+    background: #fdf2f8;
+}
+
+.btn-halaman:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f9fafb;
+}
+
+.indikator-halaman {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #111827;
+    padding: 0 6px;
+}
+
+.daftar-produk-addon {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.kartu-addon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid #f3f4f6;
+    border-radius: 16px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.kartu-addon.aktif {
+    border-color: #db2777;
+    background: #fdf2f8;
+}
+
+.addon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.addon-nama {
+    font-size: 13.5px;
+    color: #111827;
+}
+
+.addon-harga {
+    font-size: 13px;
+    font-weight: 700;
+    color: #db2777;
+}
+
+.addon-meta {
+    font-size: 11.5px;
+    color: #6b7280;
+}
+
+.addon-kontrol {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-qty-addon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1.5px solid #e5e7eb;
+    background: #ffffff;
+    color: #111827;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.input-qty-addon {
+    width: 42px;
+    text-align: center;
+    padding: 5px 4px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* ===== Kolom Kanan: Sticky Booking Summary Card ===== */
+.portal-kanan {
+    position: sticky;
+    top: 92px;
+}
+
+.kartu-ringkasan-sticky {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 24px 26px;
+    border: 2px solid #fbcfe8;
+    box-shadow: 0 16px 38px rgba(157, 23, 77, 0.09);
+}
+
+.ringkasan-kepala {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid #fdf2f8;
+    margin-bottom: 14px;
+}
+
+.ringkasan-kepala h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.lencana-jadwal-live {
+    background: #fdf2f8;
+    color: #be185d;
+    border: 1px solid #fbcfe8;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.rincian-pilihan-live {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding-right: 4px;
+}
+
+.pilihan-kosong-live {
+    background: #f9fafb;
+    border: 1.5px dashed #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 12.5px;
+    color: #6b7280;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.item-live-baris {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #fdf2f8;
+    border: 1px solid #fce7f3;
+    font-size: 12.5px;
+}
+
+.item-live-kiri {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-live-nama {
+    font-weight: 700;
+    color: #111827;
+}
+
+.item-live-sub {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.item-live-harga {
+    font-weight: 700;
+    color: #db2777;
+    white-space: nowrap;
+}
+
+/* ===== Promo di Dalam Kartu Sticky ===== */
+.seksi-promo-sticky {
+    border-top: 1.5px dashed #f3f4f6;
+    padding-top: 14px;
+    margin-bottom: 14px;
+}
+
+.label-promo-kecil {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.daftar-promo-booking {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 170px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding-right: 4px;
+}
+
+.kartu-promo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px dashed #fbcfe8;
+    border-radius: 12px;
+    background: #fffbfd;
+}
+
+.kartu-promo-item.terpilih {
+    border-style: solid;
+    border-color: #db2777;
+    background: #fdf2f8;
+}
+
+.promo-kiri {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.promo-baris-kode {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lencana-kode-promo {
+    background: #db2777;
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+}
+
+.promo-potongan-teks {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #be185d;
+}
+
+.promo-nama-item {
+    font-size: 12.5px;
+    color: #111827;
+}
+
+.promo-syarat-item {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.btn-pilih-promo {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #db2777;
+    background: #ffffff;
+    color: #db2777;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.btn-pilih-promo:hover {
+    background: #db2777;
+    color: #ffffff;
+}
+
+.baris-input-promo {
+    display: flex;
+    gap: 8px;
+}
+
+.input-kode-promo {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.btn-reset-promo {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pesan-status-promo {
     display: block;
     font-size: 12px;
-    color: #9ca3af;
-    font-style: italic;
+    min-height: 16px;
+    margin-top: 6px;
 }
 
-/* Tampilkan keterangan "belum ada petugas" walau layanan tidak bisa dicentang */
-.opsi-blok:has(.petugas-kosong) .pilih-petugas {
-    max-height: 60px;
-    opacity: 1;
-    padding: 0 20px 14px;
+.pesan-status-promo.sukses { color: #15803d; font-weight: 600; }
+.pesan-status-promo.peringatan { color: #b45309; font-weight: 600; }
+.pesan-status-promo.info { color: #4b5563; }
+
+/* ===== Kotak Total & Tombol Submit ===== */
+.summary-box-rinci {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
 }
 
-/* ===== Pesan & Info ===== */
-.tidak-ditemukan {
-    display: none;
-    text-align: center;
-    color: #9ca3af;
-    font-size: 14px;
-    margin: 0 0 24px;
+.summary-baris {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #374151;
 }
 
-.tidak-ditemukan.tampil {
+.summary-baris-diskon {
+    color: #15803d;
+}
+
+.summary-baris-utama {
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1.5px solid #fbcfe8;
+}
+
+.estimasi-jadwal-teks {
     display: block;
+    font-size: 11.5px;
+    color: #6b7280;
+    margin-top: 2px;
 }
 
 .info-validasi {
     display: block;
     text-align: center;
     color: #b45309;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     min-height: 18px;
-    margin: -12px 0 8px;
+    margin-bottom: 8px;
+}
+
+.btn-konfirmasi-modern {
+    border-radius: 14px;
+    padding: 15px 20px;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.tidak-ditemukan {
+    display: none;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+    margin: 18px 0 0;
+}
+
+.tidak-ditemukan.tampil {
+    display: block;
+}
+
+.peringatan-pinalti {
+    background: #fffbeb;
+    border: 1.5px solid #fcd34d;
+    color: #92400e;
+    border-radius: 18px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.kotak-blokir {
+    background: white;
+    border: 2px solid #fecaca;
+    border-radius: 24px;
+    padding: 36px 32px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
 }

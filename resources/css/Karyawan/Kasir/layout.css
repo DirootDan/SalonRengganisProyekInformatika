@@ -120,6 +120,70 @@ body {
     font-size: 17px;
     width: 22px;
     text-align: center;
+    flex-shrink: 0;
+}
+
+.nav-item-teks {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+/* Pop-up Notif Angka Seperti Kuadrat di Menu Sidebar Kiri */
+.nav-kuadrat-notif {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    transform: translateY(-5px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+    flex-shrink: 0;
+}
+
+.nav-kuadrat-notif.kosong {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fbcfe8;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: none;
+}
+
+.nav-kuadrat-notif.ada-acc {
+    background: #ef4444;
+    color: #ffffff;
+    border: 1.5px solid #fecaca;
+}
+
+.nav-kuadrat-notif.ada-antrean {
+    background: #f59e0b;
+    color: #111827;
+    border: 1.5px solid #fde68a;
+}
+
+.nav-item.aktif .nav-kuadrat-notif.kosong {
+    background: #fce7f3;
+    color: #9d174d;
+    border-color: #fbcfe8;
+}
+
+.nav-item.aktif .nav-kuadrat-notif.ada-acc {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #fee2e2;
+}
+
+.nav-item.aktif .nav-kuadrat-notif.ada-antrean {
+    background: #d97706;
+    color: #ffffff;
+    border-color: #fef3c7;
 }
 
 .sidebar-kaki {
@@ -195,6 +259,28 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
+}
+
+.kuadrat-notif {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    background: #e5e7eb;
+    color: #4b5563;
+    transform: translateY(-4px);
+}
+
+.kuadrat-notif.aktif-kuning {
+    background: #d97706;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
 }
 
 .profil-staf {

@@ -13,11 +13,15 @@ class Karyawan extends Authenticatable
     use Notifiable, SoftDeletes;
 
     protected $table = 'karyawan';
+
     protected $primaryKey = 'id_karyawan';
 
-    public const JABATAN_MANAJER   = 'Manajer';
-    public const JABATAN_KASIR     = 'Kasir';
-    public const JABATAN_STYLIST   = 'Stylist';
+    public const JABATAN_MANAJER = 'Manajer';
+
+    public const JABATAN_KASIR = 'Kasir';
+
+    public const JABATAN_STYLIST = 'Stylist';
+
     public const JABATAN_THERAPIST = 'Therapist';
 
     public const DAFTAR_JABATAN = [
@@ -45,7 +49,7 @@ class Karyawan extends Authenticatable
                 $base = ! empty($karyawan->email)
                     ? explode('@', $karyawan->email)[0]
                     : Str::slug($karyawan->nama_staff, '_');
-                $karyawan->username = $base . '_' . substr(uniqid(), -4);
+                $karyawan->username = $base.'_'.substr(uniqid(), -4);
             }
         });
     }
@@ -68,20 +72,20 @@ class Karyawan extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password'      => 'hashed',
+            'password' => 'hashed',
             'persen_komisi' => 'decimal:2',
-            'aktif'         => 'boolean',
+            'aktif' => 'boolean',
         ];
     }
 
     public function rutePeran(): ?string
     {
         return match ($this->role_jabatan) {
-            self::JABATAN_MANAJER   => 'manajer.dashboard',
-            self::JABATAN_KASIR     => 'kasir.dashboard',
-            self::JABATAN_STYLIST   => 'stylist.dashboard',
+            self::JABATAN_MANAJER => 'manajer.dashboard',
+            self::JABATAN_KASIR => 'kasir.dashboard',
+            self::JABATAN_STYLIST => 'stylist.dashboard',
             self::JABATAN_THERAPIST => 'therapist.dashboard',
-            default                 => null,
+            default => null,
         };
     }
 

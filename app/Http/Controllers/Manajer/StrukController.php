@@ -19,10 +19,10 @@ class StrukController extends Controller
     {
         $data = $request->validated();
 
-        $data['tampil_logo']    = $request->boolean('tampil_logo');
+        $data['tampil_logo'] = $request->boolean('tampil_logo');
         $data['tampil_petugas'] = $request->boolean('tampil_petugas');
-        $data['tampil_kasir']   = $request->boolean('tampil_kasir');
-        $data['tampil_sosmed']  = $request->boolean('tampil_sosmed');
+        $data['tampil_kasir'] = $request->boolean('tampil_kasir');
+        $data['tampil_sosmed'] = $request->boolean('tampil_sosmed');
 
         PengaturanStruk::aktif()->update($data);
 

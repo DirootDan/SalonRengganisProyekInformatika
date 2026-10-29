@@ -2,7 +2,7 @@
 
 @section('judul', 'Kelola Layanan - Kasir Salon Rengganis')
 @section('header', 'Katalog Layanan Salon')
-@section('sub_header', 'Kelola daftar perawatan salon, harga layanan, dan jabatan petugas yang menangani.')
+@section('sub_header', 'Kelola daftar perawatan salon, durasi pengerjaan, harga layanan, dan jabatan petugas yang menangani.')
 
 @push('styles')
     @vite(['resources/css/Karyawan/Kasir/layanan.css'])
@@ -12,7 +12,7 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariLayanan" class="input-cari" placeholder="🔍 Cari nama perawatan...">
+                <input type="text" id="cariLayanan" class="input-cari" placeholder="Cari nama perawatan...">
                 <select id="filterPetugas" class="select-filter">
                     <option value="">Semua Petugas</option>
                     <option value="Stylist">Ditangani Stylist</option>
@@ -32,19 +32,22 @@
                         <th>Nama Layanan</th>
                         <th>Kategori</th>
                         <th>Jabatan Petugas</th>
+                        <th>Durasi &amp; Jeda</th>
                         <th>Harga Layanan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($layanan as $item)
+                        @php
+                            $jmlAktif = $item->jumlahReservasiAktif();
+                        @endphp
                         <tr class="baris-layanan"
                             data-nama="{{ strtolower($item->nama_layanan) }}"
                             data-jabatan="{{ $item->jabatan_petugas }}">
                             <td><strong>#{{ $item->id_layanan }}</strong></td>
                             <td>
                                 <div class="nama-layanan-sel">
-                                    <span class="ikon-layanan">✨</span>
                                     <strong>{{ $item->nama_layanan }}</strong>
                                 </div>
                             </td>
@@ -54,6 +57,10 @@
                                     {{ $item->jabatan_petugas }}
                                 </span>
                             </td>
+                            <td>
+                                <strong>{{ $item->durasi_menit }} menit</strong><br>
+                                <small>+ Jeda {{ $item->jeda_menit }} mnt</small>
+                            </td>
                             <td class="kolom-harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</td>
                             <td>
                                 <div class="aksi-grup">
@@ -61,14 +68,23 @@
                                             data-url-update="{{ route('kasir.layanan.update', $item->id_layanan) }}"
                                             data-nama-asli="{{ $item->nama_layanan }}"
                                             data-kategori="{{ $item->kategori }}"
+                                            data-durasi="{{ (int) $item->durasi_menit }}"
+                                            data-jeda="{{ (int) $item->jeda_menit }}"
                                             data-harga="{{ (int) $item->harga_layanan }}">
-                                        ✏️ Edit
+                                        Edit
                                     </button>
-                                    <form method="POST" action="{{ route('kasir.layanan.destroy', $item->id_layanan) }}" class="formHapusLayanan" data-nama="{{ $item->nama_layanan }}">
+                                    <form method="POST"
+                                          action="{{ route('kasir.layanan.destroy', $item->id_layanan) }}"
+                                          class="formHapusLayanan"
+                                          data-confirm-title="Hapus Layanan Perawatan"
+                                          data-confirm-item="{{ $item->nama_layanan }}"
+                                          data-confirm-impact="{{ $jmlAktif > 0 ? 'Perhatian: Layanan ini masih memiliki ' . $jmlAktif . ' reservasi aktif (Menunggu/Diterima) sehingga penghapusan akan ditolak server.' : 'Layanan ini akan diarsipkan dari katalog aktif.' }}"
+                                          data-confirm-label="Ya, Hapus Layanan"
+                                          data-nama="{{ $item->nama_layanan }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-aksi btn-hapus">
-                                            🗑️ Hapus
+                                            Hapus
                                         </button>
                                     </form>
                                 </div>
@@ -93,21 +109,33 @@
                 <input type="hidden" name="_method" id="methodLayanan" value="POST">
 
                 <div class="form-grup">
-                    <label class="form-label">Nama Layanan / Perawatan</label>
+                    <label class="form-label" for="inputNamaLayanan">Nama Layanan / Perawatan</label>
                     <input type="text" id="inputNamaLayanan" name="nama_layanan" class="form-input" placeholder="Contoh: Hair Spa Keratin" required>
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Kategori Layanan (Menentukan Jabatan Petugas)</label>
+                    <label class="form-label" for="inputJabatanLayanan">Kategori Layanan (Menentukan Jabatan Petugas)</label>
                     <select id="inputJabatanLayanan" name="kategori" class="form-select" required>
                         <option value="Rambut">Rambut (Otomatis Ditangani Stylist)</option>
                         <option value="Perawatan">Perawatan Wajah, Kuku &amp; Tubuh (Otomatis Ditangani Therapist)</option>
                     </select>
                 </div>
 
+                <div class="form-dua-kolom">
+                    <div class="form-grup">
+                        <label class="form-label" for="inputDurasiLayanan">Durasi Pengerjaan (Menit)</label>
+                        <input type="number" id="inputDurasiLayanan" name="durasi_menit" class="form-input" min="15" max="480" step="5" placeholder="Contoh: 60" required>
+                    </div>
+
+                    <div class="form-grup">
+                        <label class="form-label" for="inputJedaLayanan">Jeda Persiapan (Menit)</label>
+                        <input type="number" id="inputJedaLayanan" name="jeda_menit" class="form-input" min="0" max="120" step="5" value="15" required>
+                    </div>
+                </div>
+
                 <div class="form-grup">
-                    <label class="form-label">Harga Layanan (Rp)</label>
-                    <input type="number" id="inputHargaLayanan" name="harga_layanan" class="form-input" min="0" step="1000" placeholder="Contoh: 120000" required>
+                    <label class="form-label" for="inputHargaLayanan">Harga Layanan (Rp)</label>
+                    <input type="number" id="inputHargaLayanan" name="harga_layanan" class="form-input" min="0" step="1" placeholder="Contoh: 120000" required>
                 </div>
 
                 <div class="modal-kaki">

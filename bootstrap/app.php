@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Middleware\CekBlokirBooking;
+use App\Http\Middleware\CekPeran;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,16 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->alias([
-        'peran'          => \App\Http\Middleware\CekPeran::class,
-        'cek.blokir'     => \App\Http\Middleware\CekBlokirBooking::class,
-    ]);
+        $middleware->alias([
+            'peran' => CekPeran::class,
+            'cek.blokir' => CekBlokirBooking::class,
+        ]);
 
-    // Kalau belum login: pelanggan ke login pelanggan, sisanya ke login karyawan
-    $middleware->redirectGuestsTo(fn (\Illuminate\Http\Request $request) =>
-        $request->is('pelanggan/*') ? '/pelanggan/login' : route('login')
-    );
-})
+        // Kalau belum login: pelanggan ke login pelanggan, sisanya ke login karyawan
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('pelanggan/*') ? '/pelanggan/login' : route('login')
+        );
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

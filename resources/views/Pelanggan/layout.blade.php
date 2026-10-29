@@ -100,6 +100,8 @@
 
     <footer class="footer">Salon Rengganis &bull; Terima kasih sudah mempercayakan kecantikan Anda</footer>
 
+    <x-confirm-modal />
+
     @vite(['resources/js/pelanggan/layout.js'])
     @stack('scripts')
 </body>

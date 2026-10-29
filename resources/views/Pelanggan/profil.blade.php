@@ -44,7 +44,11 @@
 
                 @if ($pelanggan->foto_profil)
                     <form method="POST" action="{{ route('pelanggan.profil.foto.hapus') }}"
-                          onsubmit="return confirm('Hapus foto profil Anda?')">
+                          class="form-hapus-foto"
+                          data-confirm-title="Konfirmasi Hapus Foto Profil"
+                          data-confirm-item="Foto Profil {{ $pelanggan->nama_cust }}"
+                          data-confirm-description="Apakah Anda yakin ingin menghapus foto profil Anda saat ini?"
+                          data-confirm-button="Ya, Hapus Foto">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-foto-hapus">Hapus Foto</button>

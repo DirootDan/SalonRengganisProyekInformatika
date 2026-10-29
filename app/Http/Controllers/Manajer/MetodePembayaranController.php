@@ -18,7 +18,7 @@ class MetodePembayaranController extends Controller
     public function store(MetodePembayaranRequest $request)
     {
         $data = $request->validated();
-        $data['ikon']  = MetodePembayaran::ikonUntukKategori($data['kategori']);
+        $data['ikon'] = MetodePembayaran::ikonUntukKategori($data['kategori']);
         $data['aktif'] = true;
 
         MetodePembayaran::create($data);

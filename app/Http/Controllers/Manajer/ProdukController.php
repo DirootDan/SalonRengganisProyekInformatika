@@ -34,6 +34,14 @@ class ProdukController extends Controller
 
     public function destroy(Produk $produk)
     {
+        $reservasiAktif = $produk->jumlahReservasiAktif();
+
+        if ($reservasiAktif > 0) {
+            return back()->withErrors([
+                'produk' => "Produk '{$produk->nama_produk}' tidak dapat dihapus karena masih dipesan pada {$reservasiAktif} reservasi aktif (Menunggu/Diterima).",
+            ]);
+        }
+
         // Diarsipkan dengan soft-delete agar histori penjualan produk pada nota lama tidak rusak
         $produk->delete();
         Cache::forget(DashboardController::CACHE_KEY_RINGKASAN);

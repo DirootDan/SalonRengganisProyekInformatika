@@ -43,6 +43,8 @@
         </main>
     </div>
 
+    <x-confirm-modal />
+
     @vite(['resources/js/Karyawan/Stylist/dashboard.js'])
     @stack('scripts')
 </body>

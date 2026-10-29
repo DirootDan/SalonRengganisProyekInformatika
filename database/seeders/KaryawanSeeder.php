@@ -22,10 +22,10 @@ class KaryawanSeeder extends Seeder
             Karyawan::updateOrCreate(
                 ['username' => $username],
                 [
-                    'nama_staff'   => $nama,
-                    'email'        => $email,
+                    'nama_staff' => $nama,
+                    'email' => $email,
                     'role_jabatan' => $role,
-                    'password'     => $password,
+                    'password' => $password,
                 ]
             );
         }

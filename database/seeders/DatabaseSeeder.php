@@ -31,14 +31,14 @@ class DatabaseSeeder extends Seeder
         PengaturanKebijakan::updateOrCreate(
             ['id' => 1],
             [
-                'batas_pelanggaran'        => 5,
+                'batas_pelanggaran' => 5,
                 'rentang_hari_pelanggaran' => 90,
-                'lama_blokir_hari'         => 7,
-                'lama_blokir_kedua_hari'   => 30,
-                'blokir_ketiga_permanen'   => true,
-                'toleransi_bayar_hari'     => 1,
-                'batas_batal_jam'          => 3,
-                'kebijakan_aktif'          => true,
+                'lama_blokir_hari' => 7,
+                'lama_blokir_kedua_hari' => 30,
+                'blokir_ketiga_permanen' => true,
+                'toleransi_bayar_hari' => 1,
+                'batas_batal_jam' => 3,
+                'kebijakan_aktif' => true,
             ]
         );
 
@@ -57,11 +57,11 @@ class DatabaseSeeder extends Seeder
             MetodePembayaran::updateOrCreate(
                 ['nama_metode' => $nama],
                 [
-                    'kategori'       => $kat,
+                    'kategori' => $kat,
                     'nomor_rekening' => $rek,
-                    'atas_nama'      => $an,
-                    'ikon'           => $ikon,
-                    'aktif'          => $aktif,
+                    'atas_nama' => $an,
+                    'ikon' => $ikon,
+                    'aktif' => $aktif,
                 ]
             );
         }
@@ -81,12 +81,12 @@ class DatabaseSeeder extends Seeder
             $mapKaryawan[$email] = Karyawan::updateOrCreate(
                 ['email' => $email],
                 [
-                    'nama_staff'    => $nama,
-                    'role_jabatan'  => $jabatan,
+                    'nama_staff' => $nama,
+                    'role_jabatan' => $jabatan,
                     'persen_komisi' => $komisi,
-                    'aktif'         => true,
-                    'username'      => $username,
-                    'password'      => 'password123',
+                    'aktif' => true,
+                    'username' => $username,
+                    'password' => 'password123',
                 ]
             );
         }
@@ -109,9 +109,9 @@ class DatabaseSeeder extends Seeder
             $mapLayanan[$nama] = Layanan::updateOrCreate(
                 ['nama_layanan' => $nama],
                 [
-                    'kategori'        => $kategori,
+                    'kategori' => $kategori,
                     'jabatan_petugas' => $jabatan,
-                    'harga_layanan'   => $harga,
+                    'harga_layanan' => $harga,
                 ]
             );
         }
@@ -130,7 +130,7 @@ class DatabaseSeeder extends Seeder
             $mapProduk[$nama] = Produk::updateOrCreate(
                 ['nama_produk' => $nama],
                 [
-                    'stok_produk'  => $stok,
+                    'stok_produk' => $stok,
                     'harga_produk' => $harga,
                 ]
             );
@@ -140,35 +140,35 @@ class DatabaseSeeder extends Seeder
         Promo::updateOrCreate(
             ['kode_promo' => 'CANTIK15'],
             [
-                'nama_promo'     => 'Diskon Spesial Perawatan 15%',
-                'tipe_diskon'    => 'Persentase',
-                'nilai_diskon'   => 15,
-                'min_transaksi'  => 100000,
-                'berlaku_mulai'  => now()->subDays(10)->toDateString(),
+                'nama_promo' => 'Diskon Spesial Perawatan 15%',
+                'tipe_diskon' => 'Persentase',
+                'nilai_diskon' => 15,
+                'min_transaksi' => 100000,
+                'berlaku_mulai' => now()->subDays(10)->toDateString(),
                 'berlaku_sampai' => now()->addMonths(3)->toDateString(),
-                'aktif'          => true,
+                'aktif' => true,
             ]
         );
 
         Promo::updateOrCreate(
             ['kode_promo' => 'HEMAT25'],
             [
-                'nama_promo'     => 'Potongan Langsung Rp 25.000',
-                'tipe_diskon'    => 'Nominal',
-                'nilai_diskon'   => 25000,
-                'min_transaksi'  => 150000,
-                'berlaku_mulai'  => now()->subDays(5)->toDateString(),
+                'nama_promo' => 'Potongan Langsung Rp 25.000',
+                'tipe_diskon' => 'Nominal',
+                'nilai_diskon' => 25000,
+                'min_transaksi' => 150000,
+                'berlaku_mulai' => now()->subDays(5)->toDateString(),
                 'berlaku_sampai' => now()->addMonths(2)->toDateString(),
-                'aktif'          => true,
+                'aktif' => true,
             ]
         );
 
         // 7. Data Contoh Booking dengan Berbagai Status & Pelanggan Hampir Terblokir (Maya Sari: 4/5 Pelanggaran)
         if (Reservasi::count() === 0) {
-            $rina  = Pelanggan::where('email', 'rina@gmail.com')->first();
-            $dewi  = Pelanggan::where('email', 'dewi.lestari@gmail.com')->first();
-            $siti  = Pelanggan::where('email', 'siti.nurhaliza@yahoo.com')->first();
-            $maya  = Pelanggan::where('email', 'maya.sari@gmail.com')->first();
+            $rina = Pelanggan::where('email', 'rina@gmail.com')->first();
+            $dewi = Pelanggan::where('email', 'dewi.lestari@gmail.com')->first();
+            $siti = Pelanggan::where('email', 'siti.nurhaliza@yahoo.com')->first();
+            $maya = Pelanggan::where('email', 'maya.sari@gmail.com')->first();
 
             $sinta = $mapKaryawan['sinta@rengganis.com'];
             $nadia = $mapKaryawan['nadia@rengganis.com'];
@@ -176,55 +176,55 @@ class DatabaseSeeder extends Seeder
             $citra = $mapKaryawan['citra@rengganis.com'];
             $kasir = $mapKaryawan['kasir@rengganis.com'];
 
-            $potong    = $mapLayanan['Potong & Blow Rambut'];
+            $potong = $mapLayanan['Potong & Blow Rambut'];
             $creambath = $mapLayanan['Creambath Tradisional'];
-            $hairSpa   = $mapLayanan['Hair Spa Keratin'];
-            $facial    = $mapLayanan['Facial Wajah Glowing'];
-            $totok     = $mapLayanan['Totok Wajah & Masker Emas'];
+            $hairSpa = $mapLayanan['Hair Spa Keratin'];
+            $facial = $mapLayanan['Facial Wajah Glowing'];
+            $totok = $mapLayanan['Totok Wajah & Masker Emas'];
 
             // A. Status SELESAI + Transaksi Lunas (Kemarin) -> untuk demo Laporan & Komisi
             if ($rina) {
                 $resSelesai = Reservasi::create([
                     'id_pelanggan' => $rina->id_pelanggan,
-                    'id_karyawan'  => $sinta->id_karyawan,
-                    'tgl_booking'  => now()->subDay()->toDateString(),
-                    'jam_booking'  => '10:00',
-                    'status'       => Reservasi::STATUS_SELESAI,
+                    'id_karyawan' => $sinta->id_karyawan,
+                    'tgl_booking' => now()->subDay()->toDateString(),
+                    'jam_booking' => '10:00',
+                    'status' => Reservasi::STATUS_SELESAI,
                 ]);
 
                 $resSelesai->layanan()->attach([
                     $hairSpa->id_layanan => [
-                        'id_karyawan'    => $sinta->id_karyawan,
+                        'id_karyawan' => $sinta->id_karyawan,
                         'harga_saat_ini' => 135000,
-                        'persen_komisi'  => 15,
+                        'persen_komisi' => 15,
                         'nominal_komisi' => 20250,
                         'status_layanan' => 'Selesai',
                     ],
                     $facial->id_layanan => [
-                        'id_karyawan'    => $laras->id_karyawan,
+                        'id_karyawan' => $laras->id_karyawan,
                         'harga_saat_ini' => 120000,
-                        'persen_komisi'  => 20,
+                        'persen_komisi' => 20,
                         'nominal_komisi' => 24000,
                         'status_layanan' => 'Selesai',
                     ],
                 ]);
 
                 $trx = Transaksi::create([
-                    'id_reservasi'   => $resSelesai->id_reservasi,
-                    'id_karyawan'    => $kasir->id_karyawan,
-                    'kode_promo'     => 'HEMAT25',
-                    'diskon'         => 25000,
-                    'total_bayar'    => 295000,
-                    'nominal_uang'   => 300000,
-                    'kembalian'      => 5000,
-                    'metode_bayar'   => 'Tunai (Cash)',
+                    'id_reservasi' => $resSelesai->id_reservasi,
+                    'id_karyawan' => $kasir->id_karyawan,
+                    'kode_promo' => 'HEMAT25',
+                    'diskon' => 25000,
+                    'total_bayar' => 295000,
+                    'nominal_uang' => 300000,
+                    'kembalian' => 5000,
+                    'metode_bayar' => 'Tunai (Cash)',
                     'komisi_stylist' => 44250,
                 ]);
 
                 $serum = $mapProduk['Serum Vitamin Rambut Keratin 100ml'] ?? null;
                 if ($serum) {
                     $trx->produk()->attach($serum->id_produk, [
-                        'jumlah'         => 1,
+                        'jumlah' => 1,
                         'harga_saat_ini' => 65000,
                     ]);
                 }
@@ -232,24 +232,24 @@ class DatabaseSeeder extends Seeder
                 // B. Status DITERIMA Hari Ini (untuk demo Antrean Hari Ini, Jadwal Stylist/Therapist, dan POS Kasir)
                 $resDiterima = Reservasi::create([
                     'id_pelanggan' => $rina->id_pelanggan,
-                    'id_karyawan'  => $sinta->id_karyawan,
-                    'tgl_booking'  => now()->toDateString(),
-                    'jam_booking'  => '14:00',
-                    'status'       => Reservasi::STATUS_DITERIMA,
+                    'id_karyawan' => $sinta->id_karyawan,
+                    'tgl_booking' => now()->toDateString(),
+                    'jam_booking' => '14:00',
+                    'status' => Reservasi::STATUS_DITERIMA,
                 ]);
 
                 $resDiterima->layanan()->attach([
                     $creambath->id_layanan => [
-                        'id_karyawan'    => $sinta->id_karyawan,
+                        'id_karyawan' => $sinta->id_karyawan,
                         'harga_saat_ini' => 85000,
-                        'persen_komisi'  => 15,
+                        'persen_komisi' => 15,
                         'nominal_komisi' => 12750,
                         'status_layanan' => 'Menunggu',
                     ],
                     $totok->id_layanan => [
-                        'id_karyawan'    => $citra->id_karyawan,
+                        'id_karyawan' => $citra->id_karyawan,
                         'harga_saat_ini' => 95000,
-                        'persen_komisi'  => 20,
+                        'persen_komisi' => 20,
                         'nominal_komisi' => 19000,
                         'status_layanan' => 'Menunggu',
                     ],
@@ -266,16 +266,16 @@ class DatabaseSeeder extends Seeder
                 // C. Status MENUNGGU Besok (untuk demo Permintaan Booking Kasir)
                 $resMenunggu1 = Reservasi::create([
                     'id_pelanggan' => $rina->id_pelanggan,
-                    'id_karyawan'  => $nadia->id_karyawan,
-                    'tgl_booking'  => now()->addDay()->toDateString(),
-                    'jam_booking'  => '10:00',
-                    'status'       => Reservasi::STATUS_MENUNGGU,
+                    'id_karyawan' => $nadia->id_karyawan,
+                    'tgl_booking' => now()->addDay()->toDateString(),
+                    'jam_booking' => '10:00',
+                    'status' => Reservasi::STATUS_MENUNGGU,
                 ]);
 
                 $resMenunggu1->layanan()->attach($potong->id_layanan, [
-                    'id_karyawan'    => $nadia->id_karyawan,
+                    'id_karyawan' => $nadia->id_karyawan,
                     'harga_saat_ini' => 60000,
-                    'persen_komisi'  => 15,
+                    'persen_komisi' => 15,
                     'nominal_komisi' => 9000,
                     'status_layanan' => 'Menunggu',
                 ]);
@@ -285,35 +285,35 @@ class DatabaseSeeder extends Seeder
                 // Status MENUNGGU kedua
                 $resMenunggu2 = Reservasi::create([
                     'id_pelanggan' => $dewi->id_pelanggan,
-                    'id_karyawan'  => $laras->id_karyawan,
-                    'tgl_booking'  => now()->addDay()->toDateString(),
-                    'jam_booking'  => '13:00',
-                    'status'       => Reservasi::STATUS_MENUNGGU,
+                    'id_karyawan' => $laras->id_karyawan,
+                    'tgl_booking' => now()->addDay()->toDateString(),
+                    'jam_booking' => '13:00',
+                    'status' => Reservasi::STATUS_MENUNGGU,
                 ]);
 
                 $resMenunggu2->layanan()->attach($facial->id_layanan, [
-                    'id_karyawan'    => $laras->id_karyawan,
+                    'id_karyawan' => $laras->id_karyawan,
                     'harga_saat_ini' => 120000,
-                    'persen_komisi'  => 20,
+                    'persen_komisi' => 20,
                     'nominal_komisi' => 24000,
                     'status_layanan' => 'Menunggu',
                 ]);
 
                 // Status DITOLAK (2 hari lalu)
                 $resDitolak = Reservasi::create([
-                    'id_pelanggan'     => $dewi->id_pelanggan,
-                    'id_karyawan'      => $sinta->id_karyawan,
-                    'tgl_booking'      => now()->subDays(2)->toDateString(),
-                    'jam_booking'      => '16:00',
-                    'status'           => Reservasi::STATUS_DITOLAK,
+                    'id_pelanggan' => $dewi->id_pelanggan,
+                    'id_karyawan' => $sinta->id_karyawan,
+                    'tgl_booking' => now()->subDays(2)->toDateString(),
+                    'jam_booking' => '16:00',
+                    'status' => Reservasi::STATUS_DITOLAK,
                     'alasan_penolakan' => 'Jadwal peralatan steamer rambut sedang dalam perawatan berkala.',
-                    'dibatalkan_oleh'  => 'Kasir',
+                    'dibatalkan_oleh' => 'Kasir',
                 ]);
 
                 $resDitolak->layanan()->attach($hairSpa->id_layanan, [
-                    'id_karyawan'    => $sinta->id_karyawan,
+                    'id_karyawan' => $sinta->id_karyawan,
                     'harga_saat_ini' => 135000,
-                    'persen_komisi'  => 15,
+                    'persen_komisi' => 15,
                     'nominal_komisi' => 20250,
                     'status_layanan' => 'Menunggu',
                 ]);
@@ -330,19 +330,19 @@ class DatabaseSeeder extends Seeder
             if ($siti) {
                 // Status DIBATALKAN oleh Pelanggan
                 $resBatal = Reservasi::create([
-                    'id_pelanggan'     => $siti->id_pelanggan,
-                    'id_karyawan'      => $citra->id_karyawan,
-                    'tgl_booking'      => now()->subDays(3)->toDateString(),
-                    'jam_booking'      => '11:00',
-                    'status'           => Reservasi::STATUS_DIBATALKAN,
+                    'id_pelanggan' => $siti->id_pelanggan,
+                    'id_karyawan' => $citra->id_karyawan,
+                    'tgl_booking' => now()->subDays(3)->toDateString(),
+                    'jam_booking' => '11:00',
+                    'status' => Reservasi::STATUS_DIBATALKAN,
                     'alasan_penolakan' => 'Dibatalkan oleh pelanggan sebelum batas waktu.',
-                    'dibatalkan_oleh'  => 'Pelanggan',
+                    'dibatalkan_oleh' => 'Pelanggan',
                 ]);
 
                 $resBatal->layanan()->attach($totok->id_layanan, [
-                    'id_karyawan'    => $citra->id_karyawan,
+                    'id_karyawan' => $citra->id_karyawan,
                     'harga_saat_ini' => 95000,
-                    'persen_komisi'  => 20,
+                    'persen_komisi' => 20,
                     'nominal_komisi' => 19000,
                     'status_layanan' => 'Menunggu',
                 ]);
@@ -354,19 +354,19 @@ class DatabaseSeeder extends Seeder
                 foreach ($hariHangus as $idx => $hariLalu) {
                     $tgl = now()->subDays($hariLalu)->toDateString();
                     $resHangus = Reservasi::create([
-                        'id_pelanggan'         => $maya->id_pelanggan,
-                        'id_karyawan'          => $sinta->id_karyawan,
-                        'tgl_booking'          => $tgl,
-                        'jam_booking'          => sprintf('%02d:00', 10 + $idx),
-                        'status'               => Reservasi::STATUS_HANGUS,
+                        'id_pelanggan' => $maya->id_pelanggan,
+                        'id_karyawan' => $sinta->id_karyawan,
+                        'tgl_booking' => $tgl,
+                        'jam_booking' => sprintf('%02d:00', 10 + $idx),
+                        'status' => Reservasi::STATUS_HANGUS,
                         'pelanggaran_dihitung' => true,
-                        'alasan_penolakan'     => 'Melewati batas waktu pembayaran H+1 pukul 23:59.',
+                        'alasan_penolakan' => 'Melewati batas waktu pembayaran H+1 pukul 23:59.',
                     ]);
 
                     $resHangus->layanan()->attach($potong->id_layanan, [
-                        'id_karyawan'    => $sinta->id_karyawan,
+                        'id_karyawan' => $sinta->id_karyawan,
                         'harga_saat_ini' => 60000,
-                        'persen_komisi'  => 15,
+                        'persen_komisi' => 15,
                         'nominal_komisi' => 9000,
                         'status_layanan' => 'Menunggu',
                     ]);
@@ -374,17 +374,17 @@ class DatabaseSeeder extends Seeder
                     RiwayatPelanggaran::create([
                         'id_pelanggan' => $maya->id_pelanggan,
                         'id_reservasi' => $resHangus->id_reservasi,
-                        'jenis'        => 'Pelanggaran',
-                        'tanggal'      => $tgl,
-                        'keterangan'   => "Reservasi #{$resHangus->id_reservasi} tanggal " . now()->subDays($hariLalu)->format('d/m/Y') . " hangus karena tidak diselesaikan pembayarannya.",
+                        'jenis' => 'Pelanggaran',
+                        'tanggal' => $tgl,
+                        'keterangan' => "Reservasi #{$resHangus->id_reservasi} tanggal ".now()->subDays($hariLalu)->format('d/m/Y').' hangus karena tidak diselesaikan pembayarannya.',
                     ]);
                 }
 
                 $maya->update([
                     'jumlah_pelanggaran' => 4,
                     'jumlah_kali_blokir' => 0,
-                    'diblokir_permanen'  => false,
-                    'diblokir_sampai'    => null,
+                    'diblokir_permanen' => false,
+                    'diblokir_sampai' => null,
                 ]);
 
                 NotifikasiPelanggan::kirim(

@@ -134,6 +134,8 @@
     <!-- Notifikasi Toast Interaktif -->
     <div id="toastNotif" class="toast-notif"></div>
 
+    <x-confirm-modal />
+
     @vite(['resources/js/Manajer/layout.js'])
     @stack('scripts')
 </body>

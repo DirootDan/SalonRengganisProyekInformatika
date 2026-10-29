@@ -74,10 +74,14 @@
                                             data-aktif="{{ $item->aktif ? '1' : '0' }}">
                                         ✏️ Ubah
                                     </button>
-                                    <form method="POST" action="{{ route('manajer.promo.hapus', $item->id_promo) }}" class="form-hapus-promo" data-kode="{{ $item->kode_promo }}">
+                                    <form method="POST" action="{{ route('manajer.promo.hapus', $item->id_promo) }}"
+                                          class="form-hapus-promo"
+                                          data-kode="{{ $item->kode_promo }}"
+                                          data-confirm-title="Konfirmasi Hapus Program Promo"
+                                          data-confirm-item="{{ $item->kode_promo }} — {{ $item->nama_promo }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-aksi btn-hapus">🗑️ Hapus</button>
+                                        <button type="submit" class="btn-aksi btn-hapus">Hapus</button>
                                     </form>
                                 </div>
                             </td>
@@ -138,7 +142,7 @@
                 <div class="form-dua-kolom">
                     <div class="form-grup">
                         <label class="form-label">Minimal Transaksi (Rp)</label>
-                        <input type="number" name="min_transaksi" id="inputMinPromo" class="form-input" min="0" step="5000" placeholder="Contoh: 150000" required>
+                        <input type="number" name="min_transaksi" id="inputMinPromo" class="form-input" min="0" step="1" placeholder="Contoh: 150000" required>
                     </div>
 
                     <div class="form-grup">

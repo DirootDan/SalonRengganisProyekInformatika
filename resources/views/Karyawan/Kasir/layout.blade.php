@@ -9,6 +9,12 @@
     @stack('styles')
 </head>
 <body>
+    @php
+        $notifMenunggu = \App\Models\Reservasi::whereIn('status', [\App\Models\Reservasi::STATUS_MENUNGGU, 'pending'])->count();
+        $notifAntrean  = \App\Models\Reservasi::where('status', \App\Models\Reservasi::STATUS_DITERIMA)
+            ->doesntHave('transaksi')
+            ->count();
+    @endphp
 
     <div class="kasir-shell">
         <aside class="sidebar" id="sidebar">
@@ -25,15 +31,27 @@
                     <span class="nav-label">TRANSAKSI &amp; RESERVASI</span>
                     <a href="{{ route('kasir.dashboard') }}" class="nav-item {{ request()->routeIs('kasir.dashboard') ? 'aktif' : '' }}">
                         <span class="nav-ikon">🖥️</span>
-                        <span>Dashboard Transaksi</span>
+                        <span class="nav-item-teks">Dashboard Transaksi</span>
                     </a>
                     <a href="{{ route('kasir.permintaan') }}" class="nav-item {{ request()->routeIs('kasir.permintaan') ? 'aktif' : '' }}">
                         <span class="nav-ikon">📩</span>
-                        <span>Permintaan Booking</span>
+                        <span class="nav-item-teks">
+                            Permintaan Booking
+                            <sup class="nav-kuadrat-notif {{ $notifMenunggu > 0 ? 'ada-acc' : 'kosong' }}"
+                                 title="{{ $notifMenunggu }} permintaan booking menunggu ACC">
+                                {{ $notifMenunggu > 99 ? '99+' : $notifMenunggu }}
+                            </sup>
+                        </span>
                     </a>
                     <a href="{{ route('kasir.antrean') }}" class="nav-item {{ request()->routeIs('kasir.antrean') ? 'aktif' : '' }}">
                         <span class="nav-ikon">⏳</span>
-                        <span>Antrean Hari Ini</span>
+                        <span class="nav-item-teks">
+                            Antrean Hari Ini
+                            <sup class="nav-kuadrat-notif {{ $notifAntrean > 0 ? 'ada-antrean' : 'kosong' }}"
+                                 title="{{ $notifAntrean }} antrean siap diproses di kasir">
+                                {{ $notifAntrean > 99 ? '99+' : $notifAntrean }}
+                            </sup>
+                        </span>
                     </a>
                 </div>
 
@@ -126,6 +144,8 @@
     </div>
 
     <div id="toastNotif" class="toast-notif"></div>
+
+    <x-confirm-modal />
 
     @vite(['resources/js/Karyawan/Kasir/layout.js'])
     @stack('scripts')

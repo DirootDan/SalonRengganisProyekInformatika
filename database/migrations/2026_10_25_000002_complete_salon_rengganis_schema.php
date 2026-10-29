@@ -214,31 +214,31 @@ return new class extends Migration
 
         if (DB::table('pengaturan_kebijakan')->count() === 0) {
             DB::table('pengaturan_kebijakan')->insert([
-                'batas_pelanggaran'    => 5,
-                'lama_blokir_hari'     => 7,
+                'batas_pelanggaran' => 5,
+                'lama_blokir_hari' => 7,
                 'toleransi_bayar_hari' => 1,
-                'batas_batal_jam'      => 3,
-                'kebijakan_aktif'      => true,
-                'created_at'           => now(),
-                'updated_at'           => now(),
+                'batas_batal_jam' => 3,
+                'kebijakan_aktif' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 
         if (DB::table('pengaturan_struk')->count() === 0) {
             DB::table('pengaturan_struk')->insert([
-                'nama_salon'     => 'SALON RENGGANIS',
-                'slogan'         => 'Pusat Perawatan Kecantikan & Rambut',
-                'alamat'         => 'Jl. Paingan No. 88, Maguwoharjo, Sleman',
-                'telepon'        => '0812-3456-7890',
-                'instagram'      => '@salonrengganis.id',
-                'teks_header'    => 'Selamat Datang di Salon Rengganis',
-                'teks_footer'    => 'Terima kasih atas kunjungan Anda! Simpan struk ini sebagai bukti pembayaran yang sah.',
-                'tampil_logo'    => true,
+                'nama_salon' => 'SALON RENGGANIS',
+                'slogan' => 'Pusat Perawatan Kecantikan & Rambut',
+                'alamat' => 'Jl. Paingan No. 88, Maguwoharjo, Sleman',
+                'telepon' => '0812-3456-7890',
+                'instagram' => '@salonrengganis.id',
+                'teks_header' => 'Selamat Datang di Salon Rengganis',
+                'teks_footer' => 'Terima kasih atas kunjungan Anda! Simpan struk ini sebagai bukti pembayaran yang sah.',
+                'tampil_logo' => true,
                 'tampil_petugas' => true,
-                'tampil_kasir'   => true,
-                'tampil_sosmed'  => true,
-                'created_at'     => now(),
-                'updated_at'     => now(),
+                'tampil_kasir' => true,
+                'tampil_sosmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 

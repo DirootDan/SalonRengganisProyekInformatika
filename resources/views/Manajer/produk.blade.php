@@ -69,10 +69,14 @@
                                             data-harga="{{ (int) $item->harga_produk }}">
                                         ✏️ Ubah
                                     </button>
-                                    <form method="POST" action="{{ route('manajer.produk.hapus', $item->id_produk) }}" class="form-hapus-produk" data-nama="{{ $item->nama_produk }}">
+                                    <form method="POST" action="{{ route('manajer.produk.hapus', $item->id_produk) }}"
+                                          class="form-hapus-produk"
+                                          data-nama="{{ $item->nama_produk }}"
+                                          data-confirm-title="Konfirmasi Hapus Produk"
+                                          data-confirm-item="{{ $item->nama_produk }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-aksi btn-hapus">🗑️ Hapus</button>
+                                        <button type="submit" class="btn-aksi btn-hapus">Hapus</button>
                                     </form>
                                 </div>
                             </td>
@@ -108,7 +112,7 @@
 
                     <div class="form-grup">
                         <label class="form-label">Harga Jual (Rp)</label>
-                        <input type="number" name="harga_produk" id="inputHargaProduk" class="form-input" min="0" step="1000" placeholder="Contoh: 65000" required>
+                        <input type="number" name="harga_produk" id="inputHargaProduk" class="form-input" min="0" step="1" placeholder="Contoh: 65000" required>
                     </div>
                 </div>
 

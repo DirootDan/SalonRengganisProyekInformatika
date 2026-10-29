@@ -22,7 +22,7 @@ class LayananSeeder extends Seeder
             Layanan::updateOrCreate(
                 ['nama_layanan' => $nama],
                 [
-                    'harga_layanan'   => $harga,
+                    'harga_layanan' => $harga,
                     'jabatan_petugas' => $jabatan,
                 ]
             );

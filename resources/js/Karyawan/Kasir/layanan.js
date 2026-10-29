@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputNama = document.getElementById('inputNamaLayanan');
     const inputJabatan = document.getElementById('inputJabatanLayanan');
     const inputHarga = document.getElementById('inputHargaLayanan');
+    const inputDurasi = document.getElementById('inputDurasiLayanan');
+    const inputJeda = document.getElementById('inputJedaLayanan');
 
     function bukaModal() {
         if (modal) modal.classList.add('tampil');
@@ -45,6 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reset();
             form.action = btnTambah.getAttribute('data-url-store');
             methodInput.value = 'POST';
+            if (inputDurasi) inputDurasi.value = '';
+            if (inputJeda) inputJeda.value = '15';
             bukaModal();
         });
     }
@@ -57,20 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
             inputNama.value = btn.getAttribute('data-nama-asli') || '';
             inputJabatan.value = btn.getAttribute('data-kategori') || 'Rambut';
             inputHarga.value = btn.getAttribute('data-harga') || '';
+            if (inputDurasi) inputDurasi.value = btn.getAttribute('data-durasi') || '60';
+            if (inputJeda) inputJeda.value = btn.getAttribute('data-jeda') || '15';
             bukaModal();
         });
     });
 
     document.querySelectorAll('[data-tutup-modal]').forEach((btn) => {
         btn.addEventListener('click', tutupModal);
-    });
-
-    document.querySelectorAll('.formHapusLayanan').forEach((f) => {
-        f.addEventListener('submit', (e) => {
-            const nama = f.getAttribute('data-nama') || 'layanan ini';
-            if (!confirm(`Apakah Anda yakin ingin menghapus layanan "${nama}"?`)) {
-                e.preventDefault();
-            }
-        });
     });
 });

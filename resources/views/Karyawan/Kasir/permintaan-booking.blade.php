@@ -47,15 +47,15 @@
                             <td><strong>#{{ $r->id_reservasi }}</strong></td>
                             <td>
                                 <strong>{{ $r->tgl_booking->format('d/m/Y') }}</strong><br>
-                                <small>Pukul {{ $r->jam_booking ?: '10:00' }} WIB</small>
+                                <small>Pukul {{ $r->jam_booking ?: '10:00' }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }} WIB</small>
                             </td>
                             <td>
                                 <strong>{{ $pel->nama_cust ?? 'Pelanggan' }}</strong><br>
                                 <small>{{ $pel->no_telp ?? '-' }}</small>
                                 @if ($pel && $pel->sedangDiblokir())
-                                    <div><span class="lencana-pinalti-bahaya">🚫 Sedang Diblokir ({{ $pel->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }})</span></div>
+                                    <div><span class="lencana-pinalti-bahaya">Sedang Diblokir ({{ $pel->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }})</span></div>
                                 @elseif ($pel && $pel->jumlah_pelanggaran > 0)
-                                    <div><span class="lencana-pinalti-peringatan">⚠️ Pelanggaran: {{ $pel->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }}</span></div>
+                                    <div><span class="lencana-pinalti-peringatan">Pelanggaran: {{ $pel->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }}</span></div>
                                 @endif
                             </td>
                             <td>
@@ -67,8 +67,18 @@
                                         @endif
                                     </div>
                                 @endforeach
+                                @foreach ($r->produkAddon as $p)
+                                    <div class="item-layanan-kecil">
+                                        + <small>Produk Add-On: <strong>{{ $p->nama_produk }} (x{{ $p->pivot->jumlah }})</strong></small>
+                                    </div>
+                                @endforeach
+                                @if ($r->kode_promo)
+                                    <div class="item-layanan-kecil">
+                                        <small class="badge badge-aktif">Promo {{ $r->kode_promo }} (-Rp {{ number_format((float) $r->nominal_diskon, 0, ',', '.') }})</small>
+                                    </div>
+                                @endif
                             </td>
-                            <td><strong>Rp {{ number_format($r->layanan->sum(fn ($l) => $l->pivot->harga_saat_ini ?: $l->harga_layanan), 0, ',', '.') }}</strong></td>
+                            <td><strong>Rp {{ number_format($r->estimasiTotalAkhir(), 0, ',', '.') }}</strong></td>
                             <td>
                                 <span class="badge {{ $status === 'Selesai' || $status === 'Diterima' ? 'badge-aktif' : ($status === 'Menunggu' ? 'badge-pending' : 'badge-nonaktif') }}">
                                     {{ $status }}
@@ -93,7 +103,7 @@
                                         </button>
                                     </div>
                                 @elseif ($status === 'Diterima')
-                                    <a href="{{ route('kasir.dashboard') }}" class="btn-aksi btn-edit">💳 Proses Bayar</a>
+                                    <a href="{{ route('kasir.dashboard', ['muat_reservasi' => $r->id_reservasi]) }}" class="btn-aksi btn-edit">Proses Bayar</a>
                                 @else
                                     <span class="teks-selesai">Selesai / Ditutup</span>
                                 @endif

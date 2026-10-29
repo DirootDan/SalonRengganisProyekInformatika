@@ -22,8 +22,8 @@ class BukaBlokirRequest extends FormRequest
     {
         return [
             'alasan_buka.required' => 'Alasan pembukaan blokir wajib diisi.',
-            'alasan_buka.min'      => 'Alasan pembukaan blokir minimal 5 karakter.',
-            'alasan_buka.max'      => 'Alasan pembukaan blokir maksimal 255 karakter.',
+            'alasan_buka.min' => 'Alasan pembukaan blokir minimal 5 karakter.',
+            'alasan_buka.max' => 'Alasan pembukaan blokir maksimal 255 karakter.',
         ];
     }
 }

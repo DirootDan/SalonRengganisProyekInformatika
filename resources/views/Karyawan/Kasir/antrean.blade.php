@@ -23,11 +23,11 @@
                 <div class="kartu-antrean-item" data-cari="{{ strtolower(($pel->nama_cust ?? '') . ' ' . $r->layanan->pluck('nama_layanan')->join(' ')) }}">
                     <div class="antrean-item-atas">
                         <span class="nomor-urut">#{{ $r->id_reservasi }}</span>
-                        <span class="jadwal-jam">🕒 {{ $r->tgl_booking->format('d/m/Y') }} &bull; {{ $r->jam_booking ?: '10:00' }} WIB</span>
+                        <span class="jadwal-jam">{{ $r->tgl_booking->format('d/m/Y') }} &bull; {{ $r->jam_booking ?: '10:00' }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }} WIB</span>
                     </div>
 
                     <h3 class="nama-pelanggan-antrean">{{ $pel->nama_cust ?? 'Pelanggan' }}</h3>
-                    <p class="telp-pelanggan-antrean">📞 {{ $pel->no_telp ?? '-' }}</p>
+                    <p class="telp-pelanggan-antrean">{{ $pel->no_telp ?? '-' }}</p>
 
                     <ul class="rincian-layanan-antrean">
                         @foreach ($r->layanan as $l)
@@ -43,11 +43,23 @@
                                 </span>
                             </li>
                         @endforeach
+                        @foreach ($r->produkAddon as $p)
+                            <li>
+                                <span>+ Produk Add-On: <strong>{{ $p->nama_produk }} (x{{ $p->pivot->jumlah }})</strong></span>
+                                <span class="badge badge-aktif">Rp {{ number_format((float) $p->pivot->harga_saat_ini * (int) $p->pivot->jumlah, 0, ',', '.') }}</span>
+                            </li>
+                        @endforeach
+                        @if ($r->kode_promo)
+                            <li>
+                                <span>Promo: <strong>{{ $r->kode_promo }}</strong></span>
+                                <span class="badge badge-aktif">-Rp {{ number_format((float) $r->nominal_diskon, 0, ',', '.') }}</span>
+                            </li>
+                        @endif
                     </ul>
 
                     <div class="antrean-item-kaki">
-                        <strong>Total: Rp {{ number_format($r->layanan->sum(fn ($l) => $l->pivot->harga_saat_ini ?: $l->harga_layanan), 0, ',', '.') }}</strong>
-                        <a href="{{ route('kasir.dashboard') }}" class="btn-aksi btn-edit">💳 Proses di POS</a>
+                        <strong>Total: Rp {{ number_format($r->estimasiTotalAkhir(), 0, ',', '.') }}</strong>
+                        <a href="{{ route('kasir.dashboard', ['muat_reservasi' => $r->id_reservasi]) }}" class="btn-aksi btn-edit">Proses di POS</a>
                     </div>
                 </div>
             @empty

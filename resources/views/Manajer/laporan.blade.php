@@ -113,13 +113,23 @@
                 <tbody>
                     @forelse ($reservasi as $r)
                         @php
-                            $totalBaris = $r->transaksi ? $r->transaksi->total_bayar : $r->layanan->sum('harga_layanan');
+                            $totalBaris = $r->transaksi ? $r->transaksi->total_bayar : $r->estimasiTotalAkhir();
+                            $rincianLayanan = $r->layanan->pluck('nama_layanan')->join(', ');
+                            $rincianProduk = $r->produkAddon->map(fn ($p) => $p->nama_produk . ' (x' . $p->pivot->jumlah . ')')->join(', ');
                         @endphp
                         <tr>
                             <td><strong>#INV-{{ str_pad($r->id_reservasi, 4, '0', STR_PAD_LEFT) }}</strong></td>
-                            <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }})</td>
+                            <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }})</td>
                             <td>{{ $r->pelanggan?->nama_cust ?? 'Pelanggan' }}</td>
-                            <td>{{ $r->layanan->pluck('nama_layanan')->join(', ') ?: '-' }}</td>
+                            <td>
+                                <div>{{ $rincianLayanan ?: '-' }}</div>
+                                @if ($rincianProduk)
+                                    <small class="teks-sedang">+ Produk: {{ $rincianProduk }}</small>
+                                @endif
+                                @if ($r->kode_promo)
+                                    <div><small class="badge badge-aktif">Promo: {{ $r->kode_promo }} (-Rp {{ number_format((float) $r->nominal_diskon, 0, ',', '.') }})</small></div>
+                                @endif
+                            </td>
                             <td>{{ $r->transaksi->metode_bayar ?? '-' }}</td>
                             <td class="nominal-tebal">Rp {{ number_format($totalBaris, 0, ',', '.') }}</td>
                             <td>

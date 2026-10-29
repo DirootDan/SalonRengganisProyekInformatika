@@ -33,9 +33,9 @@ class PetugasController extends Controller
     private function tampilJadwal(Request $request, string $peran)
     {
         /** @var Karyawan $petugas */
-        $petugas  = Auth::guard('karyawan')->user();
-        $mode     = $request->query('mode', 'semua'); // harian, mingguan, semua
-        $tanggal  = $request->query('tanggal', now()->toDateString());
+        $petugas = Auth::guard('karyawan')->user();
+        $mode = $request->query('mode', 'semua'); // harian, mingguan, semua
+        $tanggal = $request->query('tanggal', now()->toDateString());
 
         $query = DB::table('detail_reservasi')
             ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
@@ -61,7 +61,7 @@ class PetugasController extends Controller
         if ($mode === 'harian') {
             $query->whereDate('reservasi.tgl_booking', $tanggal);
         } elseif ($mode === 'mingguan') {
-            $awalMinggu  = now()->parse($tanggal)->startOfWeek()->toDateString();
+            $awalMinggu = now()->parse($tanggal)->startOfWeek()->toDateString();
             $akhirMinggu = now()->parse($tanggal)->endOfWeek()->toDateString();
             $query->whereBetween('reservasi.tgl_booking', [$awalMinggu, $akhirMinggu]);
         }
@@ -111,8 +111,8 @@ class PetugasController extends Controller
     private function tampilKomisi(Request $request, string $peran)
     {
         /** @var Karyawan $petugas */
-        $petugas    = Auth::guard('karyawan')->user();
-        $tglMulai   = $request->query('mulai', now()->startOfMonth()->toDateString());
+        $petugas = Auth::guard('karyawan')->user();
+        $tglMulai = $request->query('mulai', now()->startOfMonth()->toDateString());
         $tglSelesai = $request->query('selesai', now()->endOfMonth()->toDateString());
 
         // Hanya hitung komisi dari reservasi yang sudah Selesai dan memiliki Transaksi lunas
@@ -137,7 +137,7 @@ class PetugasController extends Controller
             ->get();
 
         $totalKomisi = $daftarKomisi->sum('nominal_komisi');
-        $totalOmzet  = $daftarKomisi->sum('harga_saat_ini');
+        $totalOmzet = $daftarKomisi->sum('harga_saat_ini');
 
         $view = $peran === 'Stylist'
             ? 'Karyawan.Stylist.komisi'

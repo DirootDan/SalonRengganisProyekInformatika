@@ -18,9 +18,9 @@ class PromoController extends Controller
     public function store(PromoRequest $request)
     {
         $data = $request->validated();
-        $data['kode_promo']    = strtoupper($data['kode_promo']);
+        $data['kode_promo'] = strtoupper($data['kode_promo']);
         $data['berlaku_mulai'] = now()->toDateString();
-        $data['aktif']         = $request->boolean('aktif', true);
+        $data['aktif'] = $request->boolean('aktif', true);
 
         Promo::create($data);
 
@@ -31,7 +31,7 @@ class PromoController extends Controller
     {
         $data = $request->validated();
         $data['kode_promo'] = strtoupper($data['kode_promo']);
-        $data['aktif']      = $request->boolean('aktif', true);
+        $data['aktif'] = $request->boolean('aktif', true);
 
         $promo->update($data);
 
@@ -40,6 +40,14 @@ class PromoController extends Controller
 
     public function destroy(Promo $promo)
     {
+        $reservasiAktif = $promo->jumlahReservasiAktif();
+
+        if ($reservasiAktif > 0) {
+            return back()->withErrors([
+                'promo' => "Promo '{$promo->kode_promo}' tidak dapat dihapus karena masih digunakan pada {$reservasiAktif} reservasi aktif (Menunggu/Diterima).",
+            ]);
+        }
+
         // Diarsipkan dengan soft-delete agar riwayat pemakaian diskon pada transaksi masa lalu tetap terjaga
         $promo->delete();
 

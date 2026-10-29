@@ -64,13 +64,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-tutup-modal]').forEach((btn) => {
         btn.addEventListener('click', tutupModal);
     });
-
-    document.querySelectorAll('.formHapusProduk').forEach((f) => {
-        f.addEventListener('submit', (e) => {
-            const nama = f.getAttribute('data-nama') || 'produk ini';
-            if (!confirm(`Apakah Anda yakin ingin menghapus produk "${nama}"?`)) {
-                e.preventDefault();
-            }
-        });
-    });
 });

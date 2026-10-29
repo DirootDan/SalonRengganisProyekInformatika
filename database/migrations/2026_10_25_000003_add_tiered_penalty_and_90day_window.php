@@ -24,12 +24,12 @@ return new class extends Migration
 
             DB::table('pengaturan_kebijakan')->update([
                 'rentang_hari_pelanggaran' => 90,
-                'batas_pelanggaran'        => 5,
-                'lama_blokir_hari'         => 7,
-                'lama_blokir_kedua_hari'   => 30,
-                'blokir_ketiga_permanen'   => true,
-                'toleransi_bayar_hari'     => 1,
-                'batas_batal_jam'          => 3,
+                'batas_pelanggaran' => 5,
+                'lama_blokir_hari' => 7,
+                'lama_blokir_kedua_hari' => 30,
+                'blokir_ketiga_permanen' => true,
+                'toleransi_bayar_hari' => 1,
+                'batas_batal_jam' => 3,
             ]);
         }
 

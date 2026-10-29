@@ -23,8 +23,8 @@ class PelangganSeeder extends Seeder
                 ['email' => $email],
                 [
                     'nama_cust' => $nama,
-                    'no_telp'   => $telp,
-                    'password'  => 'password123', // di-hash otomatis oleh model
+                    'no_telp' => $telp,
+                    'password' => 'password123', // di-hash otomatis oleh model
                 ]
             );
         }

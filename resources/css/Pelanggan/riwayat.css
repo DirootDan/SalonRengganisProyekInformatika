@@ -1,16 +1,48 @@
-/* ===== Riwayat ===== */
+/* ===== Filter Tab Status Riwayat ===== */
+.filter-riwayat-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-filter-riwayat {
+    background: #ffffff;
+    color: #4b5563;
+    border: 1px solid #f3d5de;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.tab-filter-riwayat:hover {
+    border-color: #db2777;
+    color: #db2777;
+}
+
+.tab-filter-riwayat.aktif {
+    background: #db2777;
+    color: #ffffff;
+    border-color: #db2777;
+}
+
+/* ===== Kartu Riwayat ===== */
 .reservasi-item {
     background: white;
     border-radius: 24px;
     padding: 24px 32px;
     margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1.5px solid #f9e8ef;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
 }
 
 .reservasi-item:hover {
-    transform: scale(1.01);
     box-shadow: 0 10px 25px rgba(219, 39, 119, 0.08);
 }
 
@@ -19,6 +51,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
     cursor: pointer;
     -webkit-user-select: none;
     user-select: none;
@@ -38,14 +72,15 @@
 
 .reservasi-no {
     font-size: 13px;
-    color: #9ca3af;
+    color: #6b7280;
     margin-top: 4px;
 }
 
 .reservasi-kanan {
     display: flex;
     align-items: center;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .status {
@@ -57,14 +92,14 @@
     text-transform: uppercase;
 }
 
-.status-pending { 
-    background: #fef3c7; 
-    color: #b45309; 
+.status-pending {
+    background: #fef3c7;
+    color: #b45309;
 }
 
-.status-selesai { 
-    background: #dcfce7; 
-    color: #16a34a; 
+.status-selesai {
+    background: #dcfce7;
+    color: #16a34a;
 }
 
 .status-diterima {
@@ -72,27 +107,65 @@
     color: #1d4ed8;
 }
 
-.status-batal { 
-    background: #fee2e2; 
-    color: #ef4444; 
+.status-batal {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* Tombol Batal Cepat di Header Kartu */
+.form-batal-cepat {
+    margin: 0;
+}
+
+.btn-batal-cepat {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-batal-cepat:hover {
+    background: #fecaca;
+    border-color: #f87171;
+}
+
+.btn-toggle-rincian {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    border-radius: 999px;
+    padding: 5px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .chevron-icon {
-    color: #9ca3af;
+    color: #6b7280;
     transition: transform 0.3s ease, color 0.3s ease;
 }
 
-/* ===== Bagian Detail Tersembunyi ===== */
+/* ===== Bagian Detail ===== */
 .reservasi-body {
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-height 0.35s ease, opacity 0.25s ease;
 }
 
-/* ===== Kondisi Aktif (Tampil) ===== */
+/* ===== Kondisi Aktif (Tampil Penuh) ===== */
 .reservasi-item.aktif .reservasi-body {
-    max-height: 500px;
+    max-height: 2000px;
     opacity: 1;
     margin-top: 20px;
     padding-top: 20px;
@@ -117,6 +190,7 @@
     justify-content: space-between;
     padding: 10px 0;
     color: #4b5563;
+    border-bottom: 1px solid #f9fafb;
 }
 
 .reservasi-total {
@@ -124,7 +198,6 @@
     font-weight: 800;
     font-size: 20px;
     color: #db2777;
-    margin-top: 8px;
 }
 
 .layanan-info {
@@ -139,6 +212,80 @@
     font-weight: 500;
 }
 
+/* ===== Panel Pembatalan di Dalam Rincian ===== */
+.reservasi-kaki-aksi {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.panel-aksi-batal {
+    flex: 1;
+    min-width: 260px;
+}
+
+.baris-input-batal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-alasan-batal {
+    flex: 1;
+    min-width: 220px;
+    max-width: 360px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: #1f2937;
+}
+
+.input-alasan-batal:focus {
+    outline: none;
+    border-color: #db2777;
+}
+
+.btn-batal-booking {
+    background: #b91c1c;
+    color: #ffffff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.btn-batal-booking:hover {
+    background: #991b1b;
+}
+
+.info-kebijakan-batal {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.info-batal-terkunci {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+
+/* ===== Panel Notifikasi ===== */
 .panel-notifikasi {
     background: white;
     border-radius: 24px;
@@ -235,26 +382,17 @@
     margin-bottom: 14px;
 }
 
-.reservasi-kaki-aksi {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
+@media (max-width: 640px) {
+    .reservasi-item {
+        padding: 18px 18px;
+    }
 
-.btn-batal-booking {
-    background: #fee2e2;
-    color: #b91c1c;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-}
+    .baris-input-batal {
+        flex-direction: column;
+        align-items: stretch;
+    }
 
-.btn-batal-booking:hover {
-    background: #fecaca;
+    .input-alasan-batal {
+        max-width: none;
+    }
 }
