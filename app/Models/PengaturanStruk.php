@@ -8,6 +8,18 @@ class PengaturanStruk extends Model
 {
     protected $table = 'pengaturan_struk';
 
+    public const UKURAN_58MM = '58mm';
+
+    public const UKURAN_76MM = '76mm';
+
+    public const UKURAN_80MM = '80mm';
+
+    public const DAFTAR_UKURAN_KERTAS = [
+        self::UKURAN_58MM => 'Thermal 58mm (Kecil / Mobile Printer)',
+        self::UKURAN_76MM => 'Impact / Dot Matrix 76mm (Sedang)',
+        self::UKURAN_80MM => 'Thermal 80mm (Standar Kasir POS)',
+    ];
+
     protected $fillable = [
         'nama_salon',
         'slogan',
@@ -16,6 +28,7 @@ class PengaturanStruk extends Model
         'instagram',
         'teks_header',
         'teks_footer',
+        'ukuran_kertas',
         'tampil_logo',
         'tampil_petugas',
         'tampil_kasir',
@@ -42,6 +55,7 @@ class PengaturanStruk extends Model
             'instagram' => '@salonrengganis.id',
             'teks_header' => 'Selamat Datang di Salon Rengganis',
             'teks_footer' => 'Terima kasih atas kunjungan Anda! Simpan struk ini sebagai bukti pembayaran yang sah.',
+            'ukuran_kertas' => self::UKURAN_80MM,
             'tampil_logo' => true,
             'tampil_petugas' => true,
             'tampil_kasir' => true,

@@ -19,6 +19,7 @@ class StrukController extends Controller
     {
         $data = $request->validated();
 
+        $data['ukuran_kertas'] = $data['ukuran_kertas'] ?? PengaturanStruk::UKURAN_80MM;
         $data['tampil_logo'] = $request->boolean('tampil_logo');
         $data['tampil_petugas'] = $request->boolean('tampil_petugas');
         $data['tampil_kasir'] = $request->boolean('tampil_kasir');
