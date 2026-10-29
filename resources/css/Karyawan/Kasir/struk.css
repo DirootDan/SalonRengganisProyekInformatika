@@ -70,6 +70,33 @@
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
     border-top: 6px dashed #e5e7eb;
     border-bottom: 6px dashed #e5e7eb;
+    transition: max-width 0.25s ease, padding 0.25s ease, font-size 0.2s ease;
+}
+
+.kertas-struk.ukuran-58mm {
+    max-width: 260px;
+    font-size: 11.5px;
+    padding: 20px 14px;
+}
+
+.kertas-struk.ukuran-58mm .struk-judul {
+    font-size: 14.5px;
+}
+
+.kertas-struk.ukuran-58mm .struk-grand-total {
+    font-size: 13px;
+}
+
+.kertas-struk.ukuran-76mm {
+    max-width: 330px;
+    font-size: 12.5px;
+    padding: 24px 20px;
+}
+
+.kertas-struk.ukuran-80mm {
+    max-width: 360px;
+    font-size: 13px;
+    padding: 28px 24px;
 }
 
 .struk-kepala {
@@ -148,4 +175,28 @@
 .struk-ig {
     font-weight: 700;
     color: #111827;
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+
+    #kertasStruk,
+    #kertasStruk * {
+        visibility: visible !important;
+    }
+
+    #kertasStruk {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: var(--lebar-cetak-struk, 80mm);
+        max-width: var(--lebar-cetak-struk, 80mm);
+        margin: 0;
+        padding: 4mm;
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+    }
 }

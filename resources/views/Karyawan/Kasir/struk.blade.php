@@ -42,6 +42,17 @@
                 </div>
 
                 <div class="form-grup">
+                    <label class="form-label" for="inputUkuranKertas">Ukuran Kertas Printer (Thermal)</label>
+                    <select name="ukuran_kertas" id="inputUkuranKertas" class="form-select">
+                        @foreach (\App\Models\PengaturanStruk::DAFTAR_UKURAN_KERTAS as $nilaiUkuran => $labelUkuran)
+                            <option value="{{ $nilaiUkuran }}" @selected(($struk->ukuran_kertas ?? '80mm') === $nilaiUkuran)>
+                                {{ $labelUkuran }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-grup">
                     <label class="form-label">Pesan Penutup (Footer Nota)</label>
                     <textarea id="inputPesanKaki" class="form-textarea" rows="3">{{ $struk->teks_footer }}</textarea>
                 </div>
@@ -53,9 +64,11 @@
         </div>
 
         <div class="pratinjau-wadah">
-            <span class="label-pratinjau">PRATINJAU KERTAS STRUK THERMAL (80mm)</span>
+            <span class="label-pratinjau">
+                PRATINJAU KERTAS STRUK THERMAL (<span id="labelUkuranKertas">{{ $struk->ukuran_kertas ?? '80mm' }}</span>)
+            </span>
 
-            <div class="kertas-struk" id="kertasStruk">
+            <div class="kertas-struk ukuran-{{ $struk->ukuran_kertas ?? '80mm' }}" id="kertasStruk" data-ukuran="{{ $struk->ukuran_kertas ?? '80mm' }}">
                 <div class="struk-kepala">
                     <div class="struk-logo" id="prevLogo">🌸</div>
                     <div class="struk-judul" id="prevNamaSalon">{{ $struk->nama_salon }}</div>

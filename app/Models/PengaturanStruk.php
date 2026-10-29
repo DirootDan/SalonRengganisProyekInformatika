@@ -3,10 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class PengaturanStruk extends Model
 {
     protected $table = 'pengaturan_struk';
+
+    public const UKURAN_58MM = '58mm';
+    public const UKURAN_76MM = '76mm';
+    public const UKURAN_80MM = '80mm';
+
+    public const DAFTAR_UKURAN_KERTAS = [
+        self::UKURAN_58MM => '58mm — Thermal Kecil / Portable',
+        self::UKURAN_76MM => '76mm — Kasir Menengah / Standar',
+        self::UKURAN_80MM => '80mm — Thermal Lebar (Meja Kasir)',
+    ];
 
     protected $fillable = [
         'nama_salon',
@@ -16,6 +27,7 @@ class PengaturanStruk extends Model
         'instagram',
         'teks_header',
         'teks_footer',
+        'ukuran_kertas',
         'tampil_logo',
         'tampil_petugas',
         'tampil_kasir',
@@ -32,9 +44,21 @@ class PengaturanStruk extends Model
         ];
     }
 
+    public function getUkuranKertasAttribute(?string $value): string
+    {
+        return $value && array_key_exists($value, self::DAFTAR_UKURAN_KERTAS)
+            ? $value
+            : self::UKURAN_80MM;
+    }
+
     public static function aktif(): self
     {
-        return self::first() ?? self::create([
+        $existing = self::first();
+        if ($existing) {
+            return $existing;
+        }
+
+        $atributDefault = [
             'nama_salon'     => 'SALON RENGGANIS',
             'slogan'         => 'Pusat Perawatan Kecantikan & Rambut',
             'alamat'         => 'Jl. Paingan No. 88, Maguwoharjo, Sleman',
@@ -46,6 +70,12 @@ class PengaturanStruk extends Model
             'tampil_petugas' => true,
             'tampil_kasir'   => true,
             'tampil_sosmed'  => true,
-        ]);
+        ];
+
+        if (Schema::hasColumn('pengaturan_struk', 'ukuran_kertas')) {
+            $atributDefault['ukuran_kertas'] = self::UKURAN_80MM;
+        }
+
+        return self::create($atributDefault);
     }
 }
