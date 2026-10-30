@@ -48,7 +48,15 @@
                             aria-haspopup="true"
                             aria-expanded="false"
                             aria-controls="akunMenu">
-                        <span class="akun-avatar">{{ strtoupper(substr($pelangganAktif->nama_cust, 0, 1)) }}</span>
+                        <span class="akun-avatar">
+                            @if ($pelangganAktif->foto_profil)
+                                <img src="{{ asset('storage/' . $pelangganAktif->foto_profil) }}"
+                                     alt="Foto profil {{ $pelangganAktif->nama_cust }}"
+                                     class="akun-avatar-img">
+                            @else
+                                {{ strtoupper(substr($pelangganAktif->nama_cust, 0, 1)) }}
+                            @endif
+                        </span>
                         <span class="akun-sapaan">Halo, {{ $pelangganAktif->nama_cust }}</span>
                         <span class="akun-panah" aria-hidden="true">▾</span>
                     </button>
