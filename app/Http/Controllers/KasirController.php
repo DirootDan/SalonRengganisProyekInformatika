@@ -312,9 +312,16 @@ class KasirController extends Controller
     public function storeProduk(Request $request)
     {
         $data = $request->validate([
-            'nama_produk' => ['required', 'string', 'max:100'],
+            'nama_produk' => [
+                'required', 
+                'string', 
+                'max:100', 
+                \Illuminate\Validation\Rule::unique('produk', 'nama_produk') // Menolak nama produk kembar
+            ],
             'stok_produk' => ['required', 'integer', 'min:0'],
             'harga_produk' => ['required', 'numeric', 'min:0'],
+        ], [
+            'nama_produk.unique' => 'Nama produk ini sudah terdaftar di sistem. Gunakan nama lain.',
         ]);
 
         Produk::create($data);
@@ -327,9 +334,16 @@ class KasirController extends Controller
         $produk = Produk::findOrFail($id);
 
         $data = $request->validate([
-            'nama_produk' => ['required', 'string', 'max:100'],
+            'nama_produk' => [
+                'required', 
+                'string', 
+                'max:100', 
+                \Illuminate\Validation\Rule::unique('produk', 'nama_produk')->ignore($id, 'id_produk') // Mengabaikan ID produk saat edit
+            ],
             'stok_produk' => ['required', 'integer', 'min:0'],
             'harga_produk' => ['required', 'numeric', 'min:0'],
+        ], [
+            'nama_produk.unique' => 'Nama produk ini sudah terdaftar di sistem. Gunakan nama lain.',
         ]);
 
         $produk->update($data);
