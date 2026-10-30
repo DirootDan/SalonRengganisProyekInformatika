@@ -48,13 +48,25 @@
                         </td>
                         <td>
                             @if ($item->status_layanan !== 'Selesai')
-                                <form method="POST" action="{{ route('stylist.layanan.selesai', [$item->id_reservasi, $item->id_layanan]) }}"
-                                      class="form-selesai"
-                                      data-confirm-title="Konfirmasi Penyelesaian Layanan"
-                                      data-confirm-item="{{ $item->nama_layanan }} (#{{ $item->id_reservasi }})">
-                                    @csrf
-                                    <button type="submit" class="btn-selesai">✓ Tandai Selesai</button>
-                                </form>
+                                @php
+                                    $bisaDitandaiSelesai = in_array(strtolower((string) $item->status_reservasi), ['diterima', 'selesai'], true);
+                                @endphp
+                                @if ($bisaDitandaiSelesai)
+                                    <form method="POST" action="{{ route('stylist.layanan.selesai', [$item->id_reservasi, $item->id_layanan]) }}"
+                                          class="form-selesai"
+                                          data-confirm-title="Konfirmasi Penyelesaian Layanan"
+                                          data-confirm-item="{{ $item->nama_layanan }} (#{{ $item->id_reservasi }})">
+                                        @csrf
+                                        <button type="submit" class="btn-selesai">✓ Tandai Selesai</button>
+                                    </form>
+                                @else
+                                    <button type="button"
+                                            class="btn-selesai btn-selesai-nonaktif"
+                                            disabled
+                                            title="Menunggu konfirmasi Kasir terlebih dahulu (Status Booking: {{ $item->status_reservasi }})">
+                                        ✓ Tandai Selesai
+                                    </button>
+                                @endif
                             @else
                                 <span class="teks-sudah">Sudah Selesai</span>
                             @endif

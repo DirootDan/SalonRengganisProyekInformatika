@@ -292,6 +292,18 @@ body {
     background: #059669;
 }
 
+.btn-selesai:disabled,
+.btn-selesai.btn-selesai-nonaktif {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.btn-selesai:disabled:hover,
+.btn-selesai.btn-selesai-nonaktif:hover {
+    background: #e2e8f0;
+}
+
 .teks-sudah {
     font-size: 12px;
     font-weight: 600;
