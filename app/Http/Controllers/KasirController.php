@@ -392,7 +392,8 @@ class KasirController extends Controller
     public function struk()
     {
         $struk = PengaturanStruk::aktif();
+        $daftarUkuran = PengaturanStruk::DAFTAR_UKURAN_KERTAS;
 
-        return view('Karyawan.Kasir.struk', compact('struk'));
+        return view('Karyawan.Kasir.struk', compact('struk', 'daftarUkuran'));
     }
 }

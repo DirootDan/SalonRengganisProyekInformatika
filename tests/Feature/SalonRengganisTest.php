@@ -449,6 +449,21 @@ class SalonRengganisTest extends TestCase
             ->get(route('manajer.kebijakan'))
             ->assertStatus(403);
 
+        // Kasir dapat membuka pratinjau format struk aktif (read-only) namun tidak bisa mengubah pengaturan struk Manajer
+        $this->actingAs($this->kasir, 'karyawan')
+            ->get(route('kasir.struk'))
+            ->assertStatus(200)
+            ->assertSee('Diatur oleh Manajer')
+            ->assertSee('id="kertasStruk"', false);
+
+        $this->actingAs($this->kasir, 'karyawan')
+            ->put(route('manajer.struk.simpan'), [
+                'nama_salon' => 'COBA UBAH OLEH KASIR',
+                'alamat' => 'Jl. Contoh',
+                'telepon' => '08123456',
+            ])
+            ->assertStatus(403);
+
         $this->actingAs($this->stylist1, 'karyawan')
             ->get(route('kasir.dashboard'))
             ->assertStatus(403);
