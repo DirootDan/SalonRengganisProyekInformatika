@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Karyawan;
 use App\Models\Layanan;
 use App\Models\NotifikasiPelanggan;
 use App\Models\Pelanggan;
@@ -9,6 +10,7 @@ use App\Models\Produk;
 use App\Models\Reservasi;
 use Carbon\Carbon;
 use DomainException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ReservasiService
@@ -147,6 +149,28 @@ class ReservasiService
 
             return $reservasi;
         });
+    }
+
+    /**
+     * Memetakan ID karyawan menjadi nama staf (termasuk arsip soft-deleted) untuk kumpulan reservasi.
+     *
+     * @param  Collection<int, Reservasi>  $daftarReservasi
+     * @return Collection<int, string>
+     */
+    public function petakanNamaPetugas(Collection $daftarReservasi): Collection
+    {
+        $idPetugas = $daftarReservasi
+            ->flatMap(fn (Reservasi $r) => $r->layanan->pluck('pivot.id_karyawan'))
+            ->filter()
+            ->unique();
+
+        if ($idPetugas->isEmpty()) {
+            return collect();
+        }
+
+        return Karyawan::withTrashed()
+            ->whereIn('id_karyawan', $idPetugas)
+            ->pluck('nama_staff', 'id_karyawan');
     }
 
     /**

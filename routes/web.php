@@ -1,7 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\KasirController;
+use App\Http\Controllers\Kasir\AntreanController as KasirAntreanController;
+use App\Http\Controllers\Kasir\LaporanController as KasirLaporanController;
+use App\Http\Controllers\Kasir\LayananController as KasirLayananController;
+use App\Http\Controllers\Kasir\MetodePembayaranController as KasirMetodePembayaranController;
+use App\Http\Controllers\Kasir\PermintaanBookingController as KasirPermintaanBookingController;
+use App\Http\Controllers\Kasir\PosController as KasirPosController;
+use App\Http\Controllers\Kasir\ProdukController as KasirProdukController;
+use App\Http\Controllers\Kasir\StrukController as KasirStrukController;
 use App\Http\Controllers\Manajer\DashboardController as ManajerDashboardController;
 use App\Http\Controllers\Manajer\KaryawanController as ManajerKaryawanController;
 use App\Http\Controllers\Manajer\KebijakanBookingController as ManajerKebijakanBookingController;
@@ -89,32 +96,35 @@ Route::middleware(['auth:karyawan', 'peran:Manajer'])
         Route::post('/kebijakan-booking/buka-blokir/{pelanggan}', [ManajerKebijakanBookingController::class, 'bukaBlokir'])->name('kebijakan.buka');
     });
 
-// MODUL 3: Area Kasir
+// MODUL 3: Area Kasir (Dipecah per tanggung jawab / Satu Controller = Satu Resource)
 Route::middleware(['auth:karyawan', 'peran:Kasir'])
     ->prefix('kasir')->name('kasir.')->group(function () {
-        Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
-        Route::post('/transaksi/bayar', [KasirController::class, 'prosesBayar'])->name('bayar');
+        Route::get('/dashboard', [KasirPosController::class, 'index'])->name('dashboard');
+        Route::post('/transaksi/bayar', [KasirPosController::class, 'store'])->name('bayar');
 
-        // Menu terpisah: Permintaan Booking & Antrean Hari Ini
-        Route::get('/permintaan-booking', [KasirController::class, 'permintaanBooking'])->name('permintaan');
-        Route::post('/permintaan-booking/{idReservasi}/terima', [KasirController::class, 'terimaBooking'])->name('permintaan.terima');
-        Route::post('/permintaan-booking/{idReservasi}/tolak', [KasirController::class, 'tolakBooking'])->name('permintaan.tolak');
+        // Permintaan Booking & Antrean Hari Ini
+        Route::get('/permintaan-booking', [KasirPermintaanBookingController::class, 'index'])->name('permintaan');
+        Route::post('/permintaan-booking/{idReservasi}/terima', [KasirPermintaanBookingController::class, 'terima'])->name('permintaan.terima');
+        Route::post('/permintaan-booking/{idReservasi}/tolak', [KasirPermintaanBookingController::class, 'tolak'])->name('permintaan.tolak');
 
-        Route::get('/antrean-hari-ini', [KasirController::class, 'antreanHariIni'])->name('antrean');
+        Route::get('/antrean-hari-ini', [KasirAntreanController::class, 'index'])->name('antrean');
 
-        Route::get('/layanan', [KasirController::class, 'layanan'])->name('layanan');
-        Route::post('/layanan', [KasirController::class, 'storeLayanan'])->name('layanan.store');
-        Route::put('/layanan/{layanan}', [KasirController::class, 'updateLayanan'])->name('layanan.update');
-        Route::delete('/layanan/{layanan}', [KasirController::class, 'destroyLayanan'])->name('layanan.destroy');
+        // CRUD Layanan Kasir (Route Model Binding: {layanan})
+        Route::get('/layanan', [KasirLayananController::class, 'index'])->name('layanan');
+        Route::post('/layanan', [KasirLayananController::class, 'store'])->name('layanan.store');
+        Route::put('/layanan/{layanan}', [KasirLayananController::class, 'update'])->name('layanan.update');
+        Route::delete('/layanan/{layanan}', [KasirLayananController::class, 'destroy'])->name('layanan.destroy');
 
-        Route::get('/produk', [KasirController::class, 'produk'])->name('produk');
-        Route::post('/produk', [KasirController::class, 'storeProduk'])->name('produk.store');
-        Route::put('/produk/{produk}', [KasirController::class, 'updateProduk'])->name('produk.update');
-        Route::delete('/produk/{produk}', [KasirController::class, 'destroyProduk'])->name('produk.destroy');
+        // CRUD Produk Kasir (Route Model Binding: {produk})
+        Route::get('/produk', [KasirProdukController::class, 'index'])->name('produk');
+        Route::post('/produk', [KasirProdukController::class, 'store'])->name('produk.store');
+        Route::put('/produk/{produk}', [KasirProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/produk/{produk}', [KasirProdukController::class, 'destroy'])->name('produk.destroy');
 
-        Route::get('/laporan', [KasirController::class, 'laporan'])->name('laporan');
-        Route::get('/metode-pembayaran', [KasirController::class, 'metodePembayaran'])->name('metode');
-        Route::get('/struk', [KasirController::class, 'struk'])->name('struk');
+        // Laporan & Pengaturan Baca-Saja Kasir
+        Route::get('/laporan', [KasirLaporanController::class, 'index'])->name('laporan');
+        Route::get('/metode-pembayaran', [KasirMetodePembayaranController::class, 'index'])->name('metode');
+        Route::get('/struk', [KasirStrukController::class, 'index'])->name('struk');
     });
 
 // MODUL 4A: Area Stylist
