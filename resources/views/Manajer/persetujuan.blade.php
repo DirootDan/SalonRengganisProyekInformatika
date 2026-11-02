@@ -58,6 +58,13 @@
                                 <strong class="angka-baru">Rp {{ number_format((float) $item->total_akhir, 0, ',', '.') }}</strong>
                             </div>
                         </div>
+                    @elseif ((float) $item->total_awal > 0)
+                        <div class="kotak-perbandingan-total">
+                            <span class="label-kecil">Harga Master Saat Ini</span>
+                            <div class="baris-angka-diff">
+                                <strong class="angka-baru">Rp {{ number_format((float) $item->total_awal, 0, ',', '.') }}</strong>
+                            </div>
+                        </div>
                     @endif
                 </div>
 
@@ -134,7 +141,9 @@
                         @csrf
                         <input type="text" name="catatan_manajer" class="form-input input-catatan-kecil"
                                placeholder="Wajib isi alasan penolakan untuk Kasir..." required minlength="3">
-                        <button type="submit" class="btn-tolak">❌ Tolak &amp; Kembalikan Normal</button>
+                        <button type="submit" class="btn-tolak">
+                            {{ $item->konteks === \App\Models\PermintaanOtorisasi::KONTEKS_POS_TRANSAKSI ? '❌ Tolak & Kembalikan Normal' : '❌ Tolak Pengajuan Akses' }}
+                        </button>
                     </form>
                 </div>
             </article>

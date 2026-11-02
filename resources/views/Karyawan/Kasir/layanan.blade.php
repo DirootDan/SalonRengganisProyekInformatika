@@ -2,13 +2,21 @@
 
 @section('judul', 'Kelola Layanan - Kasir Salon Rengganis')
 @section('header', 'Katalog Layanan Salon')
-@section('sub_header', 'Kelola daftar perawatan salon, durasi pengerjaan, harga layanan, dan jabatan petugas yang menangani.')
+@section('sub_header', 'Lihat daftar perawatan salon atau ajukan izin 1x pakai ke Manajer untuk perubahan data layanan.')
 
 @push('styles')
     @vite(['resources/css/Karyawan/Kasir/layanan.css'])
 @endpush
 
 @section('isi')
+    @php
+        $konteksLayanan = \App\Models\PermintaanOtorisasi::KONTEKS_KATALOG_LAYANAN;
+        $tiketTambah = $petaAkses[\App\Services\OtorisasiKatalogService::kunciAkses(\App\Models\PermintaanOtorisasi::AKSI_TAMBAH, null)] ?? null;
+        $bukaUlangModalLayanan = $errors->hasAny(['nama_layanan', 'kategori', 'jabatan_petugas', 'harga_layanan', 'durasi_menit', 'jeda_menit']);
+    @endphp
+
+    @include('Karyawan.Kasir.partials.banner-akses-katalog')
+
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
@@ -19,9 +27,41 @@
                     <option value="Therapist">Ditangani Therapist</option>
                 </select>
             </div>
-            <button type="button" class="btn-utama" id="btnTambahLayanan" data-url-store="{{ route('kasir.layanan.store') }}">
-                <span>＋</span> Tambah Layanan
-            </button>
+
+            <div class="toolbar-kanan-akses">
+                @if ($tiketTambah?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
+                    <span class="badge-akses badge-akses-aktif">
+                        🔓 Izin Tambah 1x Aktif (s.d. {{ $tiketTambah->kedaluwarsa_pada?->format('H:i') }} WIB)
+                    </span>
+                    <button type="button" class="btn-utama" id="btnTambahLayanan"
+                            data-url-store="{{ route('kasir.layanan.store') }}"
+                            data-url-batal="{{ route('kasir.otorisasi-katalog.destroy', $tiketTambah->id_otorisasi) }}">
+                        <span>＋</span> Tambah Layanan (1x Pakai)
+                    </button>
+                    <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketTambah->id_otorisasi) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-tarik-akses">Kunci Kembali</button>
+                    </form>
+                @elseif ($tiketTambah?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
+                    <span class="badge-akses badge-akses-pending">
+                        ⏳ Tambah Menunggu ACC (#{{ $tiketTambah->kode_referensi }})
+                    </span>
+                    <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketTambah->id_otorisasi) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-tarik-akses">Tarik Request</button>
+                    </form>
+                @else
+                    <button type="button" class="btn-minta-akses-katalog btn-minta-akses-utama"
+                            data-konteks="{{ $konteksLayanan }}"
+                            data-aksi="{{ \App\Models\PermintaanOtorisasi::AKSI_TAMBAH }}"
+                            data-id-target=""
+                            data-label="Tambah Layanan Baru">
+                        🔒 Minta Akses Tambah Layanan
+                    </button>
+                @endif
+            </div>
         </div>
 
         <div class="tabel-Responsif">
@@ -34,13 +74,15 @@
                         <th>Jabatan Petugas</th>
                         <th>Durasi &amp; Jeda</th>
                         <th>Harga Layanan</th>
-                        <th>Aksi</th>
+                        <th>Aksi (Izin 1x Manajer)</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($layanan as $item)
                         @php
                             $jmlAktif = $item->jumlahReservasiAktif();
+                            $tiketEdit = $petaAkses[\App\Services\OtorisasiKatalogService::kunciAkses(\App\Models\PermintaanOtorisasi::AKSI_UBAH, $item->id_layanan)] ?? null;
+                            $tiketHapus = $petaAkses[\App\Services\OtorisasiKatalogService::kunciAkses(\App\Models\PermintaanOtorisasi::AKSI_HAPUS, $item->id_layanan)] ?? null;
                         @endphp
                         <tr class="baris-layanan"
                             data-nama="{{ strtolower($item->nama_layanan) }}"
@@ -63,30 +105,78 @@
                             </td>
                             <td class="kolom-harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</td>
                             <td>
-                                <div class="aksi-grup">
-                                    <button type="button" class="btn-aksi btn-edit btnEditLayanan"
-                                            data-url-update="{{ route('kasir.layanan.update', $item->id_layanan) }}"
-                                            data-nama-asli="{{ $item->nama_layanan }}"
-                                            data-kategori="{{ $item->kategori }}"
-                                            data-durasi="{{ (int) $item->durasi_menit }}"
-                                            data-jeda="{{ (int) $item->jeda_menit }}"
-                                            data-harga="{{ (int) $item->harga_layanan }}">
-                                        Edit
-                                    </button>
-                                    <form method="POST"
-                                          action="{{ route('kasir.layanan.destroy', $item->id_layanan) }}"
-                                          class="formHapusLayanan"
-                                          data-confirm-title="Hapus Layanan Perawatan"
-                                          data-confirm-item="{{ $item->nama_layanan }}"
-                                          data-confirm-impact="{{ $jmlAktif > 0 ? 'Perhatian: Layanan ini masih memiliki ' . $jmlAktif . ' reservasi aktif (Menunggu/Diterima) sehingga penghapusan akan ditolak server.' : 'Layanan ini akan diarsipkan dari katalog aktif.' }}"
-                                          data-confirm-label="Ya, Hapus Layanan"
-                                          data-nama="{{ $item->nama_layanan }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-aksi btn-hapus">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                <div class="aksi-katalog-kolom">
+                                    <div class="baris-status-akses">
+                                        @if ($tiketEdit?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
+                                            <button type="button" class="btn-aksi btn-edit btnEditLayanan"
+                                                    data-url-update="{{ route('kasir.layanan.update', $item->id_layanan) }}"
+                                                    data-url-batal="{{ route('kasir.otorisasi-katalog.destroy', $tiketEdit->id_otorisasi) }}"
+                                                    data-nama-asli="{{ $item->nama_layanan }}"
+                                                    data-kategori="{{ $item->kategori }}"
+                                                    data-durasi="{{ (int) $item->durasi_menit }}"
+                                                    data-jeda="{{ (int) $item->jeda_menit }}"
+                                                    data-harga="{{ (int) $item->harga_layanan }}">
+                                                🔓 Edit Sekarang (1x)
+                                            </button>
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketEdit->id_otorisasi) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-tarik-akses">Batal Akses</button>
+                                            </form>
+                                        @elseif ($tiketEdit?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
+                                            <span class="badge-akses badge-akses-pending">⏳ Edit Pending</span>
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketEdit->id_otorisasi) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-tarik-akses">Tarik</button>
+                                            </form>
+                                        @else
+                                            <button type="button" class="btn-minta-akses-katalog"
+                                                    data-konteks="{{ $konteksLayanan }}"
+                                                    data-aksi="{{ \App\Models\PermintaanOtorisasi::AKSI_UBAH }}"
+                                                    data-id-target="{{ $item->id_layanan }}"
+                                                    data-label="Ubah Layanan: {{ $item->nama_layanan }} (#{{ $item->id_layanan }})">
+                                                🔒 Minta Edit
+                                            </button>
+                                        @endif
+
+                                        @if ($tiketHapus?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
+                                            <form method="POST"
+                                                  action="{{ route('kasir.layanan.destroy', $item->id_layanan) }}"
+                                                  class="formHapusLayanan"
+                                                  data-confirm="Hapus layanan '{{ $item->nama_layanan }}' menggunakan hak akses 1x pakai?"
+                                                  data-confirm-title="Hapus Layanan (1x Pakai)"
+                                                  data-confirm-item="{{ $item->nama_layanan }}"
+                                                  data-confirm-impact="{{ $jmlAktif > 0 ? 'Perhatian: Layanan ini masih memiliki ' . $jmlAktif . ' reservasi aktif sehingga penghapusan akan ditolak server.' : 'Setelah dihapus, hak akses otomatis terkunci kembali.' }}"
+                                                  data-confirm-label="Ya, Hapus Layanan">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-aksi btn-hapus">
+                                                    🔓 Hapus (1x)
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketHapus->id_otorisasi) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-tarik-akses">Batal Akses</button>
+                                            </form>
+                                        @elseif ($tiketHapus?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
+                                            <span class="badge-akses badge-akses-pending">⏳ Hapus Pending</span>
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketHapus->id_otorisasi) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-tarik-akses">Tarik</button>
+                                            </form>
+                                        @else
+                                            <button type="button" class="btn-minta-akses-katalog btn-minta-hapus"
+                                                    data-konteks="{{ $konteksLayanan }}"
+                                                    data-aksi="{{ \App\Models\PermintaanOtorisasi::AKSI_HAPUS }}"
+                                                    data-id-target="{{ $item->id_layanan }}"
+                                                    data-label="Hapus Layanan: {{ $item->nama_layanan }} (#{{ $item->id_layanan }})">
+                                                🔒 Minta Hapus
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -96,28 +186,32 @@
         </div>
     </div>
 
-    <!-- Modal Tambah / Edit Layanan -->
-    <div class="modal-backdrop" id="modalLayanan">
+    <!-- Modal Tambah / Edit Layanan (Hanya Aktif Saat Memiliki Izin 1x Pakai) -->
+    <div class="modal-backdrop {{ $bukaUlangModalLayanan ? 'tampil' : '' }}" id="modalLayanan">
         <div class="modal-kotak">
             <div class="modal-header">
-                <h3 id="judulModalLayanan">Tambah Layanan Baru</h3>
-                <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
+                <h3 id="judulModalLayanan">{{ old('_method', 'POST') === 'PUT' ? 'Perbarui Data Layanan (1x Pakai)' : 'Tambah Layanan Baru (1x Pakai)' }}</h3>
+                <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 
-            <form id="formLayanan" method="POST" action="{{ route('kasir.layanan.store') }}">
+            <form id="formLayanan" method="POST" action="{{ old('_url_action_layanan', route('kasir.layanan.store')) }}">
                 @csrf
-                <input type="hidden" name="_method" id="methodLayanan" value="POST">
+                <input type="hidden" name="_method" id="methodLayanan" value="{{ old('_method', 'POST') }}">
+                <input type="hidden" name="_url_action_layanan" id="inputUrlActionLayanan" value="{{ old('_url_action_layanan', route('kasir.layanan.store')) }}">
+                <input type="hidden" name="_url_batal_layanan" id="inputUrlBatalLayanan" value="{{ old('_url_batal_layanan', '') }}">
 
                 <div class="form-grup">
                     <label class="form-label" for="inputNamaLayanan">Nama Layanan / Perawatan</label>
-                    <input type="text" id="inputNamaLayanan" name="nama_layanan" class="form-input" placeholder="Contoh: Hair Spa Keratin" required>
+                    <input type="text" id="inputNamaLayanan" name="nama_layanan" class="form-input" value="{{ old('nama_layanan') }}" placeholder="Contoh: Hair Spa Keratin" required>
                 </div>
 
                 <div class="form-grup">
                     <label class="form-label" for="inputJabatanLayanan">Kategori Layanan (Menentukan Jabatan Petugas)</label>
                     <select id="inputJabatanLayanan" name="kategori" class="form-select" required>
                         @foreach (\App\Models\Layanan::KATEGORI_LIST as $namaKategori => $namaJabatan)
-                            <option value="{{ $namaKategori }}">{{ $namaKategori }} (Otomatis Ditangani {{ $namaJabatan }})</option>
+                            <option value="{{ $namaKategori }}" @selected(old('kategori') === $namaKategori)>
+                                {{ $namaKategori }} (Otomatis Ditangani {{ $namaJabatan }})
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -125,27 +219,29 @@
                 <div class="form-dua-kolom">
                     <div class="form-grup">
                         <label class="form-label" for="inputDurasiLayanan">Durasi Pengerjaan (Menit)</label>
-                        <input type="number" id="inputDurasiLayanan" name="durasi_menit" class="form-input" min="15" max="480" step="5" placeholder="Contoh: 60" required>
+                        <input type="number" id="inputDurasiLayanan" name="durasi_menit" class="form-input" min="15" max="480" step="5" value="{{ old('durasi_menit') }}" placeholder="Contoh: 60" required>
                     </div>
 
                     <div class="form-grup">
                         <label class="form-label" for="inputJedaLayanan">Jeda Persiapan (Menit)</label>
-                        <input type="number" id="inputJedaLayanan" name="jeda_menit" class="form-input" min="0" max="120" step="5" value="15" required>
+                        <input type="number" id="inputJedaLayanan" name="jeda_menit" class="form-input" min="0" max="120" step="5" value="{{ old('jeda_menit', 15) }}" required>
                     </div>
                 </div>
 
                 <div class="form-grup">
                     <label class="form-label" for="inputHargaLayanan">Harga Layanan (Rp)</label>
-                    <input type="number" id="inputHargaLayanan" name="harga_layanan" class="form-input" min="0" step="1" placeholder="Contoh: 120000" required>
+                    <input type="number" id="inputHargaLayanan" name="harga_layanan" class="form-input" min="0" step="1" value="{{ old('harga_layanan') }}" placeholder="Contoh: 120000" required>
                 </div>
 
                 <div class="modal-kaki">
-                    <button type="button" class="btn-sekunder" data-tutup-modal>Batal</button>
-                    <button type="submit" class="btn-utama">Simpan Layanan</button>
+                    <button type="button" class="btn-kunci-modal" id="btnBatalKunciLayanan">Batalkan &amp; Kunci Akses</button>
+                    <button type="submit" class="btn-utama">Simpan Layanan (1x Pakai)</button>
                 </div>
             </form>
         </div>
     </div>
+
+    @include('Karyawan.Kasir.partials.modal-akses-katalog', ['konteksDefault' => $konteksLayanan])
 @endsection
 
 @push('scripts')

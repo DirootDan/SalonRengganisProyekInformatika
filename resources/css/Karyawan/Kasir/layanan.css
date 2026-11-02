@@ -1,3 +1,5 @@
+@import './katalog-akses.css';
+
 .nama-layanan-sel {
     display: flex;
     align-items: center;
@@ -18,4 +20,10 @@
 .kolom-harga {
     font-weight: 700;
     color: #db2777 !important;
+}
+
+.form-dua-kolom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
 }

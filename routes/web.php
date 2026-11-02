@@ -5,6 +5,7 @@ use App\Http\Controllers\Kasir\AntreanController as KasirAntreanController;
 use App\Http\Controllers\Kasir\LaporanController as KasirLaporanController;
 use App\Http\Controllers\Kasir\LayananController as KasirLayananController;
 use App\Http\Controllers\Kasir\MetodePembayaranController as KasirMetodePembayaranController;
+use App\Http\Controllers\Kasir\OtorisasiKatalogController as KasirOtorisasiKatalogController;
 use App\Http\Controllers\Kasir\OtorisasiPosController as KasirOtorisasiPosController;
 use App\Http\Controllers\Kasir\PermintaanBookingController as KasirPermintaanBookingController;
 use App\Http\Controllers\Kasir\PosController as KasirPosController;
@@ -119,13 +120,17 @@ Route::middleware(['auth:karyawan', 'peran:Kasir'])
 
         Route::get('/antrean-hari-ini', [KasirAntreanController::class, 'index'])->name('antrean');
 
-        // CRUD Layanan Kasir (Route Model Binding: {layanan})
+        // Pengajuan & Pembatalan Hak Akses 1x Pakai Katalog (Layanan & Produk)
+        Route::post('/otorisasi-katalog', [KasirOtorisasiKatalogController::class, 'store'])->name('otorisasi-katalog.store');
+        Route::delete('/otorisasi-katalog/{idOtorisasi}', [KasirOtorisasiKatalogController::class, 'destroy'])->name('otorisasi-katalog.destroy');
+
+        // CRUD Layanan Kasir (Terproteksi Hak Akses 1x Pakai Manajer)
         Route::get('/layanan', [KasirLayananController::class, 'index'])->name('layanan');
         Route::post('/layanan', [KasirLayananController::class, 'store'])->name('layanan.store');
         Route::put('/layanan/{layanan}', [KasirLayananController::class, 'update'])->name('layanan.update');
         Route::delete('/layanan/{layanan}', [KasirLayananController::class, 'destroy'])->name('layanan.destroy');
 
-        // CRUD Produk Kasir (Route Model Binding: {produk})
+        // CRUD Produk Kasir (Terproteksi Hak Akses 1x Pakai Manajer)
         Route::get('/produk', [KasirProdukController::class, 'index'])->name('produk');
         Route::post('/produk', [KasirProdukController::class, 'store'])->name('produk.store');
         Route::put('/produk/{produk}', [KasirProdukController::class, 'update'])->name('produk.update');

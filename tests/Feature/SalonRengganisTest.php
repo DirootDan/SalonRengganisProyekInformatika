@@ -560,32 +560,28 @@ class SalonRengganisTest extends TestCase
         $this->assertEquals(25, $this->produkVitamin->fresh()->stok_produk);
 
         // Uji duplikasi produk aktif ditolak (termasuk spasi ganda), namun setelah di-soft-delete nama boleh dipakai ulang
-        $kasirActor = $this->actingAs($this->kasir, 'karyawan');
-        $kasirActor->post(route('kasir.produk.store'), [
+        $manajer->post(route('manajer.produk.simpan'), [
             'nama_produk' => '  Vitamin   Rambut Premium ',
             'stok_produk' => 5,
             'harga_produk' => 55000,
         ])->assertSessionHasErrors('nama_produk');
 
-        $kasirActor->post(route('kasir.produk.store'), [
+        $manajer->post(route('manajer.produk.simpan'), [
             'nama_produk' => 'Masker Argan Uji',
             'stok_produk' => 10,
             'harga_produk' => 75000,
         ])->assertRedirect()->assertSessionHas('status');
 
         $produkUji = Produk::where('nama_produk', 'Masker Argan Uji')->firstOrFail();
-        $kasirActor->delete(route('kasir.produk.destroy', $produkUji))->assertRedirect();
+        $manajer->delete(route('manajer.produk.hapus', $produkUji))->assertRedirect();
         $this->assertSoftDeleted('produk', ['id_produk' => $produkUji->id_produk]);
 
         // Setelah soft-delete, nama 'Masker Argan Uji' dapat didaftarkan kembali tanpa error unique
-        $kasirActor->post(route('kasir.produk.store'), [
+        $manajer->post(route('manajer.produk.simpan'), [
             'nama_produk' => 'Masker Argan Uji',
             'stok_produk' => 12,
             'harga_produk' => 78000,
         ])->assertRedirect()->assertSessionHas('status');
-
-        // Kembalikan sesi autentikasi ke Manajer untuk pengujian berikutnya
-        $manajer = $this->actingAs($this->manajer, 'karyawan');
 
         // 4. PromoController (termasuk validasi Rule::when diskon persentase > 100%)
         $manajer->post(route('manajer.promo.simpan'), [
