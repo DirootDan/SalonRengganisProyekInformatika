@@ -1,3 +1,11 @@
+:root {
+    --lebar-cetak-struk: 80mm;
+}
+
+.elemen-tersembunyi {
+    display: none !important;
+}
+
 .struk-grid {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
@@ -24,6 +32,25 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
+}
+
+@media (max-width: 640px) {
+    .form-dua-kolom {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-galat {
+    border-color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+}
+
+.pesan-galat-field {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #dc2626;
 }
 
 .opsi-ceklis-grup {
@@ -193,31 +220,50 @@
     color: #111827;
 }
 
+/* ===== Mode Cetak Murni CSS (Tanpa HTML/CSS di File JS) ===== */
 @media print {
+    @page {
+        margin: 0;
+    }
+
     .sidebar,
     .topbar,
     .panel-kartu,
     .label-pratinjau,
-    .footer-admin {
+    .alert-sukses,
+    .alert-galat,
+    .toast-notif,
+    .footer-admin,
+    .footer-kasir {
         display: none !important;
     }
 
+    html,
     body,
-    .konten-utama,
-    .isi-halaman,
+    .admin-shell,
+    .kasir-shell,
+    .main-area,
+    .konten,
     .struk-grid,
     .pratinjau-wadah {
         display: block !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 100% !important;
         background: #ffffff !important;
         position: static !important;
     }
 
     #kertasStruk {
+        width: var(--lebar-cetak-struk, 80mm) !important;
+        max-width: var(--lebar-cetak-struk, 80mm) !important;
         margin: 0 auto !important;
+        padding: 4mm 3mm !important;
         box-shadow: none !important;
         border: none !important;
         background: #ffffff !important;
+        color: #111827 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }
