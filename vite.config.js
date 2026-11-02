@@ -41,6 +41,7 @@ export default defineConfig({
                 'resources/css/Manajer/metode.css',
                 'resources/css/Manajer/struk.css',
                 'resources/css/Manajer/kebijakan.css',
+                'resources/css/Manajer/persetujuan.css',
 
                 // Manajer JS
                 'resources/js/Manajer/layout.js',
@@ -53,6 +54,7 @@ export default defineConfig({
                 'resources/js/Manajer/metode.js',
                 'resources/js/Manajer/struk.js',
                 'resources/js/Manajer/kebijakan.js',
+                'resources/js/Manajer/persetujuan.js',
 
                 // Karyawan - Kasir CSS
                 'resources/css/Karyawan/Kasir/layout.css',

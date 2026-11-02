@@ -121,6 +121,41 @@ body {
     font-size: 17px;
     width: 22px;
     text-align: center;
+    flex-shrink: 0;
+}
+
+.nav-item-teks {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.nav-kuadrat-notif {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.nav-kuadrat-notif.kosong {
+    background: rgba(255, 255, 255, 0.14);
+    color: #d1d5db;
+}
+
+.nav-kuadrat-notif.ada-acc {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 3px 8px rgba(239, 68, 68, 0.4);
 }
 
 .sidebar-kaki {

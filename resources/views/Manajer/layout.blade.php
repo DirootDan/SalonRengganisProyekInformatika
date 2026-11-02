@@ -9,6 +9,9 @@
     @stack('styles')
 </head>
 <body>
+    @php
+        $jumlahPendingOtorisasi = \App\Models\PermintaanOtorisasi::menungguPersetujuan()->count();
+    @endphp
 
     <div class="admin-shell">
         <!-- Sidebar Kiri Khusus Manajer -->
@@ -27,6 +30,16 @@
                     <a href="{{ route('manajer.dashboard') }}" class="nav-item {{ request()->routeIs('manajer.dashboard') ? 'aktif' : '' }}">
                         <span class="nav-ikon">📊</span>
                         <span>Beranda Manajer</span>
+                    </a>
+                    <a href="{{ route('manajer.persetujuan') }}" class="nav-item {{ request()->routeIs('manajer.persetujuan*') ? 'aktif' : '' }}">
+                        <span class="nav-ikon">✅</span>
+                        <span class="nav-item-teks">
+                            Persetujuan Kasir
+                            <sup class="nav-kuadrat-notif {{ $jumlahPendingOtorisasi > 0 ? 'ada-acc' : 'kosong' }}"
+                                 title="{{ $jumlahPendingOtorisasi }} permintaan otorisasi menunggu keputusan">
+                                {{ $jumlahPendingOtorisasi > 99 ? '99+' : $jumlahPendingOtorisasi }}
+                            </sup>
+                        </span>
                     </a>
                 </div>
 

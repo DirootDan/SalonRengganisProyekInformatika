@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use App\Models\Pelanggan;
+use App\Services\OtorisasiPosService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -118,11 +119,15 @@ class AuthController extends Controller
 
     /* ================= LOGOUT GABUNGAN ================= */
 
-    public function logout(Request $request)
+    public function logout(Request $request, OtorisasiPosService $otorisasiPosService)
     {
         if (Auth::guard('karyawan')->check()) {
+            $idKaryawan = (int) Auth::guard('karyawan')->id();
+            $otorisasiPosService->hanguskanIzinKatalogSaatLogout($idKaryawan);
             Auth::guard('karyawan')->logout();
-        } elseif (Auth::guard('pelanggan')->check()) {
+        }
+
+        if (Auth::guard('pelanggan')->check()) {
             Auth::guard('pelanggan')->logout();
         }
 

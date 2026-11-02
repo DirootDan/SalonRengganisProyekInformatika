@@ -5,6 +5,7 @@ use App\Http\Controllers\Kasir\AntreanController as KasirAntreanController;
 use App\Http\Controllers\Kasir\LaporanController as KasirLaporanController;
 use App\Http\Controllers\Kasir\LayananController as KasirLayananController;
 use App\Http\Controllers\Kasir\MetodePembayaranController as KasirMetodePembayaranController;
+use App\Http\Controllers\Kasir\OtorisasiPosController as KasirOtorisasiPosController;
 use App\Http\Controllers\Kasir\PermintaanBookingController as KasirPermintaanBookingController;
 use App\Http\Controllers\Kasir\PosController as KasirPosController;
 use App\Http\Controllers\Kasir\ProdukController as KasirProdukController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Manajer\KebijakanBookingController as ManajerKebijakanB
 use App\Http\Controllers\Manajer\LaporanController as ManajerLaporanController;
 use App\Http\Controllers\Manajer\LayananController as ManajerLayananController;
 use App\Http\Controllers\Manajer\MetodePembayaranController as ManajerMetodePembayaranController;
+use App\Http\Controllers\Manajer\PersetujuanOtorisasiController as ManajerPersetujuanOtorisasiController;
 use App\Http\Controllers\Manajer\ProdukController as ManajerProdukController;
 use App\Http\Controllers\Manajer\PromoController as ManajerPromoController;
 use App\Http\Controllers\Manajer\StrukController as ManajerStrukController;
@@ -94,6 +96,11 @@ Route::middleware(['auth:karyawan', 'peran:Manajer'])
         Route::get('/kebijakan-booking', [ManajerKebijakanBookingController::class, 'edit'])->name('kebijakan');
         Route::put('/kebijakan-booking', [ManajerKebijakanBookingController::class, 'update'])->name('kebijakan.simpan');
         Route::post('/kebijakan-booking/buka-blokir/{pelanggan}', [ManajerKebijakanBookingController::class, 'bukaBlokir'])->name('kebijakan.buka');
+
+        // Persetujuan Otorisasi Kasir & Log Audit Perubahan
+        Route::get('/persetujuan-otorisasi', [ManajerPersetujuanOtorisasiController::class, 'index'])->name('persetujuan');
+        Route::post('/persetujuan-otorisasi/{idOtorisasi}/setujui', [ManajerPersetujuanOtorisasiController::class, 'setujui'])->name('persetujuan.setujui');
+        Route::post('/persetujuan-otorisasi/{idOtorisasi}/tolak', [ManajerPersetujuanOtorisasiController::class, 'tolak'])->name('persetujuan.tolak');
     });
 
 // MODUL 3: Area Kasir (Dipecah per tanggung jawab / Satu Controller = Satu Resource)
@@ -101,6 +108,9 @@ Route::middleware(['auth:karyawan', 'peran:Kasir'])
     ->prefix('kasir')->name('kasir.')->group(function () {
         Route::get('/dashboard', [KasirPosController::class, 'index'])->name('dashboard');
         Route::post('/transaksi/bayar', [KasirPosController::class, 'store'])->name('bayar');
+        Route::post('/transaksi/otorisasi-hold', [KasirOtorisasiPosController::class, 'hold'])->name('otorisasi.hold');
+        Route::post('/transaksi/direct-override', [KasirOtorisasiPosController::class, 'directOverride'])->name('otorisasi.direct');
+        Route::delete('/transaksi/otorisasi-hold/{idOtorisasi}', [KasirOtorisasiPosController::class, 'batalkanHold'])->name('otorisasi.batal');
 
         // Permintaan Booking & Antrean Hari Ini
         Route::get('/permintaan-booking', [KasirPermintaanBookingController::class, 'index'])->name('permintaan');
