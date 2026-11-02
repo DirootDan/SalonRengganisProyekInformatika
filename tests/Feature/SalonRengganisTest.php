@@ -561,6 +561,25 @@ class SalonRengganisTest extends TestCase
         // 6. MetodePembayaranController, StrukController, & KebijakanBookingController
         $manajer->get(route('manajer.metode'))->assertStatus(200);
         $manajer->get(route('manajer.struk'))->assertStatus(200);
+        $manajer->put(route('manajer.struk.simpan'), [
+            'nama_salon' => 'SALON RENGGANIS PUSAT',
+            'slogan' => '',
+            'alamat' => 'Jl. Paingan No. 88, Sleman',
+            'telepon' => '0812-3456-7890',
+            'instagram' => '',
+            'teks_header' => '',
+            'teks_footer' => 'Terima kasih.',
+            'ukuran_kertas' => '76mm',
+            'tampil_logo' => '1',
+        ])->assertRedirect()->assertSessionHas('status');
+        $this->assertDatabaseHas('pengaturan_struk', [
+            'nama_salon' => 'SALON RENGGANIS PUSAT',
+            'slogan' => '',
+            'instagram' => '',
+            'ukuran_kertas' => '76mm',
+            'tampil_logo' => true,
+            'tampil_petugas' => false,
+        ]);
         $manajer->get(route('manajer.kebijakan'))->assertStatus(200);
         $manajer->put(route('manajer.kebijakan.simpan'), [
             'batas_pelanggaran' => 5,

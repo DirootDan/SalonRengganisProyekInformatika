@@ -62,4 +62,21 @@ class PengaturanStruk extends Model
             'tampil_sosmed' => true,
         ]);
     }
+
+    public function ukuranTernormalisasi(): string
+    {
+        $ukuran = (string) ($this->ukuran_kertas ?: self::UKURAN_80MM);
+
+        return array_key_exists($ukuran, self::DAFTAR_UKURAN_KERTAS)
+            ? $ukuran
+            : self::UKURAN_80MM;
+    }
+
+    public function labelPratinjau(): string
+    {
+        $ukuran = $this->ukuranTernormalisasi();
+        $jenis = $ukuran === self::UKURAN_76MM ? 'IMPACT / DOT MATRIX' : 'THERMAL';
+
+        return 'PRATINJAU KERTAS STRUK '.$jenis.' ('.strtoupper($ukuran).')';
+    }
 }

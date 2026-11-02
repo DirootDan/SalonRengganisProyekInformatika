@@ -11,21 +11,14 @@ class StrukController extends Controller
     public function edit()
     {
         $struk = PengaturanStruk::aktif();
+        $daftarUkuran = PengaturanStruk::DAFTAR_UKURAN_KERTAS;
 
-        return view('Manajer.struk', compact('struk'));
+        return view('Manajer.struk', compact('struk', 'daftarUkuran'));
     }
 
     public function update(PengaturanStrukRequest $request)
     {
-        $data = $request->validated();
-
-        $data['ukuran_kertas'] = $data['ukuran_kertas'] ?? PengaturanStruk::UKURAN_80MM;
-        $data['tampil_logo'] = $request->boolean('tampil_logo');
-        $data['tampil_petugas'] = $request->boolean('tampil_petugas');
-        $data['tampil_kasir'] = $request->boolean('tampil_kasir');
-        $data['tampil_sosmed'] = $request->boolean('tampil_sosmed');
-
-        PengaturanStruk::aktif()->update($data);
+        PengaturanStruk::aktif()->update($request->validated());
 
         return back()->with('status', 'Pengaturan format struk nota berhasil disimpan.');
     }

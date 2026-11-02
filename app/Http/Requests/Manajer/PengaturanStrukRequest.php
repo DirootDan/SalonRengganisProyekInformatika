@@ -13,17 +13,34 @@ class PengaturanStrukRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'slogan' => (string) ($this->input('slogan') ?? ''),
+            'instagram' => (string) ($this->input('instagram') ?? ''),
+            'ukuran_kertas' => $this->input('ukuran_kertas') ?: PengaturanStruk::UKURAN_80MM,
+            'tampil_logo' => $this->boolean('tampil_logo'),
+            'tampil_petugas' => $this->boolean('tampil_petugas'),
+            'tampil_kasir' => $this->boolean('tampil_kasir'),
+            'tampil_sosmed' => $this->boolean('tampil_sosmed'),
+        ]);
+    }
+
     public function rules(): array
     {
         return [
             'nama_salon' => ['required', 'string', 'max:100'],
-            'slogan' => ['nullable', 'string', 'max:150'],
+            'slogan' => ['present', 'string', 'max:150'],
             'alamat' => ['required', 'string', 'max:255'],
             'telepon' => ['required', 'string', 'max:50'],
-            'instagram' => ['nullable', 'string', 'max:80'],
+            'instagram' => ['present', 'string', 'max:80'],
             'teks_header' => ['nullable', 'string', 'max:150'],
             'teks_footer' => ['nullable', 'string', 'max:500'],
-            'ukuran_kertas' => ['nullable', 'string', Rule::in(array_keys(PengaturanStruk::DAFTAR_UKURAN_KERTAS))],
+            'ukuran_kertas' => ['required', 'string', Rule::in(array_keys(PengaturanStruk::DAFTAR_UKURAN_KERTAS))],
+            'tampil_logo' => ['required', 'boolean'],
+            'tampil_petugas' => ['required', 'boolean'],
+            'tampil_kasir' => ['required', 'boolean'],
+            'tampil_sosmed' => ['required', 'boolean'],
         ];
     }
 
