@@ -116,8 +116,9 @@
                 <div class="form-grup">
                     <label class="form-label" for="inputJabatanLayanan">Kategori Layanan (Menentukan Jabatan Petugas)</label>
                     <select id="inputJabatanLayanan" name="kategori" class="form-select" required>
-                        <option value="Rambut">Rambut (Otomatis Ditangani Stylist)</option>
-                        <option value="Perawatan">Perawatan Wajah, Kuku &amp; Tubuh (Otomatis Ditangani Therapist)</option>
+                        @foreach (\App\Models\Layanan::KATEGORI_LIST as $namaKategori => $namaJabatan)
+                            <option value="{{ $namaKategori }}">{{ $namaKategori }} (Otomatis Ditangani {{ $namaJabatan }})</option>
+                        @endforeach
                     </select>
                 </div>
 

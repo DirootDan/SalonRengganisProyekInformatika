@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Manajer;
 
+use App\Models\Produk;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ProdukRequest extends FormRequest
@@ -12,19 +14,28 @@ class ProdukRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('nama_produk')) {
+            $this->merge([
+                'nama_produk' => Str::squish((string) $this->input('nama_produk')),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
-        // Mengambil ID produk saat ini jika sedang dalam mode edit/update
-        $produk = $this->route('produk');
-        $id = $produk instanceof \App\Models\Produk ? $produk->id_produk : $produk;
+        $produkParam = $this->route('produk') ?? $this->route('id');
+        $idProduk = $produkParam instanceof Produk ? $produkParam->id_produk : $produkParam;
 
         return [
             'nama_produk' => [
-                'required', 
-                'string', 
+                'required',
+                'string',
                 'max:100',
-                // Mencegah duplikasi nama produk di database, abaikan jika sedang mengedit produk itu sendiri
-                Rule::unique('produk', 'nama_produk')->ignore($id, 'id_produk'),
+                Rule::unique('produk', 'nama_produk')
+                    ->ignore($idProduk, 'id_produk')
+                    ->withoutTrashed(),
             ],
             'stok_produk' => ['required', 'integer', 'min:0'],
             'harga_produk' => ['required', 'numeric', 'min:0'],

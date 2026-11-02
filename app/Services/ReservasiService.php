@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Layanan;
+use App\Models\NotifikasiPelanggan;
 use App\Models\Pelanggan;
 use App\Models\Produk;
 use App\Models\Reservasi;
+use Carbon\Carbon;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 
@@ -92,6 +94,107 @@ class ReservasiService
 
             return $reservasi;
         });
+    }
+
+    /**
+     * Menerima permintaan reservasi pelanggan oleh Kasir dengan pengecekan anti-bentrok satu kueri.
+     */
+    public function terimaReservasiKasir(int $idReservasi): Reservasi
+    {
+        return DB::transaction(function () use ($idReservasi) {
+            $reservasi = Reservasi::with('layanan')
+                ->where('id_reservasi', $idReservasi)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->pastikanTidakBentrokDiterima($reservasi);
+            $reservasi->ubahStatus(Reservasi::STATUS_DITERIMA);
+
+            NotifikasiPelanggan::kirim(
+                $reservasi->id_pelanggan,
+                'Permintaan Booking Diterima',
+                "Kabar gembira! Reservasi #{$reservasi->id_reservasi} untuk tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$reservasi->jam_booking} telah diterima oleh kasir. Silakan datang tepat waktu.",
+                NotifikasiPelanggan::TIPE_SUKSES,
+                $reservasi->id_reservasi
+            );
+
+            return $reservasi;
+        });
+    }
+
+    /**
+     * Menolak permintaan reservasi pelanggan oleh Kasir beserta alasan dan pengembalian stok otomatis.
+     */
+    public function tolakReservasiKasir(int $idReservasi, string $alasanPenolakan): Reservasi
+    {
+        return DB::transaction(function () use ($idReservasi, $alasanPenolakan) {
+            $reservasi = Reservasi::where('id_reservasi', $idReservasi)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $reservasi->ubahStatus(Reservasi::STATUS_DITOLAK, [
+                'alasan_penolakan' => $alasanPenolakan,
+                'dibatalkan_oleh' => Reservasi::DIBATALKAN_OLEH_KASIR,
+            ]);
+
+            NotifikasiPelanggan::kirim(
+                $reservasi->id_pelanggan,
+                'Permintaan Booking Ditolak',
+                "Mohon maaf, reservasi #{$reservasi->id_reservasi} untuk tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$reservasi->jam_booking} belum dapat kami terima. Alasan: {$alasanPenolakan}.",
+                NotifikasiPelanggan::TIPE_BAHAYA,
+                $reservasi->id_reservasi
+            );
+
+            return $reservasi;
+        });
+    }
+
+    /**
+     * Memastikan petugas pada reservasi tidak bentrok dengan reservasi lain yang sudah berstatus Diterima.
+     */
+    private function pastikanTidakBentrokDiterima(Reservasi $reservasi): void
+    {
+        $tanggal = $reservasi->tgl_booking->toDateString();
+        $jadwalDiterima = $this->jadwalService->ambilJadwalAktifTanggal(
+            $tanggal,
+            (int) $reservasi->id_reservasi,
+            true,
+            [Reservasi::STATUS_DITERIMA]
+        );
+
+        foreach ($reservasi->layanan as $layanan) {
+            $idStaf = $layanan->pivot->id_karyawan ? (int) $layanan->pivot->id_karyawan : null;
+            if (! $idStaf) {
+                continue;
+            }
+
+            [$jamMulai, $jamBlokir] = $this->tentukanRentangBlokirPivot($reservasi, $layanan);
+            $idSibuk = $this->jadwalService->saringIdSibukDariKoleksi($jadwalDiterima, $jamMulai, $jamBlokir);
+
+            if (in_array($idStaf, $idSibuk, true)) {
+                throw new DomainException(
+                    "Tidak dapat menerima reservasi #{$reservasi->id_reservasi} karena petugas sudah memiliki reservasi Diterima lain pada tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$jamMulai} - {$jamBlokir} WIB."
+                );
+            }
+        }
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function tentukanRentangBlokirPivot(Reservasi $reservasi, Layanan $layanan): array
+    {
+        $jamMulai = substr((string) ($layanan->pivot->jam_mulai ?: $reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON), 0, 5);
+
+        if (! empty($layanan->pivot->jam_selesai_blokir)) {
+            return [$jamMulai, substr((string) $layanan->pivot->jam_selesai_blokir, 0, 5)];
+        }
+
+        $jamBlokir = Carbon::createFromFormat('H:i', $jamMulai)
+            ->addMinutes($layanan->totalBlokirMenit())
+            ->format('H:i');
+
+        return [$jamMulai, $jamBlokir];
     }
 
     /**

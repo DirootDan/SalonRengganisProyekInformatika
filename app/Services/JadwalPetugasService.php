@@ -69,13 +69,21 @@ class JadwalPetugasService
 
     /**
      * Mengambil daftar baris jadwal aktif petugas pada tanggal tertentu.
+     *
+     * @param  array<int, string>|null  $filterStatus
      */
-    public function ambilJadwalAktifTanggal(string $tanggal, ?int $kecualiIdReservasi = null, bool $kunciBaris = false): Collection
-    {
+    public function ambilJadwalAktifTanggal(
+        string $tanggal,
+        ?int $kecualiIdReservasi = null,
+        bool $kunciBaris = false,
+        ?array $filterStatus = null
+    ): Collection {
+        $daftarStatus = $filterStatus ?? Reservasi::STATUS_AKTIF_SLOT;
+
         $kueri = DB::table('detail_reservasi')
             ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
             ->whereDate('reservasi.tgl_booking', $tanggal)
-            ->whereIn('reservasi.status', Reservasi::STATUS_AKTIF_SLOT)
+            ->whereIn('reservasi.status', $daftarStatus)
             ->whereNotNull('detail_reservasi.id_karyawan')
             ->select([
                 'reservasi.id_reservasi',

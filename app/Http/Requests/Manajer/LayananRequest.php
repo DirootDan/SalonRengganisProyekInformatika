@@ -4,6 +4,7 @@ namespace App\Http\Requests\Manajer;
 
 use App\Models\Layanan;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class LayananRequest extends FormRequest
@@ -15,9 +16,21 @@ class LayananRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $kategori = Str::squish((string) $this->input('kategori', ''));
+        $jabatan = $this->filled('jabatan_petugas')
+            ? (string) $this->input('jabatan_petugas')
+            : Layanan::jabatanUntukKategori($kategori);
+
         $this->merge([
-            'durasi_menit' => $this->input('durasi_menit', Layanan::DEFAULT_DURASI_MENIT),
-            'jeda_menit' => $this->input('jeda_menit', Layanan::DEFAULT_JEDA_MENIT),
+            'nama_layanan' => Str::squish((string) $this->input('nama_layanan', '')),
+            'kategori' => $kategori,
+            'jabatan_petugas' => $jabatan,
+            'durasi_menit' => $this->filled('durasi_menit')
+                ? $this->input('durasi_menit')
+                : Layanan::DEFAULT_DURASI_MENIT,
+            'jeda_menit' => $this->filled('jeda_menit')
+                ? $this->input('jeda_menit')
+                : Layanan::DEFAULT_JEDA_MENIT,
             'petugas_eksklusif' => $this->has('petugas_eksklusif')
                 ? $this->boolean('petugas_eksklusif')
                 : true,
@@ -26,8 +39,18 @@ class LayananRequest extends FormRequest
 
     public function rules(): array
     {
+        $layananParam = $this->route('layanan') ?? $this->route('id');
+        $idLayanan = $layananParam instanceof Layanan ? $layananParam->id_layanan : $layananParam;
+
         return [
-            'nama_layanan' => ['required', 'string', 'max:100'],
+            'nama_layanan' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('layanan', 'nama_layanan')
+                    ->ignore($idLayanan, 'id_layanan')
+                    ->withoutTrashed(),
+            ],
             'kategori' => ['required', 'string', 'max:50'],
             'jabatan_petugas' => ['required', Rule::in(Layanan::JABATAN_PETUGAS)],
             'harga_layanan' => ['required', 'numeric', 'min:0'],
@@ -42,6 +65,7 @@ class LayananRequest extends FormRequest
         return [
             'nama_layanan.required' => 'Nama layanan perawatan wajib diisi.',
             'nama_layanan.max' => 'Nama layanan maksimal 100 karakter.',
+            'nama_layanan.unique' => 'Nama layanan ini sudah terdaftar di katalog aktif.',
             'kategori.required' => 'Kategori layanan wajib dipilih.',
             'jabatan_petugas.required' => 'Jabatan petugas penanggung jawab wajib dipilih.',
             'jabatan_petugas.in' => 'Jabatan petugas harus Stylist atau Therapist.',

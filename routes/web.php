@@ -104,13 +104,13 @@ Route::middleware(['auth:karyawan', 'peran:Kasir'])
 
         Route::get('/layanan', [KasirController::class, 'layanan'])->name('layanan');
         Route::post('/layanan', [KasirController::class, 'storeLayanan'])->name('layanan.store');
-        Route::put('/layanan/{id}', [KasirController::class, 'updateLayanan'])->name('layanan.update');
-        Route::delete('/layanan/{id}', [KasirController::class, 'destroyLayanan'])->name('layanan.destroy');
+        Route::put('/layanan/{layanan}', [KasirController::class, 'updateLayanan'])->name('layanan.update');
+        Route::delete('/layanan/{layanan}', [KasirController::class, 'destroyLayanan'])->name('layanan.destroy');
 
         Route::get('/produk', [KasirController::class, 'produk'])->name('produk');
         Route::post('/produk', [KasirController::class, 'storeProduk'])->name('produk.store');
-        Route::put('/produk/{id}', [KasirController::class, 'updateProduk'])->name('produk.update');
-        Route::delete('/produk/{id}', [KasirController::class, 'destroyProduk'])->name('produk.destroy');
+        Route::put('/produk/{produk}', [KasirController::class, 'updateProduk'])->name('produk.update');
+        Route::delete('/produk/{produk}', [KasirController::class, 'destroyProduk'])->name('produk.destroy');
 
         Route::get('/laporan', [KasirController::class, 'laporan'])->name('laporan');
         Route::get('/metode-pembayaran', [KasirController::class, 'metodePembayaran'])->name('metode');

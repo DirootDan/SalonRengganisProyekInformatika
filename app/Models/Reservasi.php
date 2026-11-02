@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DomainException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,11 +28,20 @@ class Reservasi extends Model
 
     public const STATUS_HANGUS = 'Hangus';
 
+    public const STATUS_MENUNGGU_LIST = [
+        self::STATUS_MENUNGGU,
+        'pending',
+    ];
+
     public const STATUS_AKTIF_SLOT = [
         self::STATUS_MENUNGGU,
         self::STATUS_DITERIMA,
         'pending',
     ];
+
+    public const DIBATALKAN_OLEH_KASIR = 'Kasir';
+
+    public const DIBATALKAN_OLEH_PELANGGAN = 'Pelanggan';
 
     /**
      * Peta mesin status yang sah.
@@ -150,6 +160,16 @@ class Reservasi extends Model
         $subtotal = $this->subtotalLayanan() + $this->subtotalProdukAddon();
 
         return max(0.0, $subtotal - (float) $this->nominal_diskon);
+    }
+
+    public function scopeMenungguKonfirmasi(Builder $query): Builder
+    {
+        return $query->whereIn('status', self::STATUS_MENUNGGU_LIST);
+    }
+
+    public function scopeSiapBayarKasir(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_DITERIMA)->doesntHave('transaksi');
     }
 
     public function statusTernormalisasi(): string

@@ -59,7 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
             form.action = btn.getAttribute('data-url-update');
             methodInput.value = 'PUT';
             inputNama.value = btn.getAttribute('data-nama-asli') || '';
-            inputJabatan.value = btn.getAttribute('data-kategori') || 'Rambut';
+
+            const kategoriData = btn.getAttribute('data-kategori') || '';
+            const adaOpsi = Array.from(inputJabatan.options).some(opt => opt.value === kategoriData);
+            if (adaOpsi) {
+                inputJabatan.value = kategoriData;
+            } else {
+                inputJabatan.value = kategoriData.toLowerCase().includes('rambut')
+                    ? 'Perawatan Rambut'
+                    : 'Perawatan Wajah & Tubuh';
+            }
+
             inputHarga.value = btn.getAttribute('data-harga') || '';
             if (inputDurasi) inputDurasi.value = btn.getAttribute('data-durasi') || '60';
             if (inputJeda) inputJeda.value = btn.getAttribute('data-jeda') || '15';
