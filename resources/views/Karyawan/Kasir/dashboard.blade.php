@@ -62,13 +62,23 @@
         </div>
 
         <!-- Kolom Kanan: Keranjang & Form Pembayaran Nyata -->
+        @php
+            $adaHoldDitolak = $daftarHold->contains('status', \App\Models\PermintaanOtorisasi::STATUS_DITOLAK);
+            $adaHoldDisetujui = $daftarHold->contains('status', \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI);
+            $kelasTombolHold = $adaHoldDitolak ? 'ada-ditolak' : ($adaHoldDisetujui ? 'ada-disetujui' : '');
+        @endphp
         <form method="POST"
               action="{{ route('kasir.bayar') }}"
+              data-url-bayar="{{ route('kasir.bayar') }}"
+              data-url-hold="{{ route('kasir.otorisasi.hold') }}"
+              data-batas-approval="{{ $batasWajibApproval }}"
               class="panel-kartu pos-keranjang"
               id="formTransaksiKasir"
               data-petugas='@json($petugasJson)'>
             @csrf
             <input type="hidden" name="id_reservasi" id="posIdReservasi" value="">
+            <input type="hidden" name="id_otorisasi" id="posIdOtorisasi" value="">
+            <input type="hidden" name="keranjang_disinkronkan" value="1">
             <div id="inputHiddenKeranjang"></div>
 
             <div class="keranjang-header">
@@ -84,11 +94,16 @@
             <div class="form-grup">
                 <div class="label-baris-pelanggan">
                     <label class="form-label tanpa-margin" for="posNamaPelanggan">Pelanggan / Reservasi</label>
-                    <button type="button" class="tautan-pilih-antrean" id="btnPilihAntreanKecil">
-                        Muat dari Antrean ({{ $reservasiAktif->count() }})
-                    </button>
+                    <div class="grup-tautan-pos">
+                        <button type="button" class="tautan-hold-pos {{ $kelasTombolHold }}" id="btnBukaHoldPos">
+                            ⏸️ Transaksi Hold ({{ $daftarHold->count() }})
+                        </button>
+                        <button type="button" class="tautan-pilih-antrean" id="btnPilihAntreanKecil">
+                            Muat dari Antrean ({{ $reservasiAktif->count() }})
+                        </button>
+                    </div>
                 </div>
-                <input type="text" id="posNamaPelanggan" class="form-input" placeholder="Pelanggan Umum / Walk-in" readonly>
+                <input type="text" name="nama_pelanggan_walkin" id="posNamaPelanggan" class="form-input" placeholder="Ketik nama pelanggan walk-in (opsional)...">
             </div>
 
             <div class="form-grup">
@@ -152,6 +167,28 @@
                 <div class="baris-kembalian">
                     <span>Kembalian</span>
                     <strong id="teksKembalian">Rp 0</strong>
+                </div>
+
+                <!-- Panel Kontekstual Otorisasi Perubahan Layanan / Override Harga -->
+                <div id="panelOtorisasiPos" class="panel-otorisasi-pos" hidden>
+                    <div id="kepalaOtorisasiPos" class="kepala-otorisasi-pos"></div>
+
+                    <div id="grupAlasanOtorisasiPos" class="form-grup spasi-alasan-pos">
+                        <label class="form-label" for="inputAlasanPerubahanPos" id="labelAlasanPerubahanPos">
+                            Alasan Perubahan Harga / Layanan *
+                        </label>
+                        <input type="text" name="alasan_perubahan" id="inputAlasanPerubahanPos" class="form-input"
+                               placeholder="Wajib isi alasan (min. 5 karakter)..." maxlength="500">
+                    </div>
+
+                    <div id="aksiWajibApprovalPos" class="aksi-wajib-approval-pos" hidden>
+                        <button type="button" class="btn-hold-kirim" id="btnKirimHoldManajer">
+                            ⏸️ Kirim ke Manajer &amp; Hold Transaksi
+                        </button>
+                        <button type="button" class="btn-direct-override" id="btnBukaDirectOverride">
+                            🔑 Otorisasi Manajer di Tempat
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-utama btn-bayar-penuh" id="btnProsesBayar">
@@ -245,6 +282,9 @@
             </div>
         </div>
     </div>
+
+    @include('Karyawan.Kasir.partials.modal-hold-pos')
+    @include('Karyawan.Kasir.partials.modal-direct-override-pos')
 @endsection
 
 @push('scripts')

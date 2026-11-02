@@ -352,4 +352,56 @@ class OtorisasiPosErrorHandlingTest extends TestCase
             ->post(route('manajer.persetujuan.setujui', $tiket->id_otorisasi))
             ->assertSessionHasErrors('persetujuan');
     }
+
+    public function test_tahap_2b_dashboard_pos_merender_modal_hold_badge_merah_penolakan_dan_bayar_harga_normal(): void
+    {
+        // 1. Kasir melakukan Hold transaksi >= Rp 150.000
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.otorisasi.hold'), [
+                'nama_pelanggan_walkin' => 'Ibu Kartika',
+                'layanan_ids' => [$this->layananMahal->id_layanan],
+                'id_petugas' => $this->stylist->id_karyawan,
+                'harga_override_layanan' => [$this->layananMahal->id_layanan => 140000],
+                'alasan_kasir' => 'Diskon pelanggan lama tetap.',
+            ])
+            ->assertRedirect(route('kasir.dashboard'));
+
+        $tiket = PermintaanOtorisasi::firstOrFail();
+
+        // 2. Manajer menolak pengajuan dari dashboard beserta alasan penolakan
+        $this->actingAs($this->manajer, 'karyawan')
+            ->from(route('manajer.persetujuan'))
+            ->post(route('manajer.persetujuan.tolak', $tiket->id_otorisasi), [
+                'catatan_manajer' => 'Promo maksimal hanya melalui kode voucer aktif.',
+            ])
+            ->assertRedirect(route('manajer.persetujuan'));
+
+        // 3. Halaman POS Kasir merender tombol Hold (1), badge merah Request Ditolak Manajer, alasan Manajer, & modal Direct Override
+        $this->actingAs($this->kasir, 'karyawan')
+            ->get(route('kasir.dashboard'))
+            ->assertOk()
+            ->assertSee('Transaksi Hold (1)')
+            ->assertSee('Request Ditolak Manajer')
+            ->assertSee('Promo maksimal hanya melalui kode voucer aktif.')
+            ->assertSee('Lanjut Bayar Harga Normal')
+            ->assertSee('Ajukan Ulang Request')
+            ->assertSee('Otorisasi Manajer di Tempat');
+
+        // 4. Kasir memilih "Lanjut Bayar Harga Normal" (Rp 200.000) -> transaksi selesai & otomatis hilang dari daftar Hold
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.bayar'), [
+                'id_otorisasi' => $tiket->id_otorisasi,
+                'keranjang_disinkronkan' => 1,
+                'nama_pelanggan_walkin' => 'Ibu Kartika',
+                'layanan_ids' => [$this->layananMahal->id_layanan],
+                'id_petugas' => $this->stylist->id_karyawan,
+                'metode_bayar' => 'Tunai',
+                'nominal_uang' => 200000,
+            ])
+            ->assertRedirect(route('kasir.dashboard'));
+
+        $tiket->refresh();
+        $this->assertSame(PermintaanOtorisasi::STATUS_DIGUNAKAN, $tiket->status);
+        $this->assertFalse($tiket->sedang_dihold);
+    }
 }

@@ -478,3 +478,406 @@
     background: #fef2f2;
     color: #991b1b;
 }
+
+
+/* ===== Tautan Transaksi Hold & Antrean di POS ===== */
+.grup-tautan-pos {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tautan-hold-pos {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    color: #374151;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tautan-hold-pos:hover {
+    border-color: #db2777;
+    color: #9d174d;
+}
+
+.tautan-hold-pos.ada-ditolak {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.tautan-hold-pos.ada-disetujui {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+/* ===== Kontrol Override Harga Inline per Item Keranjang ===== */
+.harga-awal-coret {
+    color: #9ca3af;
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+.badge-harga-override {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.baris-aksi-harga {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+}
+
+.btn-buka-override,
+.btn-reset-override {
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #fbcfe8;
+    background: #fdf2f8;
+    color: #9d174d;
+}
+
+.btn-reset-override {
+    border-color: #e5e7eb;
+    background: #ffffff;
+    color: #4b5563;
+}
+
+.baris-override-harga {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.input-harga-override {
+    width: 120px;
+    padding: 5px 8px;
+    border-radius: 8px;
+    border: 1.5px solid #db2777;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    background: #ffffff;
+    color: #111827;
+}
+
+.btn-simpan-override,
+.btn-batal-override {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-simpan-override {
+    background: #db2777;
+    color: #ffffff;
+}
+
+.btn-batal-override {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* ===== Panel Kontekstual Otorisasi Perubahan Layanan / Override Harga ===== */
+.panel-otorisasi-pos {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.panel-otorisasi-pos.mode-mandiri {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.panel-otorisasi-pos.mode-wajib {
+    background: #fffbeb;
+    border-color: #fcd34d;
+}
+
+.panel-otorisasi-pos.mode-disetujui {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.kepala-otorisasi-pos {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 12.5px;
+    color: #374151;
+}
+
+.kepala-otorisasi-pos strong {
+    font-size: 13.5px;
+    color: #111827;
+}
+
+.spasi-alasan-pos {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.aksi-wajib-approval-pos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+@media (max-width: 560px) {
+    .aksi-wajib-approval-pos {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn-hold-kirim,
+.btn-direct-override {
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-hold-kirim {
+    background: #d97706;
+    color: #ffffff;
+}
+
+.btn-hold-kirim:hover {
+    background: #b45309;
+}
+
+.btn-direct-override {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+.btn-direct-override:hover {
+    background: #111827;
+}
+
+/* ===== Kartu Daftar Transaksi Hold & Penanganan Penolakan ===== */
+.kartu-hold-pos {
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kartu-hold-disetujui {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.kartu-hold-ditolak {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.kartu-hold-kepala {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.badge-hold {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.badge-hold-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-hold-setuju {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-hold-tolak {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.hold-nominal-kanan {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.teks-coret-kecil {
+    font-size: 11.5px;
+    color: #9ca3af;
+}
+
+.hold-alasan-kasir {
+    margin: 0;
+    font-size: 12.5px;
+    color: #4b5563;
+}
+
+.kotak-info-penolakan-hold {
+    background: #fee2e2;
+    border: 1px solid #f87171;
+    color: #991b1b;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.sub-pulih-normal {
+    margin-top: 4px;
+    color: #7f1d1d;
+    font-weight: 600;
+}
+
+.aksi-hold-baris {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.btn-muat-hold,
+.btn-void-hold {
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-hold-utama {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.btn-hold-normal {
+    background: #db2777;
+    color: #ffffff;
+}
+
+.btn-hold-ulang {
+    background: #ffffff;
+    border: 1.5px solid #d1d5db;
+    color: #374151;
+}
+
+.btn-void-hold {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ===== Modal Direct Override Kredensial Manajer ===== */
+.ringkasan-direct-override {
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.baris-ringkasan-direct {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.teks-merah-muda {
+    color: #db2777;
+}
+
+.kotak-alasan-direct {
+    border-top: 1px dashed #f9a8d4;
+    padding-top: 8px;
+    margin-top: 6px;
+}
+
+.kotak-alasan-direct p {
+    margin: 3px 0 0;
+    font-style: italic;
+    color: #374151;
+}
+
+.kotak-kunci-rate-limit {
+    background: #fef3c7;
+    border: 1.5px solid #f59e0b;
+    color: #92400e;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.modal-aksi-bawah {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.btn-batal-modal {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    color: #374151;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+}

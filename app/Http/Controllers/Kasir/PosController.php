@@ -9,11 +9,14 @@ use App\Models\Karyawan;
 use App\Models\Layanan;
 use App\Models\MetodePembayaran;
 use App\Models\PengaturanStruk;
+use App\Models\PermintaanOtorisasi;
 use App\Models\Produk;
 use App\Models\Promo;
 use App\Models\Reservasi;
+use App\Services\OtorisasiPosService;
 use App\Services\PembayaranKasirService;
 use DomainException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,11 +25,14 @@ class PosController extends Controller
     private const BATAS_ANTREAN_POS = 25;
 
     public function __construct(
-        private readonly PembayaranKasirService $pembayaranService
+        private readonly PembayaranKasirService $pembayaranService,
+        private readonly OtorisasiPosService $otorisasiPosService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        $idKasir = (int) Auth::guard('karyawan')->id();
+
         return view('Karyawan.Kasir.dashboard', [
             'layanan' => Layanan::orderBy('kategori')->orderBy('nama_layanan')->get(),
             'produk' => Produk::tersedia()->orderBy('nama_produk')->get(),
@@ -36,6 +42,12 @@ class PosController extends Controller
                 ->orderBy('jam_booking')
                 ->limit(self::BATAS_ANTREAN_POS)
                 ->get(),
+            'daftarHold' => PermintaanOtorisasi::with('manajer')
+                ->sedangDihold($idKasir)
+                ->latest('updated_at')
+                ->get(),
+            'batasWajibApproval' => (int) PermintaanOtorisasi::BATAS_NOMINAL_WAJIB_APPROVAL,
+            'detikKunciDirect' => $this->otorisasiPosService->sisaDetikTerkunci($idKasir, (string) $request->ip()),
             'petugas' => Karyawan::whereIn('role_jabatan', Layanan::JABATAN_PETUGAS)
                 ->where('aktif', true)
                 ->orderBy('nama_staff')
