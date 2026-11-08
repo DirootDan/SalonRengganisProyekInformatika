@@ -53,7 +53,12 @@
                                 <span class="pb-label">{{ $item->kategori }}</span>
                                 <h3>{{ $item->nama_layanan }}</h3>
                                 <p class="pb-meta">⏱ {{ $item->durasi_menit }} menit &bull; {{ $item->jabatan_petugas }}</p>
-                                <strong class="pb-harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</strong>
+                                <div class="pb-kartu-bawah">
+                                    <strong class="pb-harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</strong>
+                                    <a href="{{ route('pelanggan.booking', ['layanan' => $item->id_layanan]) }}" class="pb-tautan-pilih">
+                                        Pilih Layanan Ini &rarr;
+                                    </a>
+                                </div>
                             </article>
                         @endforeach
                     </div>

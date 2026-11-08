@@ -35,6 +35,8 @@
 
         <div class="link-row center">
             <a href="{{ route('login') }}">Kembali ke Login</a>
+            &bull;
+            <a href="{{ route('beranda.publik') }}">Beranda Salon</a>
         </div>
     </div>
 

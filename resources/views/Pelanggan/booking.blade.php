@@ -12,6 +12,8 @@
         $jmlTherapistLayanan = $layanan->where('jabatan_petugas', 'Therapist')->count();
         $jamTerpilihAwal     = substr((string) old('jam_booking', '10:00'), 0, 5);
         $tglTerpilihAwal     = old('tgl_booking', now()->toDateString());
+        $idLayananDariQuery  = request()->integer('layanan');
+        $daftarLayananAwal   = array_map('intval', (array) old('layanan', $idLayananDariQuery > 0 ? [$idLayananDariQuery] : []));
     @endphp
 
     <!-- Hero Banner Booking ala Portal Reservasi Modern -->
@@ -213,7 +215,7 @@
                                 @php
                                     $jabatan       = $item->jabatan_petugas;
                                     $daftarPetugas = $petugas->get($jabatan, collect());
-                                    $dipilih       = in_array($item->id_layanan, old('layanan', []));
+                                    $dipilih       = in_array((int) $item->id_layanan, $daftarLayananAwal, true);
                                     $petugasLama   = old('petugas.' . $item->id_layanan, '');
                                     $durasiMenit   = (int) ($item->durasi_menit ?: 60);
                                     $jedaMenit     = (int) ($item->jeda_menit ?? 15);

@@ -666,6 +666,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const indeksTerpilihAwal = blokLayanan.findIndex(b => b.classList.contains('terpilih'));
+    if (indeksTerpilihAwal >= 0) {
+        halLayananAktif = Math.floor(indeksTerpilihAwal / ITEM_LAYANAN_PER_HAL) + 1;
+    }
+
     sinkronChipTanggal();
     sinkronUIWaktu();
     renderLayananBerhalaman();

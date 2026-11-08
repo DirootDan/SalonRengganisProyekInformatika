@@ -89,7 +89,10 @@ html { scroll-behavior: smooth; }
 .pb-kartu h3 { margin: 10px 0 6px; font-size: 17px; color: #111827; }
 .pb-label { font-size: 11px; font-weight: 700; color: #9d174d; background: #fce7f3; padding: 3px 10px; border-radius: 999px; }
 .pb-meta { margin: 0 0 12px; font-size: 13px; color: #6b7280; }
+.pb-kartu-bawah { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
 .pb-harga { font-size: 18px; color: #db2777; }
+.pb-tautan-pilih { font-size: 13px; font-weight: 600; color: #9d174d; text-decoration: none; background: #fdf2f8; border: 1.5px solid #fbcfe8; padding: 6px 12px; border-radius: 999px; transition: all 0.2s ease; }
+.pb-tautan-pilih:hover { background: #db2777; border-color: #db2777; color: #ffffff; }
 .pb-lainnya, .pb-kosong { text-align: center; margin-top: 24px; color: #6b7280; }
 .pb-lainnya a { color: #db2777; font-weight: 600; }
 

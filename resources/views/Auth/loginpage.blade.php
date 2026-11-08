@@ -45,7 +45,9 @@
             <a href="{{ route('register') }}">Belum punya akun? Daftar</a>
         </div>
 
-        <p class="footer-note">Aplikasi Salon v1.0 &bull; Web Version</p>
+        <p class="footer-note">
+            <a href="{{ route('beranda.publik') }}">&larr; Kembali ke Beranda Salon</a>
+        </p>
     </div>
 
 </body>

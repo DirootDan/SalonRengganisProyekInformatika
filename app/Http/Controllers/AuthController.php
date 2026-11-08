@@ -31,10 +31,14 @@ class AuthController extends Controller
         return view('Auth.loginpage');
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
         if (Auth::guard('pelanggan')->check() || Auth::guard('karyawan')->check()) {
             return redirect('/');
+        }
+
+        if ($request->integer('layanan') > 0) {
+            session(['url.intended' => route('pelanggan.booking', ['layanan' => $request->integer('layanan')])]);
         }
 
         // Disesuaikan dengan folder Auth dan file registerpage.blade.php
@@ -113,8 +117,8 @@ class AuthController extends Controller
         Auth::guard('pelanggan')->login($pelanggan);
         $request->session()->regenerate();
 
-        return redirect()->route('pelanggan.beranda')
-            ->with('status', 'Akun berhasil dibuat. Selamat datang!');
+        return redirect()->intended(route('pelanggan.booking'))
+            ->with('status', 'Akun berhasil dibuat. Silakan pilih jadwal perawatan Anda!');
     }
 
     /* ================= LOGOUT GABUNGAN ================= */
