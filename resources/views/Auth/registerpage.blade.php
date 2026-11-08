@@ -53,8 +53,11 @@
         <div class="link-row">
             <!-- Rute disesuaikan menjadi login -->
             <a href="{{ route('login') }}">Sudah punya akun? Login</a>
-            <a href="{{ route('beranda.publik') }}">&larr; Beranda Salon</a>
         </div>
+
+        <p class="footer-note">
+            <a href="{{ route('beranda.publik') }}">&larr; Kembali ke Beranda Salon</a>
+        </p>
     </div>
 
 <x-anti-klik-ganda />

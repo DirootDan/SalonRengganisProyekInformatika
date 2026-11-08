@@ -123,6 +123,9 @@ button:disabled {
 .link-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-top: 18px;
     font-size: 12px;
 }
@@ -142,7 +145,22 @@ button:disabled {
 }
 
 .footer-note {
-    margin-top: 20px;
-    font-size: 11px;
-    color: #9ca3af;
+    margin: 16px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid rgba(219, 39, 119, 0.14);
+    font-size: 12px;
+}
+
+.footer-note a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.footer-note a:hover {
+    color: #db2777;
 }

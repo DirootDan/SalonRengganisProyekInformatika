@@ -19,9 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'cek.blokir' => CekBlokirBooking::class,
         ]);
 
-        // Kalau belum login: pelanggan ke login pelanggan, sisanya ke login karyawan
-        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('pelanggan/*') ? '/pelanggan/login' : route('login')
-        );
+        // Semua pengguna yang belum login diarahkan ke halaman login gabungan
+        $middleware->redirectGuestsTo(fn (Request $request) => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -100,4 +100,33 @@ class BerandaPublikTest extends TestCase
         $this->get(route('register'))->assertOk()->assertSee($urlBeranda, false);
         $this->get(route('password.lupa'))->assertOk()->assertSee($urlBeranda, false);
     }
+
+    public function test_pengunjung_belum_login_klik_pilih_layanan_diarahkan_ke_login_bukan_404(): void
+    {
+        $layanan = Layanan::create([
+            'nama_layanan' => 'Facial Glowing',
+            'kategori' => 'Perawatan Wajah',
+            'jabatan_petugas' => 'Therapist',
+            'durasi_menit' => 60,
+            'jeda_menit' => 15,
+            'harga_layanan' => 180000,
+        ]);
+
+        Pelanggan::create([
+            'nama_cust' => 'Dewi Pelanggan',
+            'email' => 'dewi@example.com',
+            'password' => 'rahasia123',
+            'no_telp' => '081277776666',
+        ]);
+
+        $urlBookingLayanan = route('pelanggan.booking', ['layanan' => $layanan->id_layanan]);
+
+        $this->get($urlBookingLayanan)
+            ->assertRedirect(route('login'));
+
+        $this->post(route('login.proses'), [
+            'login_id' => 'dewi@example.com',
+            'password' => 'rahasia123',
+        ])->assertRedirect($urlBookingLayanan);
+    }
 }
