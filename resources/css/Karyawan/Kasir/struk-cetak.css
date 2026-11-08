@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+    --lebar-cetak: 80mm;
+}
+
+body.struk-cetak {
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.15;
+    color: #000;
+    background: #fff;
+    width: var(--lebar-cetak);
+    margin: 0 auto;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+body.struk-cetak.kertas-58mm { --lebar-cetak: 58mm; }
+body.struk-cetak.kertas-76mm { --lebar-cetak: 76mm; }
+body.struk-cetak.kertas-80mm { --lebar-cetak: 80mm; }
+
+.struk-kepala {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px dashed #000;
+}
+
+.struk-kepala-teks { text-align: left; }
+.struk-kepala-teks.pusat { text-align: center; }
+
+.struk-nama {
+    margin: 0;
+    font-size: 24px;
+    line-height: 0.95;
+    text-transform: uppercase;
+}
+
+.pusat { text-align: center; }
+.kecil { font-size: 14px; line-height: 1.1; }
+
+.garis {
+    border-top: 1px dashed #000;
+    margin: 6px 0;
+}
+
+.baris {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.baris > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.baris > span:last-child { white-space: nowrap; }
+
+.butir {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dotted #000;
+}
+
+.petugas {
+    font-style: italic;
+    font-size: 14px;
+}
+
+.total-besar {
+    font-size: 24px;
+    margin-top: 4px;
+}
+
+.aksi-cetak {
+    margin-top: 14px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+}
+
+.aksi-cetak a,
+.aksi-cetak button {
+    display: inline-block;
+    margin: 4px;
+    padding: 8px 14px;
+    font-size: 13px;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.notif-sukses-cetak {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+@media print {
+    body.struk-cetak { padding: 0; }
+
+    .aksi-cetak,
+    .notif-sukses-cetak { display: none; }
+}

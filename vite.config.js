@@ -70,6 +70,7 @@ export default defineConfig({
                 'resources/css/Karyawan/Kasir/laporan.css',
                 'resources/css/Karyawan/Kasir/metode.css',
                 'resources/css/Karyawan/Kasir/struk.css',
+                'resources/css/Karyawan/Kasir/struk-cetak.css',
 
                 // Karyawan - Kasir JS
                 'resources/js/Karyawan/Kasir/layout.js',
@@ -81,6 +82,7 @@ export default defineConfig({
                 'resources/js/Karyawan/Kasir/laporan.js',
                 'resources/js/Karyawan/Kasir/metode.js',
                 'resources/js/Karyawan/Kasir/struk.js',
+                'resources/js/Karyawan/Kasir/struk-cetak.js',
 
                 // Karyawan - Stylist & Therapist
                 'resources/css/Karyawan/Stylist/dashboard.css',

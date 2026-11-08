@@ -424,6 +424,16 @@ class SalonRengganisTest extends TestCase
             'kembalian' => 15000,
         ]);
 
+        // 4b. Halaman cetak struk dirender utuh: ukuran kertas dipakai apa adanya & CSS tidak bocor sebagai teks
+        $idTransaksi = $reservasi->fresh()->transaksi->id_transaksi;
+        $this->actingAs($this->kasir, 'karyawan')
+            ->get(route('kasir.struk.cetak', $idTransaksi))
+            ->assertOk()
+            ->assertSee('class="struk-cetak kertas-', false)
+            ->assertSee('data-ukuran="', false)
+            ->assertDontSee('<style', false)
+            ->assertDontSee('{ {', false);
+
         // 5. Percobaan pembayaran ganda pada reservasi yang sama wajib ditolak
         $this->actingAs($this->kasir, 'karyawan')
             ->from(route('kasir.dashboard'))
