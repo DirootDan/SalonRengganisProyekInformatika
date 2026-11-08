@@ -48,5 +48,6 @@
 
     @vite(['resources/js/Karyawan/Therapist/dashboard.js'])
     @stack('scripts')
+<x-anti-klik-ganda />
 </body>
 </html>

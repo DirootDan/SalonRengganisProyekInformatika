@@ -47,5 +47,7 @@
         </div>
     </div>
 
+<x-anti-klik-ganda />
+
 </body>
 </html>

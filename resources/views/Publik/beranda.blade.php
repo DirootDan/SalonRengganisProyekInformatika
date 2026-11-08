@@ -90,5 +90,6 @@
     <footer class="pb-footer">
         Salon Rengganis &bull; Sistem Reservasi Online
     </footer>
+<x-tombol-whatsapp />
 </body>
 </html>

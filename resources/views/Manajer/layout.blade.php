@@ -152,5 +152,6 @@
 
     @vite(['resources/js/Manajer/layout.js'])
     @stack('scripts')
+<x-anti-klik-ganda />
 </body>
 </html>

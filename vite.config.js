@@ -90,6 +90,8 @@ export default defineConfig({
 
                 // Komponen Bersama
                 'resources/css/components/confirm-modal.css',
+                'resources/css/components/tombol-whatsapp.css',
+                'resources/js/components/anti-klik-ganda.js',
                 'resources/js/components/confirm-modal.js'
             ],
             refresh: true,

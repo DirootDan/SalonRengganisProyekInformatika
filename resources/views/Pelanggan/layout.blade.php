@@ -113,5 +113,7 @@
 
     @vite(['resources/js/pelanggan/layout.js'])
     @stack('scripts')
+<x-anti-klik-ganda />
+<x-tombol-whatsapp />
 </body>
 </html>

@@ -150,5 +150,6 @@
 
     @vite(['resources/js/Karyawan/Kasir/layout.js'])
     @stack('scripts')
+<x-anti-klik-ganda />
 </body>
 </html>
