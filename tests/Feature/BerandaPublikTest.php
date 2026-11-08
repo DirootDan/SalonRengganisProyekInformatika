@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\AuthController;
 use App\Models\Layanan;
 use App\Models\Pelanggan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -128,5 +129,28 @@ class BerandaPublikTest extends TestCase
             'login_id' => 'dewi@example.com',
             'password' => 'rahasia123',
         ])->assertRedirect($urlBookingLayanan);
+    }
+
+    public function test_pintasan_portal_staf_dan_deteksi_perangkat_kerja_karyawan(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Portal Staf')
+            ->assertSee(route('portal.staf'), false);
+
+        $this->get('/staf')->assertRedirect(route('login', ['mode' => 'staf']));
+        $this->get('/karyawan')->assertRedirect(route('login', ['mode' => 'staf']));
+        $this->get('/pos')->assertRedirect(route('login', ['mode' => 'staf']));
+
+        $this->get(route('login', ['mode' => 'staf']))
+            ->assertOk()
+            ->assertSee('Mode Login Karyawan')
+            ->assertSee('MASUK PORTAL STAF')
+            ->assertCookie(AuthController::COOKIE_PERANGKAT_STAF, '1');
+
+        $this->withCookie(AuthController::COOKIE_PERANGKAT_STAF, '1')
+            ->get('/')
+            ->assertOk()
+            ->assertSee('Perangkat Kerja Staf Terdeteksi');
     }
 }
