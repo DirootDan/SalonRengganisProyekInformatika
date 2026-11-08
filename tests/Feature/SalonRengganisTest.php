@@ -413,7 +413,7 @@ class SalonRengganisTest extends TestCase
                     $this->produkVitamin->id_produk => 1,
                 ],
             ])
-            ->assertRedirect(route('kasir.dashboard'));
+            ->assertRedirect(route('kasir.struk.cetak', 1));
 
         $this->assertEquals(Reservasi::STATUS_SELESAI, $reservasi->fresh()->status);
         $this->assertEquals(9, $this->produkVitamin->fresh()->stok_produk);

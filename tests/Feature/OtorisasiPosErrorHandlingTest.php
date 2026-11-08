@@ -194,7 +194,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
                 'metode_bayar' => 'Tunai',
                 'nominal_uang' => 200000,
             ])
-            ->assertRedirect(route('kasir.dashboard'));
+            ->assertRedirect(route('kasir.struk.cetak', 1));
 
         $this->assertFalse($tiket->fresh()->sedang_dihold);
         $this->assertEquals(200000, (float) $this->layananMahal->fresh()->harga_layanan);
@@ -276,7 +276,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
                 'metode_bayar' => 'Tunai',
                 'nominal_uang' => 100000,
             ])
-            ->assertRedirect(route('kasir.dashboard'));
+            ->assertRedirect(route('kasir.struk.cetak', 1));
 
         $this->assertEquals(120000, (float) $this->layananMurah->fresh()->harga_layanan);
         $this->assertDatabaseHas('log_perubahan_otorisasi', [
@@ -398,7 +398,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
                 'metode_bayar' => 'Tunai',
                 'nominal_uang' => 200000,
             ])
-            ->assertRedirect(route('kasir.dashboard'));
+            ->assertRedirect(route('kasir.struk.cetak', 1));
 
         $tiket->refresh();
         $this->assertSame(PermintaanOtorisasi::STATUS_DIGUNAKAN, $tiket->status);
