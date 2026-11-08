@@ -1,0 +1,57 @@
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+    color: #1f2937;
+}
+
+.er-kartu {
+    width: 100%;
+    max-width: 460px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(219, 39, 119, 0.12);
+}
+
+.er-ikon { font-size: 52px; margin-bottom: 8px; }
+
+.er-kode {
+    display: inline-block;
+    padding: 3px 14px;
+    border-radius: 999px;
+    background: #fce7f3;
+    color: #9d174d;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.er-kartu h1 { margin: 14px 0 10px; font-size: 22px; color: #831843; }
+.er-kartu p { margin: 0 0 26px; color: #4b5563; font-size: 14px; line-height: 1.7; }
+
+.er-aksi { display: flex; flex-direction: column; gap: 10px; }
+
+.er-tombol {
+    display: block;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 2px solid #db2777;
+    background: #db2777;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.er-tombol:hover { background: #be185d; border-color: #be185d; }
+.er-tombol-garis { background: transparent; color: #db2777; }
+.er-tombol-garis:hover { background: #fdf2f8; color: #be185d; }
