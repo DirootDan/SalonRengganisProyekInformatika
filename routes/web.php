@@ -146,6 +146,7 @@ Route::middleware(['auth:karyawan', 'peran:Kasir'])
         Route::get('/laporan', [KasirLaporanController::class, 'index'])->name('laporan');
         Route::get('/metode-pembayaran', [KasirMetodePembayaranController::class, 'index'])->name('metode');
         Route::get('/struk', [KasirStrukController::class, 'index'])->name('struk');
+        Route::get('/struk/cetak/{transaksi}', [KasirStrukController::class, 'cetak'])->name('struk.cetak');
     });
 
 // MODUL 4A: Area Stylist
