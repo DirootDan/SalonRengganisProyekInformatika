@@ -120,7 +120,7 @@
                         <tr>
                             <td><strong>#INV-{{ str_pad($r->id_reservasi, 4, '0', STR_PAD_LEFT) }}</strong></td>
                             <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }})</td>
-                            <td>{{ $r->pelanggan?->nama_cust ?? 'Pelanggan' }}</td>
+                            <td>{{ $r->namaPelangganTampil() }}</td>
                             <td>
                                 <div>{{ $rincianLayanan ?: '-' }}</div>
                                 @if ($rincianProduk)

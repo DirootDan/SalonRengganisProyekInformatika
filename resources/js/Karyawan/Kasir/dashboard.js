@@ -204,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (inputPelangganEl) {
             inputPelangganEl.readOnly = Boolean(idRes);
+            inputPelangganEl.required = !Boolean(idRes);
             if (idRes) {
                 inputPelangganEl.value = pelanggan.includes('Reservasi #') ? pelanggan : `${pelanggan} (Reservasi #${idRes})`;
             } else {
@@ -415,6 +416,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (keranjang.size === 0) {
             e.preventDefault();
             window.tampilkanToast?.('Pilih reservasi atau tambahkan item ke keranjang terlebih dahulu.');
+            return;
+        }
+        if (!inputIdReservasi?.value && !(inputPelangganEl?.value || '').trim()) {
+            e.preventDefault();
+            window.tampilkanToast?.('Nama pelanggan walk-in wajib diisi untuk transaksi tanpa reservasi.');
+            inputPelangganEl?.focus();
             return;
         }
         if (!otorisasiCtrl.validasiSebelumSubmitBayar(hitungTotalAkhir())) {

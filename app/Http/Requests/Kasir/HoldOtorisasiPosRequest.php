@@ -23,10 +23,10 @@ class HoldOtorisasiPosRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
+        return array_merge($this->pesanAturanKeranjangPos(), [
             'alasan_kasir.required' => 'Alasan pengajuan perubahan ke Manajer wajib diisi.',
             'alasan_kasir.min' => 'Alasan pengajuan minimal 5 karakter agar jelas bagi Manajer.',
             'alasan_kasir.max' => 'Alasan pengajuan maksimal 500 karakter.',
-        ];
+        ]);
     }
 }

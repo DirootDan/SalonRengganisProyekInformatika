@@ -164,7 +164,16 @@ export function inisialisasiOtorisasiPos(ctx) {
         }, 1000);
     };
 
+    const validasiPelangganWalkIn = () => {
+        if (inputIdReservasi?.value) return true;
+        if ((inputPelangganEl?.value || '').trim().length > 0) return true;
+        window.tampilkanToast?.('Nama pelanggan walk-in wajib diisi untuk transaksi tanpa reservasi.');
+        inputPelangganEl?.focus();
+        return false;
+    };
+
     const validasiAlasanWajib = () => {
+        if (!validasiPelangganWalkIn()) return null;
         const alasan = (el.inputAlasan?.value || '').trim();
         if (alasan.length >= 5) return alasan;
         window.tampilkanToast?.('Wajib mengisi alasan perubahan minimal 5 karakter terlebih dahulu.');

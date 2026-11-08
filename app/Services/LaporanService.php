@@ -116,7 +116,7 @@ class LaporanService
                     '#'.$r->id_reservasi,
                     $r->tgl_booking->format('d/m/Y'),
                     $r->jam_booking,
-                    $r->pelanggan?->nama_cust ?? 'Pelanggan',
+                    $r->namaPelangganTampil(),
                     $rincianItem,
                     (int) $total,
                     $r->statusTernormalisasi(),

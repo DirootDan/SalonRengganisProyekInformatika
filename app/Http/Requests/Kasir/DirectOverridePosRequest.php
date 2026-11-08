@@ -25,11 +25,11 @@ class DirectOverridePosRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
+        return array_merge($this->pesanAturanKeranjangPos(), [
             'alasan_kasir.required' => 'Alasan perubahan wajib diisi terlebih dahulu oleh Kasir.',
             'alasan_kasir.min' => 'Alasan perubahan minimal 5 karakter.',
             'username_manajer.required' => 'Username Manajer wajib diisi.',
             'password_manajer.required' => 'Password Manajer wajib diisi.',
-        ];
+        ]);
     }
 }

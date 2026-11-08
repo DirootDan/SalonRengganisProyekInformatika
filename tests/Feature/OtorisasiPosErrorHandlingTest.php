@@ -122,6 +122,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         // 1. Kasir kirim request ke Dashboard Manajer & Hold (Rp 200.000 -> Rp 170.000)
         $this->actingAs($this->kasir, 'karyawan')
             ->post(route('kasir.otorisasi.hold'), [
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 170000],
                 'alasan_kasir' => 'Diskon pelanggan VIP ulang tahun.',
@@ -135,6 +136,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         $this->actingAs($this->kasir, 'karyawan')
             ->postJson(route('kasir.otorisasi.direct'), [
                 'id_otorisasi' => $tiket->id_otorisasi,
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 170000],
                 'alasan_kasir' => 'Diskon pelanggan VIP ulang tahun.',
@@ -163,6 +165,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
     {
         $this->actingAs($this->kasir, 'karyawan')
             ->post(route('kasir.otorisasi.hold'), [
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'id_petugas' => $this->stylist->id_karyawan,
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 150000],
@@ -189,6 +192,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
             ->post(route('kasir.bayar'), [
                 'id_otorisasi' => $tiket->id_otorisasi,
                 'keranjang_disinkronkan' => 1,
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'id_petugas' => $this->stylist->id_karyawan,
                 'metode_bayar' => 'Tunai',
@@ -207,6 +211,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         // 1. Kredensial benar tetapi role bukan Manajer -> ditolak pesan spesifik & sesi tetap Kasir Satu
         $resRole = $this->actingAs($this->kasir, 'karyawan')
             ->postJson(route('kasir.otorisasi.direct'), [
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 180000],
                 'alasan_kasir' => 'Coba pakai akun sesama kasir.',
@@ -221,6 +226,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         // 2. Gagal 2x lagi masih 422, gagal ke-4 langsung mengunci (429), dan percobaan ke-5 (meski password benar) tetap terkunci 429
         for ($i = 0; $i < 2; $i++) {
             $this->actingAs($this->kasir, 'karyawan')->postJson(route('kasir.otorisasi.direct'), [
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 180000],
                 'alasan_kasir' => 'Menebak password manajer.',
@@ -230,6 +236,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         }
 
         $this->actingAs($this->kasir, 'karyawan')->postJson(route('kasir.otorisasi.direct'), [
+            'nama_pelanggan_walkin' => 'Ibu Ratna',
             'layanan_ids' => [$this->layananMahal->id_layanan],
             'harga_override_layanan' => [$this->layananMahal->id_layanan => 180000],
             'alasan_kasir' => 'Gagal keempat langsung memicu kunci.',
@@ -238,6 +245,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         ])->assertStatus(429);
 
         $resKunci = $this->actingAs($this->kasir, 'karyawan')->postJson(route('kasir.otorisasi.direct'), [
+            'nama_pelanggan_walkin' => 'Ibu Ratna',
             'layanan_ids' => [$this->layananMahal->id_layanan],
             'harga_override_layanan' => [$this->layananMahal->id_layanan => 180000],
             'alasan_kasir' => 'Percobaan saat sudah dikunci.',
@@ -256,6 +264,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         $this->actingAs($this->kasir, 'karyawan')
             ->post(route('kasir.bayar'), [
                 'keranjang_disinkronkan' => 1,
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'id_petugas' => $this->stylist->id_karyawan,
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 50000],
@@ -269,6 +278,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         $this->actingAs($this->kasir, 'karyawan')
             ->post(route('kasir.bayar'), [
                 'keranjang_disinkronkan' => 1,
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMurah->id_layanan],
                 'id_petugas' => $this->stylist->id_karyawan,
                 'harga_override_layanan' => [$this->layananMurah->id_layanan => 100000],
@@ -331,6 +341,7 @@ class OtorisasiPosErrorHandlingTest extends TestCase
     {
         $this->actingAs($this->kasir, 'karyawan')
             ->post(route('kasir.otorisasi.hold'), [
+                'nama_pelanggan_walkin' => 'Ibu Ratna',
                 'layanan_ids' => [$this->layananMahal->id_layanan],
                 'harga_override_layanan' => [$this->layananMahal->id_layanan => 160000],
                 'alasan_kasir' => 'Pelanggan minta harga khusus grup.',
@@ -403,5 +414,34 @@ class OtorisasiPosErrorHandlingTest extends TestCase
         $tiket->refresh();
         $this->assertSame(PermintaanOtorisasi::STATUS_DIGUNAKAN, $tiket->status);
         $this->assertFalse($tiket->sedang_dihold);
+
+        // 5. Pastikan transaksi walk-in tidak mencatut id_pelanggan pertama dan menampilkan nama Ibu Kartika di struk & laporan
+        $this->assertDatabaseHas('reservasi', [
+            'id_pelanggan' => null,
+            'nama_pelanggan_walkin' => 'Ibu Kartika',
+        ]);
+
+        $this->actingAs($this->kasir, 'karyawan')
+            ->get(route('kasir.struk.cetak', 1))
+            ->assertOk()
+            ->assertSee('Ibu Kartika')
+            ->assertDontSee('Pelanggan Walkin');
+
+        $this->actingAs($this->kasir, 'karyawan')
+            ->get(route('kasir.laporan'))
+            ->assertOk()
+            ->assertSee('Ibu Kartika');
+
+        // 6. Transaksi walk-in tanpa nama pelanggan wajib ditolak
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.bayar'), [
+                'keranjang_disinkronkan' => 1,
+                'nama_pelanggan_walkin' => '',
+                'layanan_ids' => [$this->layananMurah->id_layanan],
+                'id_petugas' => $this->stylist->id_karyawan,
+                'metode_bayar' => 'Tunai',
+                'nominal_uang' => 120000,
+            ])
+            ->assertSessionHasErrors('nama_pelanggan_walkin');
     }
 }

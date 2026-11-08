@@ -43,7 +43,7 @@ class KalkulatorKeranjangPosService
         $totalAkhir = $this->hitungTotalSnapshot($reservasi, $layananUsulan, $produkUsulan, $kodePromo);
 
         $labelTarget = $reservasi
-            ? "Reservasi #{$reservasi->id_reservasi} - ".($reservasi->pelanggan?->nama_cust ?? 'Pelanggan')
+            ? "Reservasi #{$reservasi->id_reservasi} - ".$reservasi->namaPelangganTampil()
             : 'Walk-In - '.(trim((string) ($data['nama_pelanggan_walkin'] ?? '')) ?: 'Pelanggan Umum');
 
         $snapshotAwal = ['id_reservasi' => $reservasi?->id_reservasi, 'pelanggan_label' => $labelTarget, 'kode_promo' => $reservasi?->kode_promo ?? $kodePromo, 'layanan' => $layananAwal, 'produk' => $produkAwal];

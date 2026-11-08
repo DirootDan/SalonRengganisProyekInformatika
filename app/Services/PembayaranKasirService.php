@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Karyawan;
 use App\Models\Layanan;
 use App\Models\MetodePembayaran;
-use App\Models\Pelanggan;
 use App\Models\Produk;
 use App\Models\Reservasi;
 use App\Models\Transaksi;
@@ -169,9 +168,9 @@ class PembayaranKasirService
      */
     private function buatReservasiWalkIn(int $idKasir, array $data, array $layananUsulan): Reservasi
     {
-        $pelangganDefault = Pelanggan::first();
-        if (! $pelangganDefault) {
-            throw new DomainException('Data pelanggan belum tersedia untuk mencatat transaksi.');
+        $namaWalkIn = trim((string) ($data['nama_pelanggan_walkin'] ?? ''));
+        if ($namaWalkIn === '') {
+            throw new DomainException('Nama pelanggan walk-in wajib diisi untuk transaksi tanpa reservasi.');
         }
 
         $idPetugasWalkIn = ! empty($data['id_petugas']) ? (int) $data['id_petugas'] : null;
@@ -180,7 +179,8 @@ class PembayaranKasirService
         $jamSekarang = now()->format('H:i');
 
         $reservasi = Reservasi::create([
-            'id_pelanggan' => $pelangganDefault->id_pelanggan,
+            'id_pelanggan' => null,
+            'nama_pelanggan_walkin' => $namaWalkIn,
             'id_karyawan' => $stafWalkIn?->id_karyawan ?? $idKasir,
             'tgl_booking' => now()->toDateString(),
             'jam_booking' => $jamSekarang,

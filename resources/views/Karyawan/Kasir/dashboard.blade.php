@@ -93,7 +93,7 @@
 
             <div class="form-grup">
                 <div class="label-baris-pelanggan">
-                    <label class="form-label tanpa-margin" for="posNamaPelanggan">Pelanggan / Reservasi</label>
+                    <label class="form-label tanpa-margin" for="posNamaPelanggan">Nama Pelanggan / Reservasi <span style="color:#db2777">*</span></label>
                     <div class="grup-tautan-pos">
                         <button type="button" class="tautan-hold-pos {{ $kelasTombolHold }}" id="btnBukaHoldPos">
                             ⏸️ Transaksi Hold ({{ $daftarHold->count() }})
@@ -103,7 +103,7 @@
                         </button>
                     </div>
                 </div>
-                <input type="text" name="nama_pelanggan_walkin" id="posNamaPelanggan" class="form-input" placeholder="Ketik nama pelanggan walk-in (opsional)...">
+                <input type="text" name="nama_pelanggan_walkin" id="posNamaPelanggan" class="form-input" placeholder="Wajib diisi: Ketik nama pelanggan walk-in..." required>
             </div>
 
             <div class="form-grup">

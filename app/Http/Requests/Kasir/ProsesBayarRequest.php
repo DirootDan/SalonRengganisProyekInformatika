@@ -25,11 +25,11 @@ class ProsesBayarRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
+        return array_merge($this->pesanAturanKeranjangPos(), [
             'metode_bayar.required' => 'Metode pembayaran wajib dipilih.',
             'nominal_uang.required' => 'Nominal uang yang diterima wajib diisi.',
             'nominal_uang.min' => 'Nominal uang yang diterima tidak boleh negatif.',
             'nominal_uang.max' => 'Nominal uang melampaui batas maksimal transaksi.',
-        ];
+        ]);
     }
 }

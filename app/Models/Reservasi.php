@@ -66,6 +66,7 @@ class Reservasi extends Model
 
     protected $fillable = [
         'id_pelanggan',
+        'nama_pelanggan_walkin',
         'id_karyawan',
         'tgl_booking',
         'jam_booking',
@@ -81,6 +82,21 @@ class Reservasi extends Model
         'nilai_diskon_promo',
         'nominal_diskon',
     ];
+
+    public function apakahWalkIn(): bool
+    {
+        return $this->id_pelanggan === null || trim((string) $this->nama_pelanggan_walkin) !== '';
+    }
+
+    public function namaPelangganTampil(): string
+    {
+        $namaWalkIn = trim((string) $this->nama_pelanggan_walkin);
+        if ($namaWalkIn !== '') {
+            return $namaWalkIn;
+        }
+
+        return $this->pelanggan?->nama_cust ?? 'Pelanggan Umum';
+    }
 
     protected function casts(): array
     {

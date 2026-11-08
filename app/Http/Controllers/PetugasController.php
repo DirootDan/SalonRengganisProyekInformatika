@@ -40,15 +40,15 @@ class PetugasController extends Controller
         $query = DB::table('detail_reservasi')
             ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
             ->join('layanan', 'layanan.id_layanan', '=', 'detail_reservasi.id_layanan')
-            ->join('pelanggan', 'pelanggan.id_pelanggan', '=', 'reservasi.id_pelanggan')
+            ->leftJoin('pelanggan', 'pelanggan.id_pelanggan', '=', 'reservasi.id_pelanggan')
             ->where('detail_reservasi.id_karyawan', $petugas->id_karyawan)
             ->select(
                 'reservasi.id_reservasi',
                 'reservasi.tgl_booking',
                 'reservasi.jam_booking',
                 'reservasi.status as status_reservasi',
-                'pelanggan.nama_cust',
-                'pelanggan.no_telp',
+                DB::raw("COALESCE(NULLIF(reservasi.nama_pelanggan_walkin, ''), pelanggan.nama_cust, 'Pelanggan Umum') as nama_cust"),
+                DB::raw("COALESCE(pelanggan.no_telp, 'Walk-In') as no_telp"),
                 'layanan.id_layanan',
                 'layanan.nama_layanan',
                 'detail_reservasi.harga_saat_ini',
@@ -120,14 +120,14 @@ class PetugasController extends Controller
             ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
             ->join('transaksi', 'transaksi.id_reservasi', '=', 'reservasi.id_reservasi')
             ->join('layanan', 'layanan.id_layanan', '=', 'detail_reservasi.id_layanan')
-            ->join('pelanggan', 'pelanggan.id_pelanggan', '=', 'reservasi.id_pelanggan')
+            ->leftJoin('pelanggan', 'pelanggan.id_pelanggan', '=', 'reservasi.id_pelanggan')
             ->where('detail_reservasi.id_karyawan', $petugas->id_karyawan)
             ->where('reservasi.status', Reservasi::STATUS_SELESAI)
             ->whereBetween('reservasi.tgl_booking', [$tglMulai, $tglSelesai])
             ->select(
                 'reservasi.id_reservasi',
                 'reservasi.tgl_booking',
-                'pelanggan.nama_cust',
+                DB::raw("COALESCE(NULLIF(reservasi.nama_pelanggan_walkin, ''), pelanggan.nama_cust, 'Pelanggan Umum') as nama_cust"),
                 'layanan.nama_layanan',
                 'detail_reservasi.harga_saat_ini',
                 'detail_reservasi.persen_komisi',

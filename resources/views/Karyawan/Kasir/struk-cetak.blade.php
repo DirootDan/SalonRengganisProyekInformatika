@@ -36,7 +36,7 @@
     @endif
 
     <div class="baris"><span>#INV-{{ $nomorNota }}</span><span>{{ $transaksi->created_at->format('d/m/y H:i') }}</span></div>
-    <div class="baris"><span>Pelanggan:</span><span>{{ \Illuminate\Support\Str::limit($transaksi->reservasi->pelanggan->nama_cust ?? 'Umum', 15, '') }}</span></div>
+    <div class="baris"><span>Pelanggan:</span><span>{{ \Illuminate\Support\Str::limit($transaksi->reservasi->namaPelangganTampil(), 15, '') }}</span></div>
     @if ($struk->tampil_kasir)
         <div class="baris"><span>Kasir:</span><span>{{ $transaksi->kasir->nama_staff ?? '-' }}</span></div>
     @endif
