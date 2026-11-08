@@ -15,6 +15,9 @@ export default defineConfig({
                 'resources/css/Login/lupapassword.css',
                 'resources/css/Login/resetpassword.css',
                 'resources/js/loginpage.js',
+
+                // Publik
+                'resources/css/Publik/beranda.css',
                 
                 // Pelanggan CSS
                 'resources/css/pelanggan/dashboard.css',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BerandaPublikController;
 use App\Http\Controllers\Kasir\AntreanController as KasirAntreanController;
 use App\Http\Controllers\Kasir\LaporanController as KasirLaporanController;
 use App\Http\Controllers\Kasir\LayananController as KasirLayananController;
@@ -26,7 +27,7 @@ use App\Http\Controllers\PetugasController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', [BerandaPublikController::class, 'index'])->name('beranda.publik');
 
 /* ===== AUTENTIKASI GABUNGAN (Login, Register, Logout) ===== */
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
