@@ -46,7 +46,7 @@
             @csrf
 
             <label for="login_id" class="field-label">
-                {{ $aktifStaf ? 'Username Karyawan' : 'Username (Karyawan) / Email (Pelanggan)' }}
+                {{ $aktifStaf ? 'Username Karyawan' : 'Email Pelanggan' }}
             </label>
             <input type="text" id="login_id" name="login_id" value="{{ old('login_id') }}"
                    placeholder="{{ $aktifStaf ? 'Masukkan username karyawan...' : 'Masukkan username atau email...' }}"
@@ -64,7 +64,7 @@
         <div class="link-row">
             <a href="{{ route('password.lupa') }}">Lupa password?</a>
             @if ($aktifStaf)
-                <a href="{{ route('login', ['mode' => 'pelanggan']) }}">Login Pelanggan</a>
+                <a href="{{ route('login', ['mode' => 'pelanggan']) }}"></a>
             @else
                 <a href="{{ route('register') }}">Belum punya akun? Daftar</a>
             @endif
