@@ -5,31 +5,88 @@
     <meta charset="UTF-8">
     <title>Struk #INV-{{ str_pad($transaksi->id_reservasi, 4, '0', STR_PAD_LEFT) }}</title>
     <style>
-        :root {
-            --print-width: {
+        @page {
+            size: {
+                    {
+                    $struk->ukuranTernormalisasi()==='58mm' ? '58mm': '80mm'
+                }
+            }
+
+            auto;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #000;
+
+            width: {
                     {
                     $struk->ukuranTernormalisasi()==='58mm' ? '58mm': '80mm'
                 }
             }
 
             ;
-        }
-    </style>
-
-    <style>
-        @page {
-            size: var(--print-width) auto;
-            margin: 0;
-        }
-
-        body {
-            width: var(--print-width);
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: #000;
             margin: 0 auto;
             padding: 8px;
             box-sizing: border-box;
+        }
+
+        .pusat {
+            text-align: center;
+        }
+
+        .garis {
+            border-top: 1px dashed #000;
+            margin: 6px 0;
+        }
+
+        .baris {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .kecil {
+            font-size: 10px;
+        }
+
+        .aksi-cetak {
+            margin-top: 14px;
+            text-align: center;
+        }
+
+        .aksi-cetak a,
+        .aksi-cetak button {
+            display: inline-block;
+            margin: 4px;
+            padding: 8px 14px;
+            font-size: 12px;
+            border: 1px solid #000;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .notif-sukses-cetak {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        @media print {
+
+            .aksi-cetak,
+            .notif-sukses-cetak {
+                display: none;
+            }
         }
     </style>
 </head>
