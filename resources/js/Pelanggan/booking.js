@@ -50,6 +50,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoValidasiEl     = document.getElementById('infoValidasi');
     const tidakDitemukan     = document.getElementById('tidakDitemukan');
 
+    // Elemen Stepper Wizard, Chip Layanan Terpilih, Menit Kustom, & Bar Mobile
+    const stepperItemList         = document.querySelectorAll('.stepper-item');
+    const stepPanelList           = document.querySelectorAll('.step-panel');
+    const subStep1El              = document.getElementById('subStep1');
+    const subStep2El              = document.getElementById('subStep2');
+    const subStep3El              = document.getElementById('subStep3');
+    const badgeTabLayananEl       = document.getElementById('badgeTabLayananTerpilih');
+    const barChipTerpilihEl       = document.getElementById('barChipTerpilih');
+    const judulChipTerpilihEl     = document.getElementById('judulChipTerpilih');
+    const daftarChipTerpilihEl    = document.getElementById('daftarChipTerpilih');
+    const btnResetSemuaLayanan    = document.getElementById('btnResetSemuaLayanan');
+    const btnToggleMenitKustom    = document.getElementById('btnToggleMenitKustom');
+    const panelMenitKustom        = document.getElementById('panelMenitKustom');
+    const teksJamBesarEl          = document.getElementById('teksJamTerpilihBesar');
+    const teksEstimasiStep2El     = document.getElementById('teksEstimasiSelesaiStep2');
+    const metaMobileBarEl         = document.getElementById('metaMobileBar');
+    const totalMobileBarEl        = document.getElementById('totalMobileBar');
+    const ringkasanKosongStateEl  = document.getElementById('ringkasanKosongState');
+    const kontenRingkasanAktifEl  = document.getElementById('kontenRingkasanAktif');
+    const barisRingkasanProdukEl  = document.getElementById('barisRingkasanProduk');
+    const barisRingkasanPromoEl   = document.getElementById('barisRingkasanPromo');
+    const btnLanjutStepRingkasan  = document.getElementById('btnLanjutStepRingkasan');
+    const btnLihatSemuaPromo      = document.getElementById('btnLihatSemuaPromo');
+    const promoEkstraList         = document.querySelectorAll('.promo-ekstra');
+
     if (!formBooking) return;
 
     const ITEM_LAYANAN_PER_HAL = 6;
@@ -59,6 +84,81 @@ document.addEventListener('DOMContentLoaded', () => {
     let halLayananAktif    = 1;
     let filterProdukAktif  = 'semua';
     let halProdukAktif     = 1;
+    let stepAktif          = 1;
+
+    // =====================================================
+    // 0. NAVIGASI STEPPER WIZARD 3 LANGKAH
+    // =====================================================
+    const sinkronStepperVisual = () => {
+        stepPanelList.forEach(panel => {
+            const no = parseInt(panel.dataset.stepPanel || '1', 10);
+            panel.classList.toggle('aktif', no === stepAktif);
+        });
+
+        stepperItemList.forEach(item => {
+            const no = parseInt(item.dataset.stepTarget || '1', 10);
+            item.classList.toggle('aktif', no === stepAktif);
+            item.classList.toggle('selesai', no < stepAktif);
+        });
+    };
+
+    const bukaStep = (nomor, gulir = true) => {
+        stepAktif = Math.min(3, Math.max(1, nomor));
+        sinkronStepperVisual();
+        updateRingkasan();
+        if (gulir) {
+            const targetEl = document.getElementById(`panelStep${stepAktif}`);
+            targetEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    stepperItemList.forEach(item => {
+        item.addEventListener('click', () => {
+            bukaStep(parseInt(item.dataset.stepTarget || '1', 10), false);
+        });
+    });
+
+    document.querySelectorAll('[data-lanjut-step]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            bukaStep(parseInt(btn.dataset.lanjutStep || '1', 10), true);
+        });
+    });
+
+    btnLanjutStepRingkasan?.addEventListener('click', () => {
+        if (stepAktif < 3) {
+            bukaStep(stepAktif + 1, true);
+        }
+    });
+
+    btnLihatSemuaPromo?.addEventListener('click', () => {
+        const sedangTerbuka = btnLihatSemuaPromo.dataset.terbuka === '1';
+        const statusBaru    = !sedangTerbuka;
+        btnLihatSemuaPromo.dataset.terbuka = statusBaru ? '1' : '0';
+        btnLihatSemuaPromo.textContent = statusBaru
+            ? 'Sembunyikan'
+            : `Lihat semua (${kartuPromoList.length})`;
+        promoEkstraList.forEach(el => {
+            if (statusBaru) {
+                el.removeAttribute('hidden');
+            } else {
+                el.setAttribute('hidden', '');
+            }
+        });
+    });
+
+    btnToggleMenitKustom?.addEventListener('click', () => {
+        if (!panelMenitKustom) return;
+        const sedangTersembunyi = panelMenitKustom.hasAttribute('hidden');
+        if (sedangTersembunyi) {
+            panelMenitKustom.removeAttribute('hidden');
+            btnToggleMenitKustom.setAttribute('aria-expanded', 'true');
+            btnToggleMenitKustom.textContent = '✕ Tutup Menit Spesifik';
+        } else {
+            panelMenitKustom.setAttribute('hidden', '');
+            btnToggleMenitKustom.setAttribute('aria-expanded', 'false');
+            btnToggleMenitKustom.textContent = '⚙️ Pilih Menit Spesifik';
+        }
+    });
 
     const katalogPromo = new Map();
     kartuPromoList.forEach(kartu => {
@@ -99,7 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const cocokList = blokLayanan.filter(blok => {
             const namaLayanan = (blok.dataset.nama || '').toLowerCase();
             const jabatan     = blok.dataset.jabatan || '';
-            const cocokTab    = filterJabatanAktif === 'semua' || jabatan === filterJabatanAktif;
+            const cb          = blok.querySelector('input[name="layanan[]"]');
+            const cocokTab    = filterJabatanAktif === 'semua'
+                || (filterJabatanAktif === 'terpilih' && Boolean(cb?.checked))
+                || jabatan === filterJabatanAktif;
             const cocokKata   = namaLayanan.includes(keyword);
             return cocokTab && cocokKata;
         });
@@ -369,14 +472,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let totalDurasi     = 0;
         let petugasKosong   = 0;
         const barisLiveHtml = [];
+        const chipLayananHtml = [];
 
         checkboxes.forEach(checkbox => {
             if (!checkbox.checked) return;
 
-            const harga   = parseFloat(checkbox.dataset.harga || '0');
-            const durasi  = parseInt(checkbox.dataset.durasi || '60', 10);
-            const nama    = checkbox.dataset.namaLayanan || 'Layanan';
-            const jabatan = checkbox.dataset.jabatan || 'Stylist';
+            const idLayanan = checkbox.value;
+            const harga     = parseFloat(checkbox.dataset.harga || '0');
+            const durasi    = parseInt(checkbox.dataset.durasi || '60', 10);
+            const nama      = checkbox.dataset.namaLayanan || 'Layanan';
+            const jabatan   = checkbox.dataset.jabatan || 'Stylist';
 
             subtotalLayanan += harga;
             totalDurasi     += durasi;
@@ -391,16 +496,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? select.selectedOptions[0]?.textContent?.trim()
                 : `${jabatan} Otomatis`;
 
+            chipLayananHtml.push(`
+                <span class="chip-pilihan-item">
+                    <span>${nama} (${durasi} mnt)</span>
+                    <button type="button" class="btn-hapus-chip-layanan" data-hapus-layanan="${idLayanan}" aria-label="Batal pilih ${nama}">&times;</button>
+                </span>
+            `);
+
             barisLiveHtml.push(`
                 <div class="item-live-baris">
                     <div class="item-live-kiri">
                         <span class="item-live-nama">${nama}</span>
                         <span class="item-live-sub">${jabatan}: ${teksPetugas} &bull; ${durasi} mnt</span>
                     </div>
-                    <span class="item-live-harga">${formatRupiah(harga)}</span>
+                    <div class="item-live-kanan">
+                        <span class="item-live-harga">${formatRupiah(harga)}</span>
+                        <button type="button" class="btn-hapus-item-live" data-hapus-layanan="${idLayanan}" title="Hapus layanan">&times;</button>
+                    </div>
                 </div>
             `);
         });
+
+        if (badgeTabLayananEl) {
+            badgeTabLayananEl.textContent = String(jumlahLayanan);
+        }
+
+        if (barChipTerpilihEl && daftarChipTerpilihEl) {
+            if (jumlahLayanan > 0) {
+                barChipTerpilihEl.removeAttribute('hidden');
+                if (judulChipTerpilihEl) {
+                    judulChipTerpilihEl.textContent = `${jumlahLayanan} Perawatan Terpilih (${totalDurasi} menit):`;
+                }
+                daftarChipTerpilihEl.innerHTML = chipLayananHtml.join('');
+            } else {
+                barChipTerpilihEl.setAttribute('hidden', '');
+                daftarChipTerpilihEl.innerHTML = '';
+            }
+        }
 
         let subtotalProduk  = 0;
         let totalItemProduk = 0;
@@ -412,7 +544,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (qty > stok) qty = stok;
             inp.value = qty;
 
-            const kartu = inp.closest('.kartu-addon');
+            const kartu    = inp.closest('.kartu-addon');
+            const idProduk = kartu?.dataset.idProduk || '';
             kartu?.classList.toggle('aktif', qty > 0);
 
             if (qty > 0) {
@@ -427,18 +560,31 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="item-live-nama">+ ${inp.dataset.nama || 'Produk'} (${qty}x)</span>
                             <span class="item-live-sub">Produk Perawatan Tambahan</span>
                         </div>
-                        <span class="item-live-harga">${formatRupiah(subProd)}</span>
+                        <div class="item-live-kanan">
+                            <span class="item-live-harga">${formatRupiah(subProd)}</span>
+                            <button type="button" class="btn-hapus-item-live" data-hapus-produk="${idProduk}" title="Hapus produk">&times;</button>
+                        </div>
                     </div>
                 `);
             }
         });
 
+        renderLayananBerhalaman();
         renderProdukBerhalaman();
 
+        // Tampilkan Empty State saat belum ada layanan dipilih, sembunyikan rincian Rp 0
+        if (ringkasanKosongStateEl && kontenRingkasanAktifEl) {
+            if (jumlahLayanan > 0) {
+                ringkasanKosongStateEl.setAttribute('hidden', '');
+                kontenRingkasanAktifEl.removeAttribute('hidden');
+            } else {
+                ringkasanKosongStateEl.removeAttribute('hidden');
+                kontenRingkasanAktifEl.setAttribute('hidden', '');
+            }
+        }
+
         if (daftarPilihanEl) {
-            daftarPilihanEl.innerHTML = barisLiveHtml.length > 0
-                ? barisLiveHtml.join('')
-                : '<div class="pilihan-kosong-live">Belum ada layanan yang dipilih. Silakan klik paket perawatan <strong>Stylist</strong> atau <strong>Therapist</strong> di sebelah kiri.</div>';
+            daftarPilihanEl.innerHTML = barisLiveHtml.join('');
         }
 
         const subtotal = subtotalLayanan + subtotalProduk;
@@ -450,11 +596,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (ringkasanLayananEl) ringkasanLayananEl.textContent = formatRupiah(subtotalLayanan);
 
+        if (barisRingkasanProdukEl) {
+            if (totalItemProduk > 0) {
+                barisRingkasanProdukEl.removeAttribute('hidden');
+            } else {
+                barisRingkasanProdukEl.setAttribute('hidden', '');
+            }
+        }
         if (jumlahProdukEl) {
             jumlahProdukEl.textContent = `Produk Add-On (${totalItemProduk} item)`;
         }
         if (ringkasanProdukEl) ringkasanProdukEl.textContent = formatRupiah(subtotalProduk);
 
+        if (barisRingkasanPromoEl) {
+            if (potongan > 0) {
+                barisRingkasanPromoEl.removeAttribute('hidden');
+            } else {
+                barisRingkasanPromoEl.setAttribute('hidden', '');
+            }
+        }
         if (labelPromoEl) {
             labelPromoEl.textContent = kode ? `Potongan Promo (${kode})` : 'Potongan Promo';
         }
@@ -469,6 +629,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const jamSelesai    = tambahMenitKeJam(jamMulai, totalDurasi || 60);
         const diluarJamBuka = jamMulai < '09:00' || jamMulai > '20:30';
         const lewatJamTutup = totalDurasi > 0 && jamSelesai > '21:00';
+
+        if (teksJamBesarEl) {
+            teksJamBesarEl.textContent = `${jamMulai} WIB`;
+        }
+        if (teksEstimasiStep2El) {
+            teksEstimasiStep2El.textContent = jumlahLayanan > 0
+                ? `Estimasi selesai sekitar ${jamSelesai} WIB (${totalDurasi} mnt)`
+                : 'Pilih slot jam di bawah';
+        }
+
+        if (subStep1El) {
+            subStep1El.textContent = jumlahLayanan > 0
+                ? `${jumlahLayanan} perawatan (${totalDurasi} mnt)`
+                : 'Pilih layanan & petugas';
+        }
+        if (subStep2El) {
+            subStep2El.textContent = `${tglAktif} • ${jamMulai} WIB`;
+        }
+        if (subStep3El) {
+            subStep3El.textContent = totalItemProduk > 0
+                ? `${totalItemProduk} item add-on dipilih`
+                : 'Opsional & konfirmasi';
+        }
+
+        if (metaMobileBarEl) {
+            metaMobileBarEl.textContent = jumlahLayanan > 0
+                ? `${jumlahLayanan} layanan (${totalDurasi} mnt) • ${jamMulai} WIB`
+                : 'Belum ada layanan dipilih';
+        }
+        if (totalMobileBarEl) {
+            totalMobileBarEl.textContent = formatRupiah(totalAkhir);
+        }
 
         if (lencanaJadwalEl) {
             lencanaJadwalEl.textContent = jumlahLayanan > 0
@@ -488,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (diluarJamBuka) {
                 infoValidasiEl.textContent = 'Jam kedatangan harus berada dalam jam operasional salon (09:00 s/d 20:30 WIB).';
             } else if (jumlahLayanan === 0) {
-                infoValidasiEl.textContent = 'Pilih minimal 1 paket layanan di sebelah kiri untuk melanjutkan.';
+                infoValidasiEl.textContent = 'Pilih minimal 1 perawatan di sebelah kiri untuk melanjutkan.';
             } else if (lewatJamTutup) {
                 infoValidasiEl.textContent = `Durasi ${totalDurasi} menit (selesai ${jamSelesai} WIB) melewati jam tutup 21:00 WIB. Pilih jam lebih awal.`;
             } else if (petugasKosong > 0) {
@@ -498,9 +690,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        if (submitBtn) {
+        // Satu CTA Utama Kontekstual Sesuai Langkah (Tanpa Tombol Ganda Bersaing)
+        if (btnLanjutStepRingkasan && submitBtn) {
+            if (stepAktif === 1) {
+                btnLanjutStepRingkasan.removeAttribute('hidden');
+                btnLanjutStepRingkasan.disabled = jumlahLayanan === 0;
+                btnLanjutStepRingkasan.textContent = 'Lanjut Pilih Tanggal & Jam →';
+                submitBtn.setAttribute('hidden', '');
+            } else if (stepAktif === 2) {
+                btnLanjutStepRingkasan.removeAttribute('hidden');
+                btnLanjutStepRingkasan.disabled = !siap;
+                btnLanjutStepRingkasan.textContent = 'Lanjut ke Add-On & Konfirmasi →';
+                submitBtn.setAttribute('hidden', '');
+            } else {
+                btnLanjutStepRingkasan.setAttribute('hidden', '');
+                submitBtn.removeAttribute('hidden');
+                submitBtn.disabled = !siap;
+            }
+        } else if (submitBtn) {
             submitBtn.disabled = !siap;
-            submitBtn.style.opacity = siap ? '1' : '0.55';
         }
     };
 
@@ -659,6 +867,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    btnResetSemuaLayanan?.addEventListener('click', () => {
+        checkboxes.forEach(cb => {
+            cb.checked = false;
+            aturPilihanPetugas(cb);
+        });
+        muatPetugasTersedia();
+        updateRingkasan();
+    });
+
+    formBooking.addEventListener('click', (e) => {
+        const btnHapusLayanan = e.target.closest('[data-hapus-layanan]');
+        if (btnHapusLayanan) {
+            const idTarget = btnHapusLayanan.dataset.hapusLayanan;
+            checkboxes.forEach(cb => {
+                if (String(cb.value) === String(idTarget)) {
+                    cb.checked = false;
+                    aturPilihanPetugas(cb);
+                }
+            });
+            muatPetugasTersedia();
+            updateRingkasan();
+            return;
+        }
+
+        const btnHapusProduk = e.target.closest('[data-hapus-produk]');
+        if (btnHapusProduk) {
+            const idProd = btnHapusProduk.dataset.hapusProduk;
+            const kartu  = document.querySelector(`.kartu-addon[data-id-produk="${idProd}"]`);
+            const inp    = kartu?.querySelector('.input-qty-addon');
+            if (inp) {
+                inp.value = '0';
+                updateRingkasan();
+            }
+        }
+    });
+
     formBooking.addEventListener('submit', () => {
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -671,6 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
         halLayananAktif = Math.floor(indeksTerpilihAwal / ITEM_LAYANAN_PER_HAL) + 1;
     }
 
+    sinkronStepperVisual();
     sinkronChipTanggal();
     sinkronUIWaktu();
     renderLayananBerhalaman();

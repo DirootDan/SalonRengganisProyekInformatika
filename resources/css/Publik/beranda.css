@@ -36,50 +36,8 @@ html { scroll-behavior: smooth; }
 .pb-menu a { color: #4b5563; text-decoration: none; font-size: 14px; font-weight: 500; }
 .pb-menu a:hover { color: #db2777; }
 
-.pb-akun { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pb-akun { display: flex; align-items: center; gap: 14px; }
 .pb-tautan-masuk { color: #db2777; text-decoration: none; font-weight: 600; font-size: 14px; }
-.pb-tautan-staf {
-    color: #831843;
-    background: #fdf2f8;
-    border: 1.5px solid #fbcfe8;
-    padding: 6px 12px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 13px;
-    transition: all 0.2s ease;
-}
-.pb-tautan-staf:hover {
-    background: #fce7f3;
-    border-color: #f472b6;
-    color: #9d174d;
-}
-
-.pb-pita-staf {
-    background: #831843;
-    color: #ffffff;
-    font-size: 13px;
-    padding: 9px 0;
-}
-.pb-pita-staf-isi {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.pb-pita-staf-tombol {
-    background: #ffffff;
-    color: #831843;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 12px;
-    text-decoration: none;
-}
-.pb-pita-staf-tombol:hover {
-    background: #fdf2f8;
-}
 
 .pb-tombol {
     display: inline-block;
@@ -163,19 +121,6 @@ html { scroll-behavior: smooth; }
 .pb-jam { font-size: 18px; font-weight: 600; margin: 8px 0 22px; }
 
 .pb-footer { text-align: center; padding: 26px; color: #9ca3af; font-size: 13px; border-top: 1px solid #fce7f3; }
-.pb-footer-tautan { margin-top: 10px; }
-.pb-footer-staf {
-    display: inline-block;
-    color: #9d174d;
-    background: #fdf2f8;
-    border: 1px solid #fbcfe8;
-    padding: 5px 14px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-}
-.pb-footer-staf:hover { background: #fce7f3; }
 
 @media (max-width: 640px) {
     .pb-menu { display: none; }

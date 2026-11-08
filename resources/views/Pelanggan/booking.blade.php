@@ -16,15 +16,13 @@
         $daftarLayananAwal   = array_map('intval', (array) old('layanan', $idLayananDariQuery > 0 ? [$idLayananDariQuery] : []));
     @endphp
 
-    <!-- Hero Banner Booking ala Portal Reservasi Modern -->
-    <div class="booking-hero">
-        <div class="booking-hero-teks">
-            <span class="booking-hero-lencana">Portal Reservasi Online &bull; Salon Rengganis</span>
-            <h1 class="booking-hero-judul">Pilih Perawatan Stylist &amp; Therapist Favorit Anda</h1>
-            <p class="booking-hero-sub">
-                Nikmati kemudahan reservasi tanpa antre. Pilih jam kedatangan spesifik sesuai keinginan Anda, jelajahi kategori <strong>Hair Stylist</strong> atau <strong>Spa &amp; Beauty Therapist</strong>, serta tambahkan produk perawatan resmi.
-            </p>
+    <!-- Header Ringkas (Task Mode: Fokus Langsung ke Pemesanan) -->
+    <div class="booking-header-ringkas">
+        <div>
+            <h1 class="booking-judul-ringkas">Buat Reservasi Perawatan</h1>
+            <p class="booking-sub-ringkas">Pilih perawatan favorit Anda, tentukan jam kedatangan, dan datang tanpa antre.</p>
         </div>
+        <span class="lencana-jam-buka">🕘 Jam Operasional: 09:00 – 21:00 WIB</span>
     </div>
 
     @if ($errors->any())
@@ -74,140 +72,84 @@
               data-url-petugas="{{ route('pelanggan.booking.petugas') }}">
             @csrf
 
+            <!-- Navigasi Stepper Wizard 3 Langkah Bersih -->
+            <nav class="stepper-booking" aria-label="Langkah Pemesanan Perawatan">
+                <button type="button" class="stepper-item aktif" data-step-target="1" id="tabStep1">
+                    <span class="stepper-nomor">1</span>
+                    <div class="stepper-teks">
+                        <strong>Pilih Perawatan</strong>
+                        <small id="subStep1">Pilih layanan &amp; petugas</small>
+                    </div>
+                </button>
+                <span class="stepper-garis" aria-hidden="true"></span>
+                <button type="button" class="stepper-item" data-step-target="2" id="tabStep2">
+                    <span class="stepper-nomor">2</span>
+                    <div class="stepper-teks">
+                        <strong>Tanggal &amp; Jam</strong>
+                        <small id="subStep2">{{ $tglTerpilihAwal }} &bull; {{ $jamTerpilihAwal }} WIB</small>
+                    </div>
+                </button>
+                <span class="stepper-garis" aria-hidden="true"></span>
+                <button type="button" class="stepper-item" data-step-target="3" id="tabStep3">
+                    <span class="stepper-nomor">3</span>
+                    <div class="stepper-teks">
+                        <strong>Add-On &amp; Promo</strong>
+                        <small id="subStep3">Opsional &amp; konfirmasi</small>
+                    </div>
+                </button>
+            </nav>
+
             <div class="booking-portal-grid">
                 <!-- =================================================
-                     KOLOM KIRI: EKSPLORASI JADWAL, KATEGORI, & ADD-ON
+                     KOLOM KIRI: WIZARD 3 LANGKAH TERARAH
                      ================================================= -->
                 <div class="portal-kiri">
 
-                    <!-- Seksi 1: Pilih Tanggal & Jam Kedatangan Dinamis (Bisa Menit Spesifik) -->
-                    <section class="portal-kartu">
+                    <!-- LANGKAH 1: Pilih Kategori Layanan (Stylist vs Therapist) + Chip Pilihan Aktif -->
+                    <section class="portal-kartu step-panel aktif" data-step-panel="1" id="panelStep1">
                         <div class="portal-kartu-kepala">
                             <span class="langkah-no">1</span>
                             <div>
-                                <h2 class="portal-seksi-judul">Jadwal &amp; Jam Kedatangan Dinamis</h2>
+                                <h2 class="portal-seksi-judul">Pilih Perawatan &amp; Petugas</h2>
                                 <p class="portal-seksi-sub">
-                                    Pilih tanggal serta <strong>jam dan menit spesifik</strong> kedatangan Anda (jam operasional salon <strong>09:00 – 21:00 WIB</strong>), atau gunakan tombol jam populer di bawah.
+                                    Klik kartu perawatan untuk memilih. Durasi pengerjaan otomatis dijumlahkan saat menentukan jadwal.
                                 </p>
                             </div>
                         </div>
 
-                        <div class="jadwal-baris-tanggal">
-                            <div class="kolom-input-tanggal">
-                                <label for="tgl_booking" class="label">Tanggal Kedatangan</label>
-                                <input type="date"
-                                       id="tgl_booking"
-                                       name="tgl_booking"
-                                       class="input-tanggal-modern"
-                                       value="{{ $tglTerpilihAwal }}"
-                                       min="{{ now()->toDateString() }}"
-                                       required>
-                                <div class="chip-tanggal-grup">
-                                    <button type="button" class="chip-tanggal" data-tgl="{{ now()->toDateString() }}">
-                                        Hari Ini ({{ now()->format('d/m') }})
-                                    </button>
-                                    <button type="button" class="chip-tanggal" data-tgl="{{ now()->addDay()->toDateString() }}">
-                                        Besok ({{ now()->addDay()->format('d/m') }})
-                                    </button>
-                                    <button type="button" class="chip-tanggal" data-tgl="{{ now()->addDays(2)->toDateString() }}">
-                                        Lusa ({{ now()->addDays(2)->format('d/m') }})
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="kolom-input-waktu-dinamis">
-                                <label for="jam_booking" class="label">Jam &amp; Menit Kedatangan (Bebas Pilih Menit)</label>
-                                <div class="baris-time-picker">
-                                    <input type="time"
-                                           id="jam_booking"
-                                           name="jam_booking"
-                                           class="input-waktu-modern"
-                                           value="{{ $jamTerpilihAwal }}"
-                                           min="09:00"
-                                           max="20:30"
-                                           step="60"
-                                           required>
-                                    <div class="kotak-Menit-Cepat" aria-label="Atur Menit Cepat">
-                                        <span class="label-menit-kecil">Menit Cepat:</span>
-                                        <div class="grup-menit-cepat">
-                                            <button type="button" class="btn-menit-cepat" data-menit="00">:00</button>
-                                            <button type="button" class="btn-menit-cepat" data-menit="15">:15</button>
-                                            <button type="button" class="btn-menit-cepat" data-menit="30">:30</button>
-                                            <button type="button" class="btn-menit-cepat" data-menit="45">:45</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <small class="petunjuk-waktu-spesifik">
-                                    💡 Anda bebas mengetik menit spesifik (misal <strong>10:15</strong>, <strong>13:20</strong>, atau <strong>15:45</strong>). Sistem mengecek ketersediaan petugas secara otomatis.
-                                </small>
-                            </div>
-                        </div>
-
-                        <div class="slot-jam-wadah">
-                            <div class="slot-jam-header">
-                                <span class="label tanpa-margin">Pintasan Jam Populer (Klik untuk memilih cepat, atau ketik menit bebas di atas)</span>
-                                <small class="status-ketersediaan" id="statusKetersediaan" aria-live="polite">
-                                    Menampilkan ketersediaan Stylist &amp; Therapist...
-                                </small>
-                            </div>
-
-                            <div class="grid-slot-jam" id="gridSlotJam" role="radiogroup" aria-label="Pintasan Jam Kedatangan">
-                                @foreach ($jamOperasional as $jam)
-                                    <button type="button"
-                                            class="chip-jam {{ $jamTerpilihAwal === $jam ? 'aktif' : '' }}"
-                                            data-jam="{{ $jam }}">
-                                        <span class="chip-jam-angka">{{ $jam }}</span>
-                                        <span class="chip-jam-status">Tersedia</span>
-                                    </button>
-                                @endforeach
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Seksi 2: Pilih Kategori Layanan (Stylist vs Therapist) + Pagination Tanpa Scroll Panjang -->
-                    <section class="portal-kartu">
-                        <div class="portal-kartu-kepala">
-                            <span class="langkah-no">2</span>
-                            <div>
-                                <h2 class="portal-seksi-judul">Pilih Kategori Perawatan &amp; Petugas</h2>
-                                <p class="portal-seksi-sub">
-                                    Jelajahi layanan berdasarkan kategori <strong>Stylist (Rambut)</strong> atau <strong>Therapist (Wajah &amp; Spa)</strong>. Anda bebas memilih petugas favorit atau membiarkan sistem memilihkan otomatis.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Tab Kategori Ala Traveloka Xperience -->
-                        <div class="tab-kategori-booking" role="tablist" aria-label="Kategori Layanan Salon">
+                        <!-- Bar Filter Kategori Rapi (Tidak Terpotong) -->
+                        <div class="filter-kategori-bar" role="tablist" aria-label="Kategori Layanan Salon">
                             <button type="button" class="tab-kat-item aktif" data-filter-jabatan="semua">
-                                <span class="tab-kat-ikon">✨</span>
-                                <div class="tab-kat-teks">
-                                    <strong>Semua Perawatan</strong>
-                                    <small>{{ $layanan->count() }} pilihan layanan</small>
-                                </div>
+                                ✨ Semua ({{ $layanan->count() }})
                             </button>
 
-                            <button type="button" class="tab-kat-item tab-kat-stylist" data-filter-jabatan="Stylist">
-                                <span class="tab-kat-ikon">💇‍♀️</span>
-                                <div class="tab-kat-teks">
-                                    <strong>Hair Studio &bull; Stylist</strong>
-                                    <small>{{ $jmlStylistLayanan }} layanan rambut</small>
-                                </div>
+                            <button type="button" class="tab-kat-item" data-filter-jabatan="Stylist">
+                                💇‍♀️ Hair Stylist ({{ $jmlStylistLayanan }})
                             </button>
 
-                            <button type="button" class="tab-kat-item tab-kat-therapist" data-filter-jabatan="Therapist">
-                                <span class="tab-kat-ikon">🌿</span>
-                                <div class="tab-kat-teks">
-                                    <strong>Face &amp; Body Spa &bull; Therapist</strong>
-                                    <small>{{ $jmlTherapistLayanan }} perawatan wajah &amp; tubuh</small>
-                                </div>
+                            <button type="button" class="tab-kat-item" data-filter-jabatan="Therapist">
+                                🌿 Spa Therapist ({{ $jmlTherapistLayanan }})
                             </button>
+
+                            <button type="button" class="tab-kat-item tab-kat-terpilih" data-filter-jabatan="terpilih" id="tabLayananTerpilih">
+                                ✅ Dipilih (<span id="badgeTabLayananTerpilih">0</span>)
+                            </button>
+                        </div>
+
+                        <!-- Bar Chip Layanan yang Sedang Terpilih (Anti-Lupa Saat Pindah Halaman) -->
+                        <div class="bar-chip-terpilih" id="barChipTerpilih" hidden>
+                            <div class="bar-chip-kepala">
+                                <span class="bar-chip-judul" id="judulChipTerpilih">Perawatan terpilih:</span>
+                                <button type="button" class="btn-reset-pilihan" id="btnResetSemuaLayanan">Hapus Semua</button>
+                            </div>
+                            <div class="daftar-chip-terpilih" id="daftarChipTerpilih"></div>
                         </div>
 
                         <div class="baris-filter-katalog">
                             <input type="text"
                                    id="searchInput"
                                    class="search-input tanpa-margin"
-                                   placeholder="Cari perawatan (contoh: Smoothing, Potong Rambut, Facial Glowing, Massage...)">
+                                   placeholder="Cari nama perawatan (contoh: Smoothing, Potong Rambut, Facial, Massage...)">
                         </div>
 
                         <div class="daftar-opsi-modern" id="daftarLayananGrid">
@@ -237,14 +179,10 @@
                                                @checked($dipilih)>
 
                                         <div class="opsi-info">
-                                            <div class="opsi-baris-atas">
-                                                <span class="lencana-jabatan lencana-{{ strtolower($jabatan) }}">
-                                                    {{ $jabatan === 'Stylist' ? '💇‍♀️ Hair Stylist' : '🌿 Spa Therapist' }}
-                                                </span>
-                                                <span class="lencana-durasi">{{ $durasiMenit }} menit</span>
-                                            </div>
                                             <span class="opsi-nama">{{ $item->nama_layanan }}</span>
-                                            <span class="opsi-kategori">Kategori {{ $item->kategori }}</span>
+                                            <span class="opsi-meta-ringkas">
+                                                ⏱ {{ $durasiMenit }} menit &bull; {{ $jabatan }}
+                                            </span>
                                         </div>
 
                                         <div class="opsi-kanan-harga">
@@ -255,7 +193,7 @@
 
                                     <div class="pilih-petugas">
                                         <label for="petugas_{{ $item->id_layanan }}" class="petugas-label">
-                                            Pilih {{ $jabatan }} untuk {{ $item->nama_layanan }}:
+                                            Preferensi {{ $jabatan }} (opsional):
                                         </label>
                                         <select id="petugas_{{ $item->id_layanan }}"
                                                 name="petugas[{{ $item->id_layanan }}]"
@@ -264,7 +202,7 @@
                                                 data-pilihan-lama="{{ $petugasLama }}"
                                                 data-tersedia="{{ $daftarPetugas->count() }}"
                                                 @disabled(! $dipilih)>
-                                            <option value="">-- Pilihkan {{ $jabatan }} Otomatis ({{ $daftarPetugas->count() }} tersedia) --</option>
+                                            <option value="">🤖 Pilihkan {{ $jabatan }} Otomatis ({{ $daftarPetugas->count() }} tersedia)</option>
                                             @foreach ($daftarPetugas as $staf)
                                                 <option value="{{ $staf->id_karyawan }}" @selected((string) $petugasLama === (string) $staf->id_karyawan)>
                                                     {{ $staf->nama_staff }}
@@ -278,25 +216,129 @@
 
                         <p class="tidak-ditemukan" id="tidakDitemukan">Layanan yang Anda cari tidak ditemukan pada kategori ini.</p>
 
-                        <!-- Navigasi Halaman (Pagination) Layanan bila jumlah layanan banyak -->
+                        <!-- Navigasi Halaman (Pagination) Layanan -->
                         <div class="katalog-paginasi" id="paginasiLayanan">
                             <span class="info-halaman-katalog" id="infoHalamanLayanan">Menampilkan layanan</span>
                             <div class="tombol-halaman-grup">
                                 <button type="button" class="btn-halaman" id="btnPrevLayanan">&laquo; Sebelumnya</button>
                                 <span class="indikator-halaman" id="teksHalLayanan">1 / 1</span>
-                                <button type="button" class="btn-halaman" id="btnNextLayanan"> Berikutnya &raquo;</button>
+                                <button type="button" class="btn-halaman" id="btnNextLayanan">Berikutnya &raquo;</button>
                             </div>
                         </div>
                     </section>
 
-                    <!-- Seksi 3: Produk Add-On Tambahan (Pencarian + Filter + Pagination Tanpa Scroll Panjang) -->
-                    <section class="portal-kartu">
+                    <!-- LANGKAH 2: Pilih Tanggal & Jam Kedatangan (Bersih & Terfokus) -->
+                    <section class="portal-kartu step-panel" data-step-panel="2" id="panelStep2">
+                        <div class="portal-kartu-kepala">
+                            <span class="langkah-no">2</span>
+                            <div>
+                                <h2 class="portal-seksi-judul">Pilih Tanggal &amp; Jam Kedatangan</h2>
+                                <p class="portal-seksi-sub">
+                                    Pilih tanggal dan klik slot jam yang tersedia (jam operasional <strong>09:00 – 21:00 WIB</strong>). Sistem otomatis mencocokkan ketersediaan petugas dengan durasi perawatan Anda.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="jadwal-baris-tanggal">
+                            <div class="kolom-input-tanggal">
+                                <label for="tgl_booking" class="label">1. Tanggal Kedatangan</label>
+                                <input type="date"
+                                       id="tgl_booking"
+                                       name="tgl_booking"
+                                       class="input-tanggal-modern"
+                                       value="{{ $tglTerpilihAwal }}"
+                                       min="{{ now()->toDateString() }}"
+                                       required>
+                                <div class="chip-tanggal-grup">
+                                    <button type="button" class="chip-tanggal" data-tgl="{{ now()->toDateString() }}">
+                                        Hari Ini ({{ now()->format('d/m') }})
+                                    </button>
+                                    <button type="button" class="chip-tanggal" data-tgl="{{ now()->addDay()->toDateString() }}">
+                                        Besok ({{ now()->addDay()->format('d/m') }})
+                                    </button>
+                                    <button type="button" class="chip-tanggal" data-tgl="{{ now()->addDays(2)->toDateString() }}">
+                                        Lusa ({{ now()->addDays(2)->format('d/m') }})
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="kolom-ringkasan-waktu-terpilih">
+                                <span class="label">Ringkasan Waktu Kedatangan</span>
+                                <div class="kotak-jam-aktif-besar">
+                                    <div class="jam-aktif-utama">
+                                        <span class="jam-aktif-ikon">🕒</span>
+                                        <div>
+                                            <strong id="teksJamTerpilihBesar">{{ $jamTerpilihAwal }} WIB</strong>
+                                            <small id="teksEstimasiSelesaiStep2">Pilih slot jam di bawah</small>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-toggle-menit-kustom" id="btnToggleMenitKustom" aria-expanded="false">
+                                        ⚙️ Pilih Menit Spesifik
+                                    </button>
+                                </div>
+
+                                <!-- Panel Lipat (Collapsible) untuk Menit Spesifik -->
+                                <div class="panel-menit-kustom" id="panelMenitKustom" hidden>
+                                    <label for="jam_booking" class="label-menit-kecil">Ketik jam &amp; menit bebas (09:00 – 20:30):</label>
+                                    <div class="baris-time-picker">
+                                        <input type="time"
+                                               id="jam_booking"
+                                               name="jam_booking"
+                                               class="input-waktu-modern"
+                                               value="{{ $jamTerpilihAwal }}"
+                                               min="09:00"
+                                               max="20:30"
+                                               step="60"
+                                               required>
+                                        <div class="kotak-Menit-Cepat" aria-label="Atur Menit Cepat">
+                                            <span class="label-menit-kecil">Menit:</span>
+                                            <div class="grup-menit-cepat">
+                                                <button type="button" class="btn-menit-cepat" data-menit="00">:00</button>
+                                                <button type="button" class="btn-menit-cepat" data-menit="15">:15</button>
+                                                <button type="button" class="btn-menit-cepat" data-menit="30">:30</button>
+                                                <button type="button" class="btn-menit-cepat" data-menit="45">:45</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slot-jam-wadah">
+                            <div class="slot-jam-header">
+                                <span class="label tanpa-margin">2. Pilih Slot Jam Tersedia</span>
+                                <small class="status-ketersediaan" id="statusKetersediaan" aria-live="polite">
+                                    Menampilkan ketersediaan Stylist &amp; Therapist...
+                                </small>
+                            </div>
+
+                            <div class="grid-slot-jam" id="gridSlotJam" role="radiogroup" aria-label="Pintasan Jam Kedatangan">
+                                @foreach ($jamOperasional as $jam)
+                                    <button type="button"
+                                            class="chip-jam {{ $jamTerpilihAwal === $jam ? 'aktif' : '' }}"
+                                            data-jam="{{ $jam }}">
+                                        <span class="chip-jam-angka">{{ $jam }}</span>
+                                        <span class="chip-jam-status">Tersedia</span>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="step-navigasi-bawah">
+                            <button type="button" class="btn-step-kembali" data-lanjut-step="1">
+                                &larr; Kembali ke Pilihan Layanan
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- LANGKAH 3: Produk Add-On Tambahan (Opsional) -->
+                    <section class="portal-kartu step-panel" data-step-panel="3" id="panelStep3">
                         <div class="portal-kartu-kepala">
                             <span class="langkah-no">3</span>
                             <div>
                                 <h2 class="portal-seksi-judul">Produk Perawatan Tambahan / Add-On (Opsional)</h2>
                                 <p class="portal-seksi-sub">
-                                    Cari dan pilih produk perawatan resmi Salon Rengganis. Tersedia fitur pencarian dan halaman agar nyaman meskipun terdapat ratusan produk.
+                                    Tambahkan produk resmi Salon Rengganis bila diinginkan, atau langsung tekan tombol <strong>Konfirmasi &amp; Buat Reservasi</strong> di panel kanan.
                                 </p>
                             </div>
                         </div>
@@ -352,7 +394,7 @@
 
                             <p class="tidak-ditemukan" id="produkTidakDitemukan">Produk yang Anda cari tidak ditemukan.</p>
 
-                            <!-- Navigasi Halaman (Pagination) Produk Add-On (Maks 6 produk per halaman agar tidak perlu scroll panjang) -->
+                            <!-- Navigasi Halaman (Pagination) Produk Add-On -->
                             <div class="katalog-paginasi" id="paginasiProduk">
                                 <span class="info-halaman-katalog" id="infoHalamanProduk">Menampilkan produk</span>
                                 <div class="tombol-halaman-grup">
@@ -362,13 +404,19 @@
                                 </div>
                             </div>
                         @endif
+
+                        <div class="step-navigasi-bawah">
+                            <button type="button" class="btn-step-kembali" data-lanjut-step="2">
+                                &larr; Kembali ke Jadwal
+                            </button>
+                        </div>
                     </section>
                 </div>
 
                 <!-- =================================================
-                     KOLOM KANAN: STICKY BOOKING SUMMARY & CHECKOUT
+                     KOLOM KANAN: STICKY BOOKING SUMMARY & SATU CTA UTAMA
                      ================================================= -->
-                <aside class="portal-kanan">
+                <aside class="portal-kanan" id="kartuRingkasanSticky">
                     <div class="kartu-ringkasan-sticky">
                         <div class="ringkasan-kepala">
                             <h3>Ringkasan Reservasi</h3>
@@ -377,93 +425,122 @@
                             </span>
                         </div>
 
-                        <!-- Daftar Item Terpilih Secara Live -->
-                        <div class="rincian-pilihan-live" id="daftarPilihanLive">
-                            <div class="pilihan-kosong-live">
-                                Belum ada layanan yang dipilih. Silakan klik paket perawatan <strong>Stylist</strong> atau <strong>Therapist</strong> di sebelah kiri.
-                            </div>
+                        <!-- Empty State Ringkas Saat Belum Ada Layanan Dipilih -->
+                        <div class="pilihan-kosong-live" id="ringkasanKosongState">
+                            <span class="kosong-ikon" aria-hidden="true">🌸</span>
+                            <strong>Belum ada perawatan dipilih</strong>
+                            <span>Klik kartu perawatan di sebelah kiri untuk melihat rincian durasi, promo, dan estimasi biaya.</span>
                         </div>
 
-                        <!-- Bagian Promo & Voucer -->
-                        <div class="seksi-promo-sticky">
-                            <label for="kode_promo" class="label-promo-kecil">Voucer &amp; Promo Spesial</label>
+                        <!-- Konten Ringkasan Aktif (Tampil Begitu Ada Layanan Dipilih) -->
+                        <div id="kontenRingkasanAktif" hidden>
+                            <div class="rincian-pilihan-live" id="daftarPilihanLive"></div>
 
-                            @if ($promoAktif->isNotEmpty())
-                                <div class="daftar-promo-booking" id="daftarPromoBooking">
-                                    @foreach ($promoAktif as $pr)
-                                        <div class="kartu-promo-item"
-                                             data-kode="{{ $pr->kode_promo }}"
-                                             data-nama="{{ $pr->nama_promo }}"
-                                             data-tipe="{{ $pr->tipe_diskon }}"
-                                             data-nilai="{{ (float) $pr->nilai_diskon }}"
-                                             data-min="{{ (float) $pr->min_transaksi }}">
-                                            <div class="promo-kiri">
-                                                <div class="promo-baris-kode">
-                                                    <span class="lencana-kode-promo">{{ $pr->kode_promo }}</span>
-                                                    <span class="promo-potongan-teks">
-                                                        @if ($pr->tipe_diskon === \App\Models\Promo::TIPE_PERSENTASE)
-                                                            Hemat {{ number_format($pr->nilai_diskon, 0) }}%
-                                                        @else
-                                                            Hemat Rp {{ number_format($pr->nilai_diskon, 0, ',', '.') }}
-                                                        @endif
+                            <!-- Bagian Promo & Voucer (Maks 2 Tampil Awal, Tanpa Scroll di dalam Scroll) -->
+                            <div class="seksi-promo-sticky">
+                                <div class="kepala-promo-sticky">
+                                    <label for="kode_promo" class="label-promo-kecil">Voucer &amp; Promo Spesial</label>
+                                    @if ($promoAktif->count() > 2)
+                                        <button type="button" class="btn-lihat-semua-promo" id="btnLihatSemuaPromo" data-terbuka="0">
+                                            Lihat semua ({{ $promoAktif->count() }})
+                                        </button>
+                                    @endif
+                                </div>
+
+                                @if ($promoAktif->isNotEmpty())
+                                    <div class="daftar-promo-booking" id="daftarPromoBooking">
+                                        @foreach ($promoAktif as $indeksPromo => $pr)
+                                            <div class="kartu-promo-item {{ $indeksPromo >= 2 ? 'promo-ekstra' : '' }}"
+                                                 data-kode="{{ $pr->kode_promo }}"
+                                                 data-nama="{{ $pr->nama_promo }}"
+                                                 data-tipe="{{ $pr->tipe_diskon }}"
+                                                 data-nilai="{{ (float) $pr->nilai_diskon }}"
+                                                 data-min="{{ (float) $pr->min_transaksi }}"
+                                                 @if ($indeksPromo >= 2) hidden @endif>
+                                                <div class="promo-kiri">
+                                                    <div class="promo-baris-kode">
+                                                        <span class="lencana-kode-promo">{{ $pr->kode_promo }}</span>
+                                                        <span class="promo-potongan-teks">
+                                                            @if ($pr->tipe_diskon === \App\Models\Promo::TIPE_PERSENTASE)
+                                                                Hemat {{ number_format($pr->nilai_diskon, 0) }}%
+                                                            @else
+                                                                Hemat Rp {{ number_format($pr->nilai_diskon, 0, ',', '.') }}
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <strong class="promo-nama-item">{{ $pr->nama_promo }}</strong>
+                                                    <span class="promo-syarat-item">
+                                                        Min. Rp {{ number_format($pr->min_transaksi, 0, ',', '.') }}
+                                                        &bull; s/d {{ $pr->berlaku_sampai->format('d/m/Y') }}
                                                     </span>
                                                 </div>
-                                                <strong class="promo-nama-item">{{ $pr->nama_promo }}</strong>
-                                                <span class="promo-syarat-item">
-                                                    Min. Rp {{ number_format($pr->min_transaksi, 0, ',', '.') }}
-                                                    &bull; s/d {{ $pr->berlaku_sampai->format('d/m/Y') }}
-                                                </span>
+                                                <button type="button" class="btn-pilih-promo" data-kode="{{ $pr->kode_promo }}">
+                                                    Pakai
+                                                </button>
                                             </div>
-                                            <button type="button" class="btn-pilih-promo" data-kode="{{ $pr->kode_promo }}">
-                                                Pakai
-                                            </button>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                                        @endforeach
+                                    </div>
+                                @endif
 
-                            <div class="baris-input-promo">
-                                <input type="text"
-                                       id="kode_promo"
-                                       name="kode_promo"
-                                       class="input-kode-promo"
-                                       value="{{ old('kode_promo') }}"
-                                       placeholder="Ketik kode promo...">
-                                <button type="button" id="btnHapusPromo" class="btn-reset-promo">Reset</button>
-                            </div>
-                            <small class="pesan-status-promo" id="pesanStatusPromo" aria-live="polite"></small>
-                        </div>
-
-                        <!-- Kalkulasi Tagihan -->
-                        <div class="summary-box summary-box-rinci" aria-live="polite">
-                            <div class="summary-baris">
-                                <span id="jumlahPilihan">Subtotal Layanan (0 layanan &bull; 0 mnt)</span>
-                                <strong id="ringkasanLayananNominal">Rp 0</strong>
-                            </div>
-                            <div class="summary-baris">
-                                <span id="jumlahProdukAddon">Produk Add-On (0 item)</span>
-                                <strong id="ringkasanProdukNominal">Rp 0</strong>
-                            </div>
-                            <div class="summary-baris summary-baris-diskon" id="barisRingkasanPromo">
-                                <span id="labelRingkasanPromo">Potongan Promo</span>
-                                <strong id="ringkasanPromoNominal">- Rp 0</strong>
-                            </div>
-                            <div class="summary-baris summary-baris-utama">
-                                <div>
-                                    <span class="summary-text">Estimasi Total Bayar</span>
-                                    <small class="estimasi-jadwal-teks" id="estimasiJadwalTeks"></small>
+                                <div class="baris-input-promo">
+                                    <input type="text"
+                                           id="kode_promo"
+                                           name="kode_promo"
+                                           class="input-kode-promo"
+                                           value="{{ old('kode_promo') }}"
+                                           placeholder="Ketik kode promo...">
+                                    <button type="button" id="btnHapusPromo" class="btn-reset-promo">Reset</button>
                                 </div>
-                                <div class="summary-total" id="totalHarga">Rp 0</div>
+                                <small class="pesan-status-promo" id="pesanStatusPromo" aria-live="polite"></small>
+                            </div>
+
+                            <!-- Kalkulasi Tagihan -->
+                            <div class="summary-box summary-box-rinci" aria-live="polite">
+                                <div class="summary-baris">
+                                    <span id="jumlahPilihan">Subtotal Layanan (0 layanan &bull; 0 mnt)</span>
+                                    <strong id="ringkasanLayananNominal">Rp 0</strong>
+                                </div>
+                                <div class="summary-baris" id="barisRingkasanProduk" hidden>
+                                    <span id="jumlahProdukAddon">Produk Add-On (0 item)</span>
+                                    <strong id="ringkasanProdukNominal">Rp 0</strong>
+                                </div>
+                                <div class="summary-baris summary-baris-diskon" id="barisRingkasanPromo" hidden>
+                                    <span id="labelRingkasanPromo">Potongan Promo</span>
+                                    <strong id="ringkasanPromoNominal">- Rp 0</strong>
+                                </div>
+                                <div class="summary-baris summary-baris-utama">
+                                    <div>
+                                        <span class="summary-text">Estimasi Total Bayar</span>
+                                        <small class="estimasi-jadwal-teks" id="estimasiJadwalTeks"></small>
+                                    </div>
+                                    <div class="summary-total" id="totalHarga">Rp 0</div>
+                                </div>
                             </div>
                         </div>
 
                         <small class="info-validasi" id="infoValidasi"></small>
 
-                        <button type="submit" id="submitBtn" class="btn btn-penuh btn-konfirmasi-modern">
+                        <!-- Satu CTA Utama Kontekstual Sesuai Langkah -->
+                        <button type="button" id="btnLanjutStepRingkasan" class="btn btn-penuh btn-konfirmasi-modern">
+                            Lanjut Pilih Tanggal &amp; Jam &rarr;
+                        </button>
+
+                        <button type="submit" id="submitBtn" class="btn btn-penuh btn-konfirmasi-modern" hidden>
                             Konfirmasi &amp; Buat Reservasi Sekarang
                         </button>
                     </div>
                 </aside>
+            </div>
+
+            <!-- Bar Melayang Khusus Layar Ponsel / Tablet (Mobile Sticky Checkout Bar) -->
+            <div class="bar-bawah-mobile" id="barBawahMobile" aria-live="polite">
+                <div class="bar-bawah-info">
+                    <span class="bar-bawah-meta" id="metaMobileBar">0 layanan dipilih</span>
+                    <strong class="bar-bawah-total" id="totalMobileBar">Rp 0</strong>
+                </div>
+                <a href="#kartuRingkasanSticky" class="btn-bar-bawah-mobile" id="btnAksiMobileBar">
+                    Lihat Ringkasan &rarr;
+                </a>
             </div>
         </form>
     @endif

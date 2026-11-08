@@ -13,10 +13,6 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public const COOKIE_PERANGKAT_STAF = 'perangkat_staf_salon';
-
-    private const DURASI_COOKIE_STAF_MENIT = 60 * 24 * 30;
-
     /* ================= TAMPILAN HALAMAN ================= */
 
     public function portalStaf()
@@ -27,10 +23,10 @@ class AuthController extends Controller
             return redirect()->route($user->rutePeran() ?? 'login');
         }
 
-        return redirect()->route('login', ['mode' => 'staf']);
+        return redirect()->route('login');
     }
 
-    public function showLogin(Request $request)
+    public function showLogin()
     {
         if (Auth::guard('karyawan')->check()) {
             $user = Auth::guard('karyawan')->user();
@@ -42,20 +38,8 @@ class AuthController extends Controller
             return redirect()->route('pelanggan.beranda');
         }
 
-        $modeQuery = $request->query('mode');
-        $perangkatStaf = $request->cookie(self::COOKIE_PERANGKAT_STAF) === '1';
-        $modeStaf = $modeQuery === 'staf' || ($modeQuery !== 'pelanggan' && $perangkatStaf);
-
         // Disesuaikan dengan folder Auth dan file loginpage.blade.php
-        $respons = response()->view('Auth.loginpage', [
-            'modeStaf' => $modeStaf,
-        ]);
-
-        if ($modeQuery === 'staf') {
-            $respons->withCookie(cookie(self::COOKIE_PERANGKAT_STAF, '1', self::DURASI_COOKIE_STAF_MENIT));
-        }
-
-        return $respons;
+        return view('Auth.loginpage');
     }
 
     public function showRegister(Request $request)
@@ -114,8 +98,7 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(route($user->rutePeran()))
-                ->withCookie(cookie(self::COOKIE_PERANGKAT_STAF, '1', self::DURASI_COOKIE_STAF_MENIT));
+            return redirect()->intended(route($user->rutePeran()));
         }
 
         if (Auth::guard('pelanggan')->attempt(['email' => $loginId, 'password' => $password])) {

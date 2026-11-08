@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\AuthController;
+use App\Models\Karyawan;
 use App\Models\Layanan;
 use App\Models\Pelanggan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -68,7 +68,12 @@ class BerandaPublikTest extends TestCase
             ->get(route('pelanggan.booking', ['layanan' => $layanan->id_layanan]))
             ->assertOk()
             ->assertSee('opsi-blok terpilih', false)
-            ->assertSee('data-id-layanan="'.$layanan->id_layanan.'"', false);
+            ->assertSee('data-id-layanan="'.$layanan->id_layanan.'"', false)
+            ->assertSee('stepper-booking', false)
+            ->assertSee('tabLayananTerpilih', false)
+            ->assertSee('barChipTerpilih', false)
+            ->assertSee('btnToggleMenitKustom', false)
+            ->assertSee('barBawahMobile', false);
     }
 
     public function test_registrasi_pelanggan_baru_langsung_diarahkan_ke_halaman_booking(): void
@@ -131,26 +136,28 @@ class BerandaPublikTest extends TestCase
         ])->assertRedirect($urlBookingLayanan);
     }
 
-    public function test_pintasan_portal_staf_dan_deteksi_perangkat_kerja_karyawan(): void
+    public function test_pintasan_url_internal_staf_dan_pos_mengarahkan_ke_login_atau_dashboard(): void
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Portal Staf')
-            ->assertSee(route('portal.staf'), false);
+            ->assertDontSee('Portal Staf');
 
-        $this->get('/staf')->assertRedirect(route('login', ['mode' => 'staf']));
-        $this->get('/karyawan')->assertRedirect(route('login', ['mode' => 'staf']));
-        $this->get('/pos')->assertRedirect(route('login', ['mode' => 'staf']));
+        $this->get('/staf')->assertRedirect(route('login'));
+        $this->get('/karyawan')->assertRedirect(route('login'));
+        $this->get('/pos')->assertRedirect(route('login'));
 
-        $this->get(route('login', ['mode' => 'staf']))
-            ->assertOk()
-            ->assertSee('Mode Login Karyawan')
-            ->assertSee('MASUK PORTAL STAF')
-            ->assertCookie(AuthController::COOKIE_PERANGKAT_STAF, '1');
+        $kasir = Karyawan::create([
+            'nama_staff' => 'Kasir Utama',
+            'email' => 'kasir@salon.test',
+            'username' => 'kasir_utama',
+            'password' => 'rahasia123',
+            'role_jabatan' => Karyawan::JABATAN_KASIR,
+            'persen_komisi' => 0,
+            'aktif' => true,
+        ]);
 
-        $this->withCookie(AuthController::COOKIE_PERANGKAT_STAF, '1')
-            ->get('/')
-            ->assertOk()
-            ->assertSee('Perangkat Kerja Staf Terdeteksi');
+        $this->actingAs($kasir, 'karyawan')
+            ->get('/pos')
+            ->assertRedirect(route('kasir.dashboard'));
     }
 }

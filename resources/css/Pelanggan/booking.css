@@ -1054,3 +1054,663 @@
     margin: 0 auto;
     text-align: center;
 }
+
+/* =========================================================
+   MAJOR UPDATE UX & AKSESIBILITAS (WCAG AA + TASK MODE)
+   ========================================================= */
+
+/* 1. Header Ringkas (Task Mode: Daftar Layanan Naik ke Area Atas) */
+.booking-header-ringkas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 18px;
+    padding: 16px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(157, 23, 77, 0.05);
+}
+
+.booking-judul-ringkas {
+    margin: 0 0 2px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #831843;
+}
+
+.booking-sub-ringkas {
+    margin: 0;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.lencana-jam-buka {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fdf2f8;
+    border: 1.5px solid #f9a8d4;
+    color: #831843;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* 2. Navigasi Stepper Wizard 3 Langkah Bersih */
+.stepper-booking {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #ffffff;
+    border: 1.5px solid #fce7f3;
+    border-radius: 18px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(157, 23, 77, 0.04);
+}
+
+.stepper-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    background: #f9fafb;
+    color: #374151;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-height: 54px;
+}
+
+.stepper-item:hover {
+    background: #fdf2f8;
+    border-color: #fbcfe8;
+}
+
+.stepper-item.aktif {
+    background: #fdf2f8;
+    border-color: #db2777;
+    box-shadow: 0 4px 14px rgba(219, 39, 119, 0.12);
+}
+
+.stepper-item.selesai {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.stepper-nomor {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stepper-item.aktif .stepper-nomor {
+    background: #db2777;
+    color: #ffffff;
+}
+
+.stepper-item.selesai .stepper-nomor {
+    background: #15803d;
+    color: #ffffff;
+}
+
+.stepper-teks {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stepper-teks strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+.stepper-teks small {
+    font-size: 12.5px;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.stepper-garis {
+    width: 24px;
+    height: 2px;
+    background: #f9a8d4;
+    flex-shrink: 0;
+}
+
+.step-panel {
+    display: none;
+}
+
+.step-panel.aktif {
+    display: block;
+}
+
+.step-navigasi-bawah {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1.5px solid #fdf2f8;
+}
+
+.btn-step-kembali {
+    min-height: 44px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1.5px solid #d1d5db;
+    background: #ffffff;
+    color: #1f2937;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-step-kembali:hover {
+    background: #f3f4f6;
+}
+
+/* 3. Bar Filter Kategori Satu Baris Rapi (Tidak Terpotong / Tidak Sempit) */
+.filter-kategori-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.filter-kategori-bar .tab-kat-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1.5px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.filter-kategori-bar .tab-kat-item:hover {
+    border-color: #f472b6;
+    background: #fdf2f8;
+    color: #9d174d;
+}
+
+.filter-kategori-bar .tab-kat-item.aktif {
+    background: #db2777;
+    border-color: #db2777;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.22);
+}
+
+/* 4. Kartu Layanan Bebas Redundansi, Kontras Tinggi, & Target Sentuh >= 44x44px */
+.opsi-blok {
+    border: 2px solid #e5e7eb;
+    border-radius: 18px;
+}
+
+.opsi-blok.terpilih {
+    border: 2.5px solid #db2777;
+    background: #fffbfd;
+    box-shadow: 0 8px 22px rgba(219, 39, 119, 0.14);
+}
+
+.opsi-blok .opsi {
+    align-items: center;
+    padding: 18px 20px;
+}
+
+.opsi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.opsi-nama {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.opsi-meta-ringkas {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.opsi-harga {
+    font-size: 16px;
+    font-weight: 800;
+    color: #be185d;
+}
+
+.indikator-pilih {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 108px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    background: #fdf2f8;
+    color: #9d174d;
+    border: 2px solid #f472b6;
+    transition: all 0.15s ease;
+}
+
+.opsi-blok:hover .indikator-pilih {
+    background: #fce7f3;
+    border-color: #db2777;
+}
+
+.opsi-blok.terpilih .indikator-pilih {
+    background: #db2777;
+    color: #ffffff;
+    border-color: #db2777;
+    box-shadow: 0 4px 10px rgba(219, 39, 119, 0.25);
+}
+
+.petugas-label {
+    font-size: 13px;
+    color: #831843;
+}
+
+.select-petugas {
+    min-height: 44px;
+    font-size: 13.5px;
+}
+
+/* 5. Bar Chip Pilihan Aktif */
+.bar-chip-terpilih {
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.bar-chip-kepala {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.bar-chip-judul {
+    font-size: 13px;
+    font-weight: 700;
+    color: #831843;
+}
+
+.btn-reset-pilihan {
+    background: transparent;
+    border: none;
+    color: #9d174d;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px 6px;
+}
+
+.daftar-chip-terpilih {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip-pilihan-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1.5px solid #f472b6;
+    color: #831843;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-hapus-chip-layanan {
+    background: #fce7f3;
+    border: none;
+    color: #9d174d;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-hapus-chip-layanan:hover {
+    background: #db2777;
+    color: #ffffff;
+}
+
+/* 6. Panel Kanan: Empty State, Voucer Tanpa Scroll, & Kontras Tombol Disabled WCAG AA */
+.pilihan-kosong-live {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #f9fafb;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 16px;
+    padding: 22px 18px;
+    font-size: 13.5px;
+    color: #374151;
+    text-align: center;
+    line-height: 1.55;
+    margin-bottom: 14px;
+}
+
+.kosong-ikon {
+    font-size: 26px;
+}
+
+.pilihan-kosong-live strong {
+    font-size: 15px;
+    color: #111827;
+}
+
+.rincian-pilihan-live {
+    max-height: none;
+    overflow-y: visible;
+}
+
+.item-live-baris {
+    font-size: 13.5px;
+    padding: 12px 14px;
+}
+
+.item-live-sub {
+    font-size: 12.5px;
+    color: #4b5563;
+}
+
+.item-live-kanan {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-hapus-item-live {
+    background: #fce7f3;
+    border: none;
+    color: #9d174d;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-hapus-item-live:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.kepala-promo-sticky {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.kepala-promo-sticky .label-promo-kecil {
+    margin-bottom: 0;
+    font-size: 13.5px;
+}
+
+.btn-lihat-semua-promo {
+    background: transparent;
+    border: none;
+    color: #be185d;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 2px 4px;
+}
+
+.daftar-promo-booking {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+}
+
+.lencana-kode-promo {
+    font-size: 12px;
+    padding: 3px 9px;
+}
+
+.promo-potongan-teks {
+    font-size: 13px;
+}
+
+.promo-nama-item {
+    font-size: 13.5px;
+}
+
+.promo-syarat-item {
+    font-size: 12.5px;
+    color: #4b5563;
+}
+
+.btn-pilih-promo {
+    min-height: 38px;
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+}
+
+.summary-baris {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.estimasi-jadwal-teks {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.info-validasi {
+    font-size: 13.5px;
+    color: #92400e;
+}
+
+.btn-konfirmasi-modern {
+    min-height: 48px;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+/* Kontras Tinggi WCAG AA untuk Tombol Disabled (Bukan Putih di Atas Pink Pucat) */
+.btn-konfirmasi-modern:disabled,
+button.btn:disabled {
+    background: #e5e7eb !important;
+    color: #4b5563 !important;
+    border: 1.5px solid #d1d5db !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+}
+
+/* 7. Kotak Jam Aktif Besar & Panel Lipat Menit Spesifik */
+.kotak-jam-aktif-besar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #fdf2f8;
+    border: 2px solid #fbcfe8;
+    border-radius: 16px;
+    padding: 12px 16px;
+}
+
+.jam-aktif-utama {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.jam-aktif-ikon {
+    font-size: 22px;
+}
+
+.jam-aktif-utama strong {
+    display: block;
+    font-size: 17px;
+    color: #831843;
+}
+
+.jam-aktif-utama small {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.btn-toggle-menit-kustom {
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #f472b6;
+    background: #ffffff;
+    color: #9d174d;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-toggle-menit-kustom:hover {
+    background: #fce7f3;
+}
+
+.panel-menit-kustom {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: #f9fafb;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 14px;
+}
+
+/* 8. Sticky Bottom Bar Khusus Layar HP / Tablet */
+.bar-bawah-mobile {
+    display: none;
+}
+
+@media (max-width: 980px) {
+    .container {
+        margin-bottom: 110px;
+    }
+
+    .stepper-booking {
+        flex-wrap: wrap;
+    }
+
+    .stepper-garis {
+        display: none;
+    }
+
+    .bar-bawah-mobile {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        border-top: 2px solid #fbcfe8;
+        box-shadow: 0 -8px 24px rgba(157, 23, 77, 0.12);
+    }
+
+    .bar-bawah-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .bar-bawah-meta {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .bar-bawah-total {
+        font-size: 16px;
+        font-weight: 800;
+        color: #be185d;
+    }
+
+    .btn-bar-bawah-mobile {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        background: #db2777;
+        color: #ffffff;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13.5px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+    }
+}

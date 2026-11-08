@@ -12,17 +12,6 @@
     @vite(['resources/css/Publik/beranda.css'])
 </head>
 <body>
-    @if (! empty($perangkatStafTerdeteksi))
-        <div class="pb-pita-staf" role="region" aria-label="Pintasan Perangkat Staf">
-            <div class="pb-wadah pb-pita-staf-isi">
-                <span>💼 Perangkat Kerja Staf Terdeteksi</span>
-                <a href="{{ route('portal.staf') }}" class="pb-pita-staf-tombol">
-                    Langsung ke Login Staf / POS &rarr;
-                </a>
-            </div>
-        </div>
-    @endif
-
     <header class="pb-topbar">
         <div class="pb-wadah pb-topbar-isi">
             <a href="{{ route('beranda.publik') }}" class="pb-brand">🌸 Salon Rengganis</a>
@@ -32,7 +21,6 @@
                 <a href="#cara">Cara Booking</a>
             </nav>
             <div class="pb-akun">
-                <a href="{{ route('portal.staf') }}" class="pb-tautan-staf">🔑 Portal Staf</a>
                 <a href="{{ route('login') }}" class="pb-tautan-masuk">Masuk</a>
                 <a href="{{ route('register') }}" class="pb-tombol pb-tombol-kecil">Daftar</a>
             </div>
@@ -105,12 +93,7 @@
     </main>
 
     <footer class="pb-footer">
-        <div>Salon Rengganis &bull; Sistem Reservasi Online</div>
-        <div class="pb-footer-tautan">
-            <a href="{{ route('portal.staf') }}" class="pb-footer-staf">
-                🔑 Portal Karyawan (Kasir &bull; Manajer &bull; Petugas)
-            </a>
-        </div>
+        Salon Rengganis &bull; Sistem Reservasi Online
     </footer>
 <x-tombol-whatsapp />
 </body>
