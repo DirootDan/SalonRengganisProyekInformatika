@@ -73,7 +73,8 @@
     .topbar,
     .btn-utama,
     .btn-sekunder,
-    .footer-admin {
+    .footer-admin,
+    .footer-kasir {
         display: none !important;
     }
     .konten {
