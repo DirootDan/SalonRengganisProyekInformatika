@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Http\Controllers;
@@ -34,7 +35,8 @@ class PetugasController extends Controller
     {
         /** @var Karyawan $petugas */
         $petugas = Auth::guard('karyawan')->user();
-        $mode = $request->query('mode', 'semua'); // harian, mingguan, semua
+
+        $mode = $request->query('mode', 'semua');
         $tanggal = $request->query('tanggal', now()->toDateString());
 
         $query = DB::table('detail_reservasi')
@@ -58,29 +60,68 @@ class PetugasController extends Controller
             ->orderBy('reservasi.tgl_booking')
             ->orderBy('reservasi.jam_booking');
 
+        // Filter jadwal
         if ($mode === 'harian') {
             $query->whereDate('reservasi.tgl_booking', $tanggal);
         } elseif ($mode === 'mingguan') {
             $awalMinggu = now()->parse($tanggal)->startOfWeek()->toDateString();
             $akhirMinggu = now()->parse($tanggal)->endOfWeek()->toDateString();
-            $query->whereBetween('reservasi.tgl_booking', [$awalMinggu, $akhirMinggu]);
+
+            $query->whereBetween('reservasi.tgl_booking', [
+                $awalMinggu,
+                $akhirMinggu
+            ]);
         }
 
         $jadwal = $query->get();
+
+        // Ringkasan dashboard
+        $totalJadwal = $jadwal->count();
+
+        $layananSelesai = $jadwal
+            ->where('status_layanan', 'Selesai')
+            ->count();
+
+        $layananBelumSelesai = $totalJadwal - $layananSelesai;
+
+        // Jadwal layanan khusus hari ini
+        $jadwalHariIni = DB::table('detail_reservasi')
+            ->join(
+                'reservasi',
+                'reservasi.id_reservasi',
+                '=',
+                'detail_reservasi.id_reservasi'
+            )
+            ->where('detail_reservasi.id_karyawan', $petugas->id_karyawan)
+            ->whereDate('reservasi.tgl_booking', now()->toDateString())
+            ->count();
 
         $view = $peran === 'Stylist'
             ? 'Karyawan.Stylist.dashboard'
             : 'Karyawan.Therapist.dashboard';
 
-        return view($view, compact('petugas', 'jadwal', 'mode', 'tanggal', 'peran'));
+        return view($view, compact(
+            'petugas',
+            'jadwal',
+            'mode',
+            'tanggal',
+            'peran',
+            'totalJadwal',
+            'layananSelesai',
+            'layananBelumSelesai',
+            'jadwalHariIni'
+        ));
     }
 
-    public function tandaiLayananSelesai(Request $request, int $idReservasi, int $idLayanan)
-    {
+    public function tandaiLayananSelesai(
+        Request $request,
+        int $idReservasi,
+        int $idLayanan
+    ) {
         /** @var Karyawan $petugas */
         $petugas = Auth::guard('karyawan')->user();
 
-        // Anti-Bug #5 (IDOR): pastikan detail layanan ini benar-benar milik petugas yang sedang login
+        // Pastikan layanan benar-benar milik petugas yang login
         $baris = DB::table('detail_reservasi')
             ->where('id_reservasi', $idReservasi)
             ->where('id_layanan', $idLayanan)
@@ -88,12 +129,23 @@ class PetugasController extends Controller
             ->first();
 
         if (! $baris) {
-            abort(403, 'Anda tidak memiliki wewenang untuk mengubah jadwal petugas lain.');
+            abort(
+                403,
+                'Anda tidak memiliki wewenang untuk mengubah jadwal petugas lain.'
+            );
         }
 
-        // Audit Fix #2: Pastikan reservasi induk berstatus Diterima atau Selesai sebelum layanan ditandai Selesai
+        // Pastikan reservasi sudah diterima atau selesai
         $reservasi = Reservasi::findOrFail($idReservasi);
-        if (! in_array($reservasi->statusTernormalisasi(), [Reservasi::STATUS_DITERIMA, Reservasi::STATUS_SELESAI], true)) {
+
+        if (! in_array(
+            $reservasi->statusTernormalisasi(),
+            [
+                Reservasi::STATUS_DITERIMA,
+                Reservasi::STATUS_SELESAI
+            ],
+            true
+        )) {
             return back()->withErrors([
                 'status' => "Layanan pada reservasi #{$idReservasi} tidak dapat ditandai selesai karena status reservasi saat ini adalah '{$reservasi->statusTernormalisasi()}'.",
             ]);
@@ -103,27 +155,63 @@ class PetugasController extends Controller
             ->where('id_reservasi', $idReservasi)
             ->where('id_layanan', $idLayanan)
             ->where('id_karyawan', $petugas->id_karyawan)
-            ->update(['status_layanan' => 'Selesai']);
+            ->update([
+                'status_layanan' => 'Selesai'
+            ]);
 
-        return back()->with('status', 'Layanan berhasil ditandai Selesai.');
+        return back()->with(
+            'status',
+            'Layanan berhasil ditandai Selesai.'
+        );
     }
 
     private function tampilKomisi(Request $request, string $peran)
     {
         /** @var Karyawan $petugas */
         $petugas = Auth::guard('karyawan')->user();
-        $tglMulai = $request->query('mulai', now()->startOfMonth()->toDateString());
-        $tglSelesai = $request->query('selesai', now()->endOfMonth()->toDateString());
 
-        // Hanya hitung komisi dari reservasi yang sudah Selesai dan memiliki Transaksi lunas
+        $tglMulai = $request->query(
+            'mulai',
+            now()->startOfMonth()->toDateString()
+        );
+
+        $tglSelesai = $request->query(
+            'selesai',
+            now()->endOfMonth()->toDateString()
+        );
+
+        // Mengambil komisi dari reservasi yang sudah selesai
         $daftarKomisi = DB::table('detail_reservasi')
-            ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
-            ->join('transaksi', 'transaksi.id_reservasi', '=', 'reservasi.id_reservasi')
-            ->join('layanan', 'layanan.id_layanan', '=', 'detail_reservasi.id_layanan')
-            ->leftJoin('pelanggan', 'pelanggan.id_pelanggan', '=', 'reservasi.id_pelanggan')
+            ->join(
+                'reservasi',
+                'reservasi.id_reservasi',
+                '=',
+                'detail_reservasi.id_reservasi'
+            )
+            ->join(
+                'transaksi',
+                'transaksi.id_reservasi',
+                '=',
+                'reservasi.id_reservasi'
+            )
+            ->join(
+                'layanan',
+                'layanan.id_layanan',
+                '=',
+                'detail_reservasi.id_layanan'
+            )
+            ->leftJoin(
+                'pelanggan',
+                'pelanggan.id_pelanggan',
+                '=',
+                'reservasi.id_pelanggan'
+            )
             ->where('detail_reservasi.id_karyawan', $petugas->id_karyawan)
             ->where('reservasi.status', Reservasi::STATUS_SELESAI)
-            ->whereBetween('reservasi.tgl_booking', [$tglMulai, $tglSelesai])
+            ->whereBetween('reservasi.tgl_booking', [
+                $tglMulai,
+                $tglSelesai
+            ])
             ->select(
                 'reservasi.id_reservasi',
                 'reservasi.tgl_booking',
@@ -143,6 +231,14 @@ class PetugasController extends Controller
             ? 'Karyawan.Stylist.komisi'
             : 'Karyawan.Therapist.komisi';
 
-        return view($view, compact('petugas', 'daftarKomisi', 'totalKomisi', 'totalOmzet', 'tglMulai', 'tglSelesai', 'peran'));
+        return view($view, compact(
+            'petugas',
+            'daftarKomisi',
+            'totalKomisi',
+            'totalOmzet',
+            'tglMulai',
+            'tglSelesai',
+            'peran'
+        ));
     }
 }
