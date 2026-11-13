@@ -53,7 +53,7 @@ class PelangganController extends Controller
         return view('Pelanggan.layanan', compact('layanan'));
     }
 
-    public function booking()
+    public function booking(Request $request)
     {
         /** @var Pelanggan $pelanggan */
         $pelanggan = Auth::guard('pelanggan')->user();
@@ -71,6 +71,13 @@ class PelangganController extends Controller
             ->get(['id_karyawan', 'nama_staff', 'role_jabatan'])
             ->groupBy('role_jabatan');
 
+        $jmlStylistLayanan = $layanan->where('jabatan_petugas', Karyawan::JABATAN_STYLIST)->count();
+        $jmlTherapistLayanan = $layanan->where('jabatan_petugas', Karyawan::JABATAN_THERAPIST)->count();
+        $jamTerpilihAwal = substr((string) old('jam_booking', '10:00'), 0, 5);
+        $tglTerpilihAwal = (string) old('tgl_booking', now()->toDateString());
+        $idLayananDariQuery = $request->integer('layanan');
+        $daftarLayananAwal = array_map('intval', (array) old('layanan', $idLayananDariQuery > 0 ? [$idLayananDariQuery] : []));
+
         return view('Pelanggan.booking', compact(
             'layanan',
             'produk',
@@ -78,7 +85,12 @@ class PelangganController extends Controller
             'petugas',
             'jamOperasional',
             'kebijakan',
-            'pelanggan'
+            'pelanggan',
+            'jmlStylistLayanan',
+            'jmlTherapistLayanan',
+            'jamTerpilihAwal',
+            'tglTerpilihAwal',
+            'daftarLayananAwal'
         ));
     }
 
@@ -102,38 +114,9 @@ class PelangganController extends Controller
             ? Layanan::whereIn('id_layanan', $idLayanan)->orderBy('id_layanan')->get()
             : collect();
 
-        $totalDurasi = $layananDipilih->sum(fn (Layanan $l) => (int) ($l->durasi_menit ?: Layanan::DEFAULT_DURASI_MENIT));
-        $totalBlokir = $layananDipilih->isEmpty()
-            ? (Layanan::DEFAULT_DURASI_MENIT + Layanan::DEFAULT_JEDA_MENIT)
-            : $layananDipilih->sum(fn (Layanan $l) => $l->totalBlokirMenit());
-
-        $jamSelesaiBlokir = Carbon::createFromFormat('H:i', substr($jam, 0, 5))
-            ->addMinutes($totalBlokir)
-            ->format('H:i');
-
-        $idSibuk = $this->jadwalService->cariIdPetugasSibukPadaRentang($tgl, $jam, $jamSelesaiBlokir);
-
-        $petugas = Karyawan::whereIn('role_jabatan', Layanan::JABATAN_PETUGAS)
-            ->where('aktif', true)
-            ->whereNotIn('id_karyawan', $idSibuk)
-            ->orderBy('nama_staff')
-            ->get(['id_karyawan', 'nama_staff', 'role_jabatan'])
-            ->groupBy('role_jabatan');
-
-        $statusJam = $this->jadwalService->statusSlotJamOperasional($tgl, $layananDipilih);
-
-        return response()->json([
-            'tanggal' => $tgl,
-            'jam' => $jam,
-            'jam_selesai_blokir' => $jamSelesaiBlokir,
-            'total_durasi_menit' => $totalDurasi ?: Layanan::DEFAULT_DURASI_MENIT,
-            'id_sibuk' => $idSibuk,
-            'status_jam' => $statusJam,
-            'petugas' => [
-                'Stylist' => $petugas->get('Stylist', collect())->values(),
-                'Therapist' => $petugas->get('Therapist', collect())->values(),
-            ],
-        ]);
+        return response()->json(
+            $this->jadwalService->petugasTersediaUntukPilihan($tgl, $jam, $layananDipilih)
+        );
     }
 
     public function simpanBooking(SimpanBookingRequest $request)
@@ -172,50 +155,54 @@ class PelangganController extends Controller
         /** @var Pelanggan $pelanggan */
         $pelanggan = Auth::guard('pelanggan')->user();
 
-        $reservasi = Reservasi::findOrFail($idReservasi);
-
-        if ((int) $reservasi->id_pelanggan !== (int) $pelanggan->id_pelanggan) {
-            abort(403, 'Anda tidak berhak membatalkan reservasi milik pelanggan lain.');
-        }
-
-        if (! $reservasi->bolehTransisiKe(Reservasi::STATUS_DIBATALKAN)) {
-            return back()->withErrors([
-                'batal' => "Reservasi berstatus '{$reservasi->statusTernormalisasi()}' tidak dapat dibatalkan.",
-            ]);
-        }
-
-        $kebijakan = PengaturanKebijakan::aktif();
-        $waktuJadwal = Carbon::parse($reservasi->tgl_booking->toDateString().' '.($reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON));
-        $batasGratis = $waktuJadwal->copy()->subHours($kebijakan->batas_batal_jam);
-
-        if ($reservasi->statusTernormalisasi() === Reservasi::STATUS_DITERIMA && now()->gt($batasGratis)) {
-            return back()->withErrors([
-                'batal' => "Pembatalan gratis hanya dapat dilakukan minimal {$kebijakan->batas_batal_jam} jam sebelum jadwal kedatangan ({$waktuJadwal->format('d/m/Y H:i')}). Silakan hubungi kasir salon.",
-            ]);
-        }
-
         $alasanInput = trim((string) $request->input('alasan_batal', ''));
         $keteranganBatal = $alasanInput !== ''
             ? "Dibatalkan oleh pelanggan: {$alasanInput}"
             : 'Dibatalkan oleh pelanggan sebelum batas waktu.';
 
-        DB::transaction(function () use ($reservasi, $pelanggan, $keteranganBatal) {
-            $reservasi->ubahStatus(Reservasi::STATUS_DIBATALKAN, [
-                'dibatalkan_oleh' => Reservasi::DIBATALKAN_OLEH_PELANGGAN,
-                'alasan_penolakan' => $keteranganBatal,
-            ]);
+        try {
+            DB::transaction(function () use ($idReservasi, $pelanggan, $keteranganBatal): void {
+                $reservasi = Reservasi::where('id_reservasi', $idReservasi)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-            NotifikasiPelanggan::kirim(
-                $pelanggan->id_pelanggan,
-                "Reservasi #{$reservasi->id_reservasi} Berhasil Dibatalkan",
-                "Permintaan pembatalan reservasi Anda untuk tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$reservasi->jam_booking} WIB telah diproses tanpa pinalti pelanggaran.",
-                'info',
-                $reservasi->id_reservasi
-            );
-        });
+                if ((int) $reservasi->id_pelanggan !== (int) $pelanggan->id_pelanggan) {
+                    abort(403, 'Anda tidak berhak membatalkan reservasi milik pelanggan lain.');
+                }
+
+                if (! $reservasi->bolehTransisiKe(Reservasi::STATUS_DIBATALKAN)) {
+                    throw new DomainException(
+                        "Reservasi berstatus '{$reservasi->statusTernormalisasi()}' tidak dapat dibatalkan."
+                    );
+                }
+
+                $kebijakan = PengaturanKebijakan::aktif();
+                if ($reservasi->lewatBatasBatalPelanggan($kebijakan->batas_batal_jam)) {
+                    $waktuJadwal = $reservasi->waktuJadwal();
+                    throw new DomainException(
+                        "Pembatalan gratis hanya dapat dilakukan minimal {$kebijakan->batas_batal_jam} jam sebelum jadwal kedatangan ({$waktuJadwal->format('d/m/Y H:i')}). Silakan hubungi kasir salon."
+                    );
+                }
+
+                $reservasi->ubahStatus(Reservasi::STATUS_DIBATALKAN, [
+                    'dibatalkan_oleh' => Reservasi::DIBATALKAN_OLEH_PELANGGAN,
+                    'alasan_penolakan' => $keteranganBatal,
+                ]);
+
+                NotifikasiPelanggan::kirim(
+                    $pelanggan->id_pelanggan,
+                    "Reservasi #{$reservasi->id_reservasi} Berhasil Dibatalkan",
+                    "Permintaan pembatalan reservasi Anda untuk tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$reservasi->jam_booking} WIB telah diproses tanpa pinalti pelanggaran.",
+                    'info',
+                    $reservasi->id_reservasi
+                );
+            });
+        } catch (DomainException $e) {
+            return back()->withErrors(['batal' => $e->getMessage()]);
+        }
 
         return redirect()->route('pelanggan.riwayat')
-            ->with('status', "Reservasi #{$reservasi->id_reservasi} berhasil dibatalkan tanpa pinalti pelanggaran.");
+            ->with('status', "Reservasi #{$idReservasi} berhasil dibatalkan tanpa pinalti pelanggaran.");
     }
 
     public function riwayat()
@@ -244,7 +231,23 @@ class PelangganController extends Controller
 
         $kebijakan = PengaturanKebijakan::aktif();
 
-        return view('Pelanggan.riwayat', compact('reservasi', 'petugas', 'notifikasi', 'kebijakan'));
+        $jmlNotifBelumDibaca = $notifikasi->where('dibaca', false)->count();
+        $jmlMenunggu = $reservasi->filter(fn (Reservasi $r) => $r->statusTernormalisasi() === Reservasi::STATUS_MENUNGGU)->count();
+        $jmlDiterima = $reservasi->filter(fn (Reservasi $r) => $r->statusTernormalisasi() === Reservasi::STATUS_DITERIMA)->count();
+        $jmlSelesai = $reservasi->filter(fn (Reservasi $r) => $r->statusTernormalisasi() === Reservasi::STATUS_SELESAI)->count();
+        $jmlBatal = $reservasi->filter(fn (Reservasi $r) => $r->grupFilterRiwayat() === 'BatalGroup')->count();
+
+        return view('Pelanggan.riwayat', compact(
+            'reservasi',
+            'petugas',
+            'notifikasi',
+            'kebijakan',
+            'jmlNotifBelumDibaca',
+            'jmlMenunggu',
+            'jmlDiterima',
+            'jmlSelesai',
+            'jmlBatal'
+        ));
     }
 
     public function bacaNotifikasi()

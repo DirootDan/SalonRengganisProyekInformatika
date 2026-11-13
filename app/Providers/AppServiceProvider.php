@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\Pelanggan;
+use App\Models\NotifikasiPelanggan;
+use App\Models\Reservasi;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +23,26 @@ class AppServiceProvider extends ServiceProvider
             return route('password.reset', [
                 'token' => $token,
                 'email' => $user->getEmailForPasswordReset(),
+            ]);
+        });
+
+        View::composer('Karyawan.Kasir.layout', function ($view): void {
+            $view->with([
+                'notifMenunggu' => Reservasi::menungguKonfirmasi()->count(),
+                'notifAntrean' => Reservasi::siapBayarKasir()->count(),
+            ]);
+        });
+
+        View::composer(['Pelanggan.layout', 'pelanggan.layout'], function ($view): void {
+            $pelangganAktif = Auth::guard('pelanggan')->user();
+            $jmlNotifBelumDibaca = $pelangganAktif
+                ? NotifikasiPelanggan::where('id_pelanggan', $pelangganAktif->id_pelanggan)->where('dibaca', false)->count()
+                : 0;
+
+            $view->with([
+                'pelangganAktif' => $pelangganAktif,
+                'jmlNotifBelumDibaca' => $jmlNotifBelumDibaca,
+                'sedangDiProfil' => request()->routeIs('pelanggan.profil*'),
             ]);
         });
     }

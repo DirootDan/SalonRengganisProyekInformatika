@@ -7,15 +7,6 @@
 @endpush
 
 @section('isi')
-    @php
-        $jmlStylistLayanan   = $layanan->where('jabatan_petugas', 'Stylist')->count();
-        $jmlTherapistLayanan = $layanan->where('jabatan_petugas', 'Therapist')->count();
-        $jamTerpilihAwal     = substr((string) old('jam_booking', '10:00'), 0, 5);
-        $tglTerpilihAwal     = old('tgl_booking', now()->toDateString());
-        $idLayananDariQuery  = request()->integer('layanan');
-        $daftarLayananAwal   = array_map('intval', (array) old('layanan', $idLayananDariQuery > 0 ? [$idLayananDariQuery] : []));
-    @endphp
-
     <!-- Header Ringkas (Task Mode: Fokus Langsung ke Pemesanan) -->
     <div class="booking-header-ringkas">
         <div>

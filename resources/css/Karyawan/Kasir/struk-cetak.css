@@ -33,6 +33,7 @@ body.struk-cetak.kertas-80mm { --lebar-cetak: 80mm; }
 
 .struk-kepala-teks { text-align: left; }
 .struk-kepala-teks.pusat { text-align: center; }
+.struk-logo-cetak { font-size: 36px; line-height: 1; }
 
 .struk-nama {
     margin: 0;

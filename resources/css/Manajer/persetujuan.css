@@ -314,8 +314,9 @@
     color: #6b7280;
 }
 
+.tabel-data td.sel-kosong,
 .sel-kosong {
     text-align: center;
-    color: #6b7280;
-    padding: 24px !important;
+    color: var(--warna-teks-redup);
+    padding: 24px;
 }

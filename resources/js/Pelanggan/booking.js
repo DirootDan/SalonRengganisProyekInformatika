@@ -627,8 +627,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const tglAktif      = inputTanggal?.value || '';
         const jamMulai      = (inputJam?.value || '10:00').slice(0, 5);
         const jamSelesai    = tambahMenitKeJam(jamMulai, totalDurasi || 60);
+        const [jamM, mntM]  = jamMulai.split(':').map(n => parseInt(n || '0', 10));
+        const totalMenitMulai = (jamM * 60) + mntM;
         const diluarJamBuka = jamMulai < '09:00' || jamMulai > '20:30';
-        const lewatJamTutup = totalDurasi > 0 && jamSelesai > '21:00';
+        const lewatJamTutup = totalDurasi > 0 && (totalMenitMulai + totalDurasi) > (21 * 60);
 
         if (teksJamBesarEl) {
             teksJamBesarEl.textContent = `${jamMulai} WIB`;
@@ -737,25 +739,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!res.ok) return;
 
-            const data        = await res.json();
-            const grupPetugas = data.petugas || {};
-            const statusJam   = data.status_jam || {};
+            const data              = await res.json();
+            const grupPetugas       = data.petugas || {};
+            const petugasPerLayanan = data.petugas_per_layanan || {};
+            const statusJam         = data.status_jam || {};
+            const lewatTutupServer  = Boolean(data.melewati_jam_tutup);
 
             chipJamList.forEach(chip => {
                 const jamOpt   = chip.dataset.jam || '';
                 const tersedia = statusJam[jamOpt] !== false;
                 const statusEl = chip.querySelector('.chip-jam-status');
 
+                chip.disabled = !tersedia;
+                chip.setAttribute('aria-disabled', tersedia ? 'false' : 'true');
                 chip.classList.toggle('penuh', !tersedia);
                 chip.classList.toggle('aktif', jamOpt === jam);
                 if (statusEl) {
-                    statusEl.textContent = tersedia ? 'Tersedia' : 'Penuh';
+                    statusEl.textContent = tersedia ? 'Tersedia' : 'Penuh / Tutup';
                 }
             });
 
             document.querySelectorAll('.select-petugas').forEach(select => {
                 const jabatan      = select.dataset.jabatan || 'Stylist';
-                const daftar       = grupPetugas[jabatan] || [];
+                const idLayanan    = select.closest('.opsi-blok')?.dataset.idLayanan || '';
+                const daftar       = (idLayanan && Array.isArray(petugasPerLayanan[idLayanan]))
+                    ? petugasPerLayanan[idLayanan]
+                    : (grupPetugas[jabatan] || []);
                 const nilaiSebelum = select.value || select.dataset.pilihanLama || '';
 
                 select.dataset.tersedia = String(daftar.length);
@@ -764,7 +773,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (daftar.length === 0) {
                     const optKosong = document.createElement('option');
                     optKosong.value = '';
-                    optKosong.textContent = `-- Semua ${jabatan} penuh pada pukul ${jam} --`;
+                    optKosong.textContent = lewatTutupServer
+                        ? `-- Jadwal melewati jam tutup salon (21:00 WIB) --`
+                        : `-- Semua ${jabatan} penuh pada pukul ${jam} --`;
                     select.appendChild(optKosong);
                 } else {
                     const optOtomatis = document.createElement('option');
@@ -785,9 +796,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (statusTersediaEl) {
-                const jmlStylist   = (grupPetugas.Stylist || []).length;
-                const jmlTherapist = (grupPetugas.Therapist || []).length;
-                statusTersediaEl.textContent = `Pukul ${jam} WIB: ${jmlStylist} Stylist & ${jmlTherapist} Therapist tersedia`;
+                if (lewatTutupServer && data.pesan_jam_tutup) {
+                    statusTersediaEl.textContent = data.pesan_jam_tutup;
+                } else {
+                    const jmlStylist   = (grupPetugas.Stylist || []).length;
+                    const jmlTherapist = (grupPetugas.Therapist || []).length;
+                    statusTersediaEl.textContent = `Pukul ${jam} WIB: ${jmlStylist} Stylist & ${jmlTherapist} Therapist tersedia`;
+                }
             }
 
             updateRingkasan();

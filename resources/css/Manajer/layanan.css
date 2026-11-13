@@ -15,7 +15,8 @@
     font-size: 16px;
 }
 
+.tabel-data td.kolom-harga,
 .kolom-harga {
     font-weight: 700;
-    color: #db2777 !important;
+    color: var(--warna-brand);
 }

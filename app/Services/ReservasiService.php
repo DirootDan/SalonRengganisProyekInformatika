@@ -152,6 +152,79 @@ class ReservasiService
     }
 
     /**
+     * Mengganti petugas pada layanan reservasi berstatus Diterima di antrean sebelum layanan diselesaikan.
+     */
+    public function gantiPetugasAntrean(int $idReservasi, int $idLayanan, int $idKaryawanBaru): void
+    {
+        DB::transaction(function () use ($idReservasi, $idLayanan, $idKaryawanBaru): void {
+            $reservasi = Reservasi::with('layanan')
+                ->where('id_reservasi', $idReservasi)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $status = $reservasi->statusTernormalisasi();
+            if ($status !== Reservasi::STATUS_DITERIMA) {
+                throw new DomainException(
+                    "Petugas pada reservasi #{$idReservasi} hanya dapat diganti saat berstatus 'Diterima' (status saat ini: '{$status}')."
+                );
+            }
+
+            /** @var Layanan|null $layanan */
+            $layanan = $reservasi->layanan->firstWhere('id_layanan', $idLayanan);
+            if (! $layanan) {
+                throw new DomainException("Layanan tersebut tidak terdaftar pada reservasi #{$idReservasi}.");
+            }
+
+            if (Reservasi::normalisasiStatus((string) ($layanan->pivot->status_layanan ?? '')) === Reservasi::STATUS_SELESAI) {
+                throw new DomainException("Layanan '{$layanan->nama_layanan}' sudah ditandai Selesai dan tidak perlu dialihkan.");
+            }
+
+            $stafBaru = Karyawan::where('id_karyawan', $idKaryawanBaru)->lockForUpdate()->first();
+            if (! $stafBaru || ! $stafBaru->aktif) {
+                throw new DomainException('Petugas pengganti yang dipilih tidak ditemukan atau sedang tidak aktif.');
+            }
+
+            if ($stafBaru->role_jabatan !== $layanan->jabatan_petugas) {
+                throw new DomainException(
+                    "Petugas '{$stafBaru->nama_staff}' ({$stafBaru->role_jabatan}) tidak sesuai untuk layanan '{$layanan->nama_layanan}' ({$layanan->jabatan_petugas})."
+                );
+            }
+
+            [$jamMulai, $jamBlokir] = $this->tentukanRentangBlokirPivot($reservasi, $layanan);
+            $idSibuk = $this->jadwalService->cariIdPetugasSibukPadaRentang(
+                $reservasi->tgl_booking->toDateString(),
+                $jamMulai,
+                $jamBlokir,
+                (int) $reservasi->id_reservasi,
+                true
+            );
+
+            if (in_array((int) $stafBaru->id_karyawan, $idSibuk, true)) {
+                throw new DomainException(
+                    "Petugas '{$stafBaru->nama_staff}' sedang menangani reservasi aktif lain pada pukul {$jamMulai} - {$jamBlokir} WIB."
+                );
+            }
+
+            $hargaSnap = (float) ($layanan->pivot->harga_saat_ini > 0 ? $layanan->pivot->harga_saat_ini : $layanan->harga_layanan);
+            $persenKomisi = (float) ($stafBaru->persen_komisi ?? Karyawan::DEFAULT_PERSEN_KOMISI);
+            $nominalKomisi = round($hargaSnap * ($persenKomisi / 100), 2);
+
+            DB::table('detail_reservasi')
+                ->where('id_reservasi', $reservasi->id_reservasi)
+                ->where('id_layanan', $idLayanan)
+                ->update([
+                    'id_karyawan' => $stafBaru->id_karyawan,
+                    'persen_komisi' => $persenKomisi,
+                    'nominal_komisi' => $nominalKomisi,
+                ]);
+
+            if (! $reservasi->id_karyawan || (int) $reservasi->id_karyawan === (int) $layanan->pivot->id_karyawan) {
+                $reservasi->update(['id_karyawan' => $stafBaru->id_karyawan]);
+            }
+        });
+    }
+
+    /**
      * Memetakan ID karyawan menjadi nama staf (termasuk arsip soft-deleted) untuk kumpulan reservasi.
      *
      * @param  Collection<int, Reservasi>  $daftarReservasi

@@ -10,14 +10,6 @@
     @stack('styles')
 </head>
 <body>
-    @php
-        $pelangganAktif = auth('pelanggan')->user();
-        $jmlNotifBelumDibaca = $pelangganAktif
-            ? \App\Models\NotifikasiPelanggan::where('id_pelanggan', $pelangganAktif->id_pelanggan)->where('dibaca', false)->count()
-            : 0;
-        $sedangDiProfil = request()->routeIs('pelanggan.profil*');
-    @endphp
-
     <header class="topbar">
         <div class="topbar-inner">
             <a href="{{ route('pelanggan.beranda') }}" class="brand">🌸 Salon Rengganis</a>

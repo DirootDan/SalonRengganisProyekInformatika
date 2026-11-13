@@ -31,7 +31,7 @@
         <div class="ringkasan-card belum">
             <h3>Layanan Belum Selesai</h3>
             <p class="angka">{{ $layananBelumSelesai }}</p>
-            <p class="keterangan">Layanan yang masih dikerjakan</p>
+            <p class="keterangan">Diterima ({{ $layananSiapKerja }}) &bull; Menunggu Kasir ({{ $layananMenungguKasir }})</p>
         </div>
         <div class="ringkasan-card selesai">
             <h3>Layanan Selesai</h3>
@@ -41,7 +41,7 @@
         <div class="ringkasan-card hari-ini">
             <h3>Layanan Hari Ini</h3>
             <p class="angka">{{ $jadwalHariIni }}</p>
-            <p class="keterangan">Jadwal khusus hari ini</p>
+            <p class="keterangan">Total jadwal hari ini (semua filter)</p>
         </div>
     </div>
 

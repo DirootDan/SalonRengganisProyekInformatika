@@ -1,8 +1,3 @@
-@php
-    $ukuran = $struk->ukuranTernormalisasi();
-    $nomorNota = str_pad($transaksi->id_reservasi, 4, '0', STR_PAD_LEFT);
-    $rupiah = fn ($angka) => 'Rp '.number_format((float) $angka, 0, ',', '.');
-@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,7 +12,7 @@
 
     <div class="struk-kepala">
         @if ($struk->tampil_logo)
-            <div aria-hidden="true" style="font-size: 36px;">🌸</div>
+            <div aria-hidden="true" class="struk-logo-cetak">🌸</div>
         @endif
         <div class="struk-kepala-teks {{ $struk->tampil_logo ? '' : 'pusat' }}">
             <h3 class="struk-nama">{{ $struk->nama_salon }}</h3>
@@ -52,7 +47,7 @@
                         {{ $l->jabatan_petugas }}: {{ $petugasMap[$l->pivot->id_karyawan] }}
                     @endif
                 </span>
-                <span>{{ $rupiah($l->pivot->harga_saat_ini) }}</span>
+                <span>Rp {{ number_format((float) $l->pivot->harga_saat_ini, 0, ',', '.') }}</span>
             </div>
         </div>
     @endforeach
@@ -61,8 +56,8 @@
         <div class="butir">
             <div>{{ $p->nama_produk }}</div>
             <div class="baris">
-                <span class="petugas">{{ $p->pivot->jumlah }} x {{ $rupiah($p->pivot->harga_saat_ini) }}</span>
-                <span>{{ $rupiah($p->pivot->harga_saat_ini * (int) $p->pivot->jumlah) }}</span>
+                <span class="petugas">{{ $p->pivot->jumlah }} x Rp {{ number_format((float) $p->pivot->harga_saat_ini, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format((float) $p->pivot->harga_saat_ini * (int) $p->pivot->jumlah, 0, ',', '.') }}</span>
             </div>
         </div>
     @endforeach
@@ -70,11 +65,11 @@
     <div class="garis"></div>
 
     @if ($transaksi->kode_promo)
-        <div class="baris"><span>Promo: {{ $transaksi->kode_promo }}</span><span>-{{ $rupiah($transaksi->diskon) }}</span></div>
+        <div class="baris"><span>Promo: {{ $transaksi->kode_promo }}</span><span>-Rp {{ number_format((float) $transaksi->diskon, 0, ',', '.') }}</span></div>
     @endif
-    <div class="baris total-besar"><span>TOTAL</span><span>{{ $rupiah($transaksi->total_bayar) }}</span></div>
-    <div class="baris"><span>Bayar ({{ $transaksi->metode_bayar }})</span><span>{{ $rupiah($transaksi->nominal_uang) }}</span></div>
-    <div class="baris"><span>Kembalian</span><span>{{ $rupiah($transaksi->kembalian) }}</span></div>
+    <div class="baris total-besar"><span>TOTAL</span><span>Rp {{ number_format((float) $transaksi->total_bayar, 0, ',', '.') }}</span></div>
+    <div class="baris"><span>Bayar ({{ $transaksi->metode_bayar }})</span><span>Rp {{ number_format((float) $transaksi->nominal_uang, 0, ',', '.') }}</span></div>
+    <div class="baris"><span>Kembalian</span><span>Rp {{ number_format((float) $transaksi->kembalian, 0, ',', '.') }}</span></div>
 
     <div class="garis"></div>
 

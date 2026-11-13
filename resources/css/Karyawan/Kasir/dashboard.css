@@ -515,6 +515,47 @@
     color: #991b1b;
 }
 
+.tanda-wajib {
+    color: var(--warna-brand, #db2777);
+}
+
+.banner-hold-ditolak {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: var(--warna-bahaya-latar, #fee2e2);
+    border: 1.5px solid var(--warna-bahaya, #ef4444);
+    color: var(--warna-bahaya-gelap, #991b1b);
+    font-size: 12.5px;
+}
+
+.banner-hold-ditolak strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.btn-banner-hold {
+    flex-shrink: 0;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 999px;
+    background: var(--warna-bahaya-teks, #b91c1c);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-banner-hold:hover {
+    background: var(--warna-bahaya-gelap, #991b1b);
+}
+
 .tautan-hold-pos.ada-disetujui {
     background: #dcfce7;
     border-color: #22c55e;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -96,6 +97,60 @@ class Reservasi extends Model
         }
 
         return $this->pelanggan?->nama_cust ?? 'Pelanggan Umum';
+    }
+
+    public function jamMulaiTampil(): string
+    {
+        return substr((string) ($this->jam_booking ?: self::JAM_BUKA_SALON), 0, 5);
+    }
+
+    public function waktuJadwal(): Carbon
+    {
+        return Carbon::parse($this->tgl_booking->toDateString().' '.$this->jamMulaiTampil());
+    }
+
+    public function batasGratisBatal(int $jamBatas): Carbon
+    {
+        return $this->waktuJadwal()->subHours($jamBatas);
+    }
+
+    public function lewatBatasBatalPelanggan(int $jamBatas): bool
+    {
+        return $this->statusTernormalisasi() === self::STATUS_DITERIMA
+            && now()->gt($this->batasGratisBatal($jamBatas));
+    }
+
+    public function bolehDibatalkanPelanggan(int $jamBatas): bool
+    {
+        $status = $this->statusTernormalisasi();
+
+        return $status === self::STATUS_MENUNGGU
+            || ($status === self::STATUS_DITERIMA && ! $this->lewatBatasBatalPelanggan($jamBatas));
+    }
+
+    public function kelasStatusBadge(): string
+    {
+        return match ($this->statusTernormalisasi()) {
+            self::STATUS_MENUNGGU => 'status-pending',
+            self::STATUS_DITERIMA => 'status-diterima',
+            self::STATUS_SELESAI => 'status-selesai',
+            self::STATUS_DITOLAK, self::STATUS_DIBATALKAN, self::STATUS_HANGUS => 'status-batal',
+            default => 'status-pending',
+        };
+    }
+
+    public function grupFilterRiwayat(): string
+    {
+        $status = $this->statusTernormalisasi();
+
+        return in_array($status, [self::STATUS_DITOLAK, self::STATUS_DIBATALKAN, self::STATUS_HANGUS], true)
+            ? 'BatalGroup'
+            : $status;
+    }
+
+    public function apakahJadwalTerlewat(): bool
+    {
+        return $this->tgl_booking->isBefore(now()->startOfDay());
     }
 
     protected function casts(): array

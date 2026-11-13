@@ -10,9 +10,10 @@
     letter-spacing: 0.6px;
 }
 
+.tabel-data td.nilai-potongan,
 .nilai-potongan {
     font-weight: 700;
-    color: #15803d !important;
+    color: var(--warna-sukses-teks);
 }
 
 .form-dua-kolom {

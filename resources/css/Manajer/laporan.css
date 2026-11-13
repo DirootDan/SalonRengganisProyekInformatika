@@ -46,9 +46,10 @@
     color: #15803d;
 }
 
+.tabel-data td.nominal-tebal,
 .nominal-tebal {
     font-weight: 700;
-    color: #db2777 !important;
+    color: var(--warna-brand);
 }
 
 .panel-filter-laporan {

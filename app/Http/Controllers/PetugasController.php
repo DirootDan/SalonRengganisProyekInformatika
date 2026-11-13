@@ -63,35 +63,47 @@ class PetugasController extends Controller
     {
         $petugas = $this->petugasLogin();
 
-        // Anti-IDOR: layanan harus milik petugas yang sedang login
-        $baris = DB::table('detail_reservasi')
-            ->where('id_reservasi', $idReservasi)
-            ->where('id_layanan', $idLayanan)
-            ->where('id_karyawan', $petugas->id_karyawan)
-            ->first();
+        $hasil = DB::transaction(function () use ($idReservasi, $idLayanan, $petugas): array {
+            $reservasi = Reservasi::where('id_reservasi', $idReservasi)->lockForUpdate()->firstOrFail();
 
-        if (! $baris) {
-            abort(403, 'Anda tidak memiliki wewenang untuk mengubah jadwal petugas lain.');
+            // Anti-IDOR: layanan harus milik petugas yang sedang login
+            $baris = DB::table('detail_reservasi')
+                ->where('id_reservasi', $idReservasi)
+                ->where('id_layanan', $idLayanan)
+                ->where('id_karyawan', $petugas->id_karyawan)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $baris) {
+                abort(403, 'Anda tidak memiliki wewenang untuk mengubah jadwal petugas lain.');
+            }
+
+            if ($baris->status_layanan === Reservasi::STATUS_SELESAI) {
+                return ['ok' => true, 'pesan' => 'Layanan ini sudah ditandai Selesai sebelumnya.'];
+            }
+
+            $statusReservasi = $reservasi->statusTernormalisasi();
+            if (! self::bolehDitandaiSelesai($statusReservasi)) {
+                return [
+                    'ok' => false,
+                    'pesan' => "Layanan pada reservasi #{$idReservasi} belum bisa ditandai selesai karena status booking masih '{$statusReservasi}'. Tunggu sampai Kasir menerima booking ini.",
+                ];
+            }
+
+            DB::table('detail_reservasi')
+                ->where('id_reservasi', $idReservasi)
+                ->where('id_layanan', $idLayanan)
+                ->where('id_karyawan', $petugas->id_karyawan)
+                ->update(['status_layanan' => Reservasi::STATUS_SELESAI]);
+
+            return ['ok' => true, 'pesan' => 'Layanan berhasil ditandai Selesai.'];
+        });
+
+        if (! $hasil['ok']) {
+            return back()->withErrors(['status' => $hasil['pesan']]);
         }
 
-        if ($baris->status_layanan === Reservasi::STATUS_SELESAI) {
-            return back()->with('status', 'Layanan ini sudah ditandai Selesai sebelumnya.');
-        }
-
-        $statusReservasi = Reservasi::findOrFail($idReservasi)->statusTernormalisasi();
-        if (! self::bolehDitandaiSelesai($statusReservasi)) {
-            return back()->withErrors([
-                'status' => "Layanan pada reservasi #{$idReservasi} belum bisa ditandai selesai karena status booking masih '{$statusReservasi}'. Tunggu sampai Kasir menerima booking ini.",
-            ]);
-        }
-
-        DB::table('detail_reservasi')
-            ->where('id_reservasi', $idReservasi)
-            ->where('id_layanan', $idLayanan)
-            ->where('id_karyawan', $petugas->id_karyawan)
-            ->update(['status_layanan' => Reservasi::STATUS_SELESAI]);
-
-        return back()->with('status', 'Layanan berhasil ditandai Selesai.');
+        return back()->with('status', $hasil['pesan']);
     }
 
     private function tampilJadwal(Request $request, string $peran)
@@ -125,6 +137,8 @@ class PetugasController extends Controller
         $totalJadwal = $jadwal->count();
         $layananSelesai = $jadwal->where('sudah_selesai', true)->count();
         $layananBelumSelesai = $totalJadwal - $layananSelesai;
+        $layananSiapKerja = $jadwal->where('bisa_ditandai_selesai', true)->count();
+        $layananMenungguKasir = max(0, $layananBelumSelesai - $layananSiapKerja);
         $jadwalHariIni = $this->kueriLayananPetugas($petugas->id_karyawan)
             ->whereIn('reservasi.status', self::STATUS_JADWAL_TAMPIL)
             ->whereDate('reservasi.tgl_booking', now()->toDateString())
@@ -140,6 +154,8 @@ class PetugasController extends Controller
             'totalJadwal' => $totalJadwal,
             'layananSelesai' => $layananSelesai,
             'layananBelumSelesai' => $layananBelumSelesai,
+            'layananSiapKerja' => $layananSiapKerja,
+            'layananMenungguKasir' => $layananMenungguKasir,
             'jadwalHariIni' => $jadwalHariIni,
         ]);
     }

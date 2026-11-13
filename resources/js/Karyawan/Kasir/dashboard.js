@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnPilihAntreanKecil')?.addEventListener('click', () => aturModalAntrean(true));
     document.getElementById('btnTutupModalAntrean')?.addEventListener('click', () => aturModalAntrean(false));
     modalAntreanPos?.addEventListener('click', e => { if (e.target === modalAntreanPos) aturModalAntrean(false); });
+    document.querySelectorAll('[data-buka-hold]').forEach(btn => {
+        btn.addEventListener('click', () => document.getElementById('btnBukaHoldPos')?.click());
+    });
 
     const formatRp = (angka) => new Intl.NumberFormat('id-ID', {
         style: 'currency', currency: 'IDR', minimumFractionDigits: 0,
@@ -272,10 +275,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (keranjang.has(id)) {
                 if (kategori === 'Produk') keranjang.get(id).qty += 1;
             } else {
+                const idPetugasDefault = selectPetugasPos?.value || '';
+                const stafDefault = idPetugasDefault
+                    ? daftarPetugasAktif.find(s => String(s.id_karyawan) === String(idPetugasDefault))
+                    : null;
+                const idPetugasCocok = (kategori === 'Layanan' && stafDefault && stafDefault.role_jabatan === jabatan)
+                    ? idPetugasDefault
+                    : '';
+
                 keranjang.set(id, {
                     idAsli, nama, hargaNormal: harga, harga, sedangEditHarga: false,
                     qty: 1, kategori, jabatan,
-                    idPetugas: kategori === 'Layanan' ? (selectPetugasPos?.value || '') : null,
+                    idPetugas: kategori === 'Layanan' ? idPetugasCocok : null,
                     petugasNonaktif: false,
                 });
             }

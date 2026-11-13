@@ -125,6 +125,8 @@ Route::middleware(['auth:karyawan', 'peran:Kasir'])
         Route::post('/permintaan-booking/{idReservasi}/tolak', [KasirPermintaanBookingController::class, 'tolak'])->name('permintaan.tolak');
 
         Route::get('/antrean-hari-ini', [KasirAntreanController::class, 'index'])->name('antrean');
+        Route::post('/antrean-hari-ini/{idReservasi}/layanan/{idLayanan}/ganti-petugas', [KasirAntreanController::class, 'gantiPetugas'])->name('antrean.ganti-petugas');
+        Route::get('/ringkasan-badge', [KasirPosController::class, 'ringkasanBadge'])->name('badge-ringkasan');
 
         // Pengajuan & Pembatalan Hak Akses 1x Pakai Katalog (Layanan & Produk)
         Route::post('/otorisasi-katalog', [KasirOtorisasiKatalogController::class, 'store'])->name('otorisasi-katalog.store');

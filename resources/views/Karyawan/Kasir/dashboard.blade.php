@@ -9,15 +9,6 @@
 @endpush
 
 @section('isi')
-    @php
-        $petugasJson = $petugas->map(fn ($s) => [
-            'id_karyawan'   => (int) $s->id_karyawan,
-            'nama_staff'    => $s->nama_staff,
-            'role_jabatan'  => $s->role_jabatan,
-            'persen_komisi' => (float) $s->persen_komisi,
-        ])->values();
-    @endphp
-
     <!-- Area Utama Point of Sale (Fokus 2 Kolom Tanpa Gangguan Panel Antrean di Atas) -->
     <div class="pos-grid" data-muat-otomatis="{{ request()->query('muat_reservasi', '') }}">
         <!-- Kolom Kiri: Katalog Layanan & Produk -->
@@ -62,11 +53,6 @@
         </div>
 
         <!-- Kolom Kanan: Keranjang & Form Pembayaran Nyata -->
-        @php
-            $adaHoldDitolak = $daftarHold->contains('status', \App\Models\PermintaanOtorisasi::STATUS_DITOLAK);
-            $adaHoldDisetujui = $daftarHold->contains('status', \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI);
-            $kelasTombolHold = $adaHoldDitolak ? 'ada-ditolak' : ($adaHoldDisetujui ? 'ada-disetujui' : '');
-        @endphp
         <form method="POST"
               action="{{ route('kasir.bayar') }}"
               data-url-bayar="{{ route('kasir.bayar') }}"
@@ -81,6 +67,16 @@
             <input type="hidden" name="keranjang_disinkronkan" value="1">
             <div id="inputHiddenKeranjang"></div>
 
+            @if ($adaHoldDitolak)
+                <div class="banner-hold-ditolak" role="alert">
+                    <div>
+                        <strong>{{ $jumlahHoldDitolak }} Pengajuan Hold Ditolak Manajer</strong>
+                        <span>Harga kembali normal. Klik tombol Transaksi Hold untuk memproses bayar normal atau ajukan ulang.</span>
+                    </div>
+                    <button type="button" class="btn-banner-hold" data-buka-hold>Lihat Hold</button>
+                </div>
+            @endif
+
             <div class="keranjang-header">
                 <div>
                     <h3>Tagihan &amp; Pembayaran</h3>
@@ -93,7 +89,7 @@
 
             <div class="form-grup">
                 <div class="label-baris-pelanggan">
-                    <label class="form-label tanpa-margin" for="posNamaPelanggan">Nama Pelanggan / Reservasi <span style="color:#db2777">*</span></label>
+                    <label class="form-label tanpa-margin" for="posNamaPelanggan">Nama Pelanggan / Reservasi <span class="tanda-wajib">*</span></label>
                     <div class="grup-tautan-pos">
                         <button type="button" class="tautan-hold-pos {{ $kelasTombolHold }}" id="btnBukaHoldPos">
                             ⏸️ Transaksi Hold ({{ $daftarHold->count() }})
@@ -211,44 +207,12 @@
 
             <div class="antrean-list-modal">
                 @forelse ($reservasiAktif as $r)
-                    @php
-                        $namaPelanggan = $r->pelanggan?->nama_cust ?? 'Pelanggan';
-                        $layananItems = $r->layanan->map(function ($l) use ($semuaPetugasMap) {
-                            $idStaf = $l->pivot->id_karyawan ? (int) $l->pivot->id_karyawan : null;
-                            $stafObj = $idStaf ? $semuaPetugasMap->get($idStaf) : null;
-                            $stafAktif = $stafObj && $stafObj->aktif && $stafObj->deleted_at === null;
-
-                            return [
-                                'id'              => 'L-' . $l->id_layanan,
-                                'id_asli'         => (int) $l->id_layanan,
-                                'nama'            => $l->nama_layanan,
-                                'harga'           => (int) ($l->pivot->harga_saat_ini ?: $l->harga_layanan),
-                                'qty'             => 1,
-                                'tipe'            => 'Layanan',
-                                'jabatan_petugas' => $l->jabatan_petugas,
-                                'id_petugas'      => $idStaf,
-                                'nama_petugas'    => $stafObj?->nama_staff,
-                                'petugas_aktif'   => $stafAktif,
-                            ];
-                        });
-
-                        $produkItems = $r->produkAddon->map(fn ($p) => [
-                            'id'      => 'P-' . $p->id_produk,
-                            'id_asli' => (int) $p->id_produk,
-                            'nama'    => $p->nama_produk,
-                            'harga'   => (int) ($p->pivot->harga_saat_ini ?: $p->harga_produk),
-                            'qty'     => (int) $p->pivot->jumlah,
-                            'tipe'    => 'Produk',
-                        ]);
-
-                        $itemsJson = $layananItems->concat($produkItems)->values();
-                    @endphp
                     <div class="antrean-kartu">
                         <div>
                             <span class="antrean-id">
                                 #{{ $r->id_reservasi }} &bull; {{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }})
                             </span>
-                            <h4 class="antrean-nama">{{ $namaPelanggan }}</h4>
+                            <h4 class="antrean-nama">{{ $r->namaPelangganTampil() }}</h4>
                             <p class="antrean-rincian">
                                 {{ $r->layanan->pluck('nama_layanan')->join(', ') }}
                                 @if ($r->produkAddon->isNotEmpty())
@@ -263,12 +227,12 @@
                             <span class="antrean-total">Rp {{ number_format($r->estimasiTotalAkhir(), 0, ',', '.') }}</span>
                             <button type="button" class="btn-muat-booking"
                                     data-id-reservasi="{{ $r->id_reservasi }}"
-                                    data-pelanggan="{{ $namaPelanggan }}"
+                                    data-pelanggan="{{ $r->namaPelangganTampil() }}"
                                     data-kode-promo="{{ $r->kode_promo ?? '' }}"
                                     data-tipe-promo="{{ $r->tipe_diskon_promo ?? '' }}"
                                     data-nilai-promo="{{ (float) ($r->nilai_diskon_promo ?? 0) }}"
                                     data-nominal-diskon="{{ (float) ($r->nominal_diskon ?? 0) }}"
-                                    data-items='@json($itemsJson)'>
+                                    data-items='@json($itemReservasiMap->get($r->id_reservasi, []))'>
                                 Muat ke Kasir
                             </button>
                         </div>

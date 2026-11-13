@@ -10,13 +10,8 @@
     @stack('styles')
 </head>
 <body>
-    @php
-        $notifMenunggu = \App\Models\Reservasi::menungguKonfirmasi()->count();
-        $notifAntrean  = \App\Models\Reservasi::siapBayarKasir()->count();
-    @endphp
-
     <div class="kasir-shell">
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="sidebar" data-url-badge="{{ route('kasir.badge-ringkasan') }}">
             <div class="sidebar-brand">
                 <span class="brand-ikon">🌸</span>
                 <div class="brand-teks">
@@ -36,7 +31,8 @@
                         <span class="nav-ikon">📩</span>
                         <span class="nav-item-teks">
                             Permintaan Booking
-                            <sup class="nav-kuadrat-notif {{ $notifMenunggu > 0 ? 'ada-acc' : 'kosong' }}"
+                            <sup id="badgeNotifMenunggu"
+                                 class="nav-kuadrat-notif {{ $notifMenunggu > 0 ? 'ada-acc' : 'kosong' }}"
                                  title="{{ $notifMenunggu }} permintaan booking menunggu ACC">
                                 {{ $notifMenunggu > 99 ? '99+' : $notifMenunggu }}
                             </sup>
@@ -46,7 +42,8 @@
                         <span class="nav-ikon">⏳</span>
                         <span class="nav-item-teks">
                             Antrean Hari Ini
-                            <sup class="nav-kuadrat-notif {{ $notifAntrean > 0 ? 'ada-antrean' : 'kosong' }}"
+                            <sup id="badgeNotifAntrean"
+                                 class="nav-kuadrat-notif {{ $notifAntrean > 0 ? 'ada-antrean' : 'kosong' }}"
                                  title="{{ $notifAntrean }} antrean siap diproses di kasir">
                                 {{ $notifAntrean > 99 ? '99+' : $notifAntrean }}
                             </sup>

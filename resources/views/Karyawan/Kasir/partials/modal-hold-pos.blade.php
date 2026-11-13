@@ -11,62 +11,15 @@
 
         <div class="antrean-list-modal">
             @forelse ($daftarHold as $h)
-                @php
-                    $isPending = $h->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU;
-                    $isApproved = $h->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI;
-                    $isRejected = $h->status === \App\Models\PermintaanOtorisasi::STATUS_DITOLAK;
-
-                    $snapshotAktif = $h->snapshot_keranjang ?? [];
-                    $snapshotAwal = $h->snapshot_awal ?? $snapshotAktif;
-
-                    $susunItemModal = function (array $snap) use ($semuaPetugasMap): array {
-                        $hasil = [];
-                        foreach (($snap['layanan'] ?? []) as $l) {
-                            $idStaf = ! empty($l['id_petugas']) ? (int) $l['id_petugas'] : null;
-                            $stafObj = $idStaf ? $semuaPetugasMap->get($idStaf) : null;
-                            $stafAktif = $stafObj && $stafObj->aktif && $stafObj->deleted_at === null;
-                            $hasil[] = [
-                                'id' => 'L-'.$l['id_layanan'],
-                                'id_asli' => (int) $l['id_layanan'],
-                                'nama' => $l['nama'],
-                                'harga_normal' => (int) $l['harga_normal'],
-                                'harga' => (int) $l['harga_aktif'],
-                                'qty' => 1,
-                                'tipe' => 'Layanan',
-                                'jabatan_petugas' => $l['jabatan_petugas'] ?? 'Stylist',
-                                'id_petugas' => $idStaf,
-                                'nama_petugas' => $stafObj?->nama_staff,
-                                'petugas_aktif' => $stafAktif,
-                            ];
-                        }
-                        foreach (($snap['produk'] ?? []) as $p) {
-                            $hasil[] = [
-                                'id' => 'P-'.$p['id_produk'],
-                                'id_asli' => (int) $p['id_produk'],
-                                'nama' => $p['nama'],
-                                'harga_normal' => (int) $p['harga_normal'],
-                                'harga' => (int) $p['harga_aktif'],
-                                'qty' => (int) $p['qty'],
-                                'tipe' => 'Produk',
-                            ];
-                        }
-
-                        return $hasil;
-                    };
-
-                    $itemsHoldJson = $susunItemModal($snapshotAktif);
-                    $itemsAwalJson = $susunItemModal($snapshotAwal);
-                @endphp
-
-                <div class="kartu-hold-pos {{ $isRejected ? 'kartu-hold-ditolak' : ($isApproved ? 'kartu-hold-disetujui' : '') }}">
+                <div class="kartu-hold-pos {{ $h->status === \App\Models\PermintaanOtorisasi::STATUS_DITOLAK ? 'kartu-hold-ditolak' : ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI ? 'kartu-hold-disetujui' : '') }}">
                     <div class="kartu-hold-kepala">
                         <div>
                             <span class="antrean-id">#{{ $h->kode_referensi }} &bull; {{ $h->created_at?->format('H:i') }} WIB</span>
-                            @if ($isPending)
+                            @if ($h->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
                                 <span class="badge-hold badge-hold-pending">⏳ Menunggu Approval Manajer</span>
-                            @elseif ($isApproved)
+                            @elseif ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
                                 <span class="badge-hold badge-hold-setuju">✅ Disetujui ({{ $h->manajer?->nama_staff ?? 'Manajer' }})</span>
-                            @elseif ($isRejected)
+                            @elseif ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DITOLAK)
                                 <span class="badge-hold badge-hold-tolak">❌ Request Ditolak Manajer</span>
                             @endif
                             <h4 class="antrean-nama">{{ $h->label_target }}</h4>
@@ -81,7 +34,7 @@
 
                     <p class="hold-alasan-kasir">Alasan Kasir: <em>"{{ $h->alasan_kasir }}"</em></p>
 
-                    @if ($isRejected)
+                    @if ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DITOLAK)
                         <div class="kotak-info-penolakan-hold" role="alert">
                             <strong>Alasan Penolakan Manajer:</strong> {{ $h->catatan_manajer ?: 'Tidak memenuhi ketentuan potongan harga.' }}
                             <div class="sub-pulih-normal">Nilai layanan &amp; harga pada transaksi ini telah dikembalikan otomatis ke harga normal awal (Rp {{ number_format((float) $h->total_awal, 0, ',', '.') }}).</div>
@@ -89,30 +42,30 @@
                     @endif
 
                     <div class="aksi-hold-baris">
-                        @if ($isApproved)
+                        @if ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
                             <button type="button" class="btn-muat-hold btn-hold-utama"
                                     data-mode-hold="disetujui"
                                     data-id-otorisasi="{{ $h->id_otorisasi }}"
                                     data-kode-referensi="{{ $h->kode_referensi }}"
                                     data-id-reservasi="{{ $h->id_reservasi ?? '' }}"
                                     data-pelanggan="{{ $h->label_target }}"
-                                    data-kode-promo="{{ $snapshotAktif['kode_promo'] ?? '' }}"
+                                    data-kode-promo="{{ $holdViewMap->get($h->id_otorisasi)['kode_promo_aktif'] ?? '' }}"
                                     data-alasan="{{ $h->alasan_kasir }}"
                                     data-nama-manajer="{{ $h->manajer?->nama_staff ?? 'Manajer' }}"
-                                    data-items='@json($itemsHoldJson)'
-                                    data-items-awal='@json($itemsAwalJson)'>
+                                    data-items='@json($holdViewMap->get($h->id_otorisasi)["items_hold"] ?? [])'
+                                    data-items-awal='@json($holdViewMap->get($h->id_otorisasi)["items_awal"] ?? [])'>
                                 Muat &amp; Selesaikan Pembayaran
                             </button>
-                        @elseif ($isRejected)
+                        @elseif ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DITOLAK)
                             <button type="button" class="btn-muat-hold btn-hold-normal"
                                     data-mode-hold="bayar_normal"
                                     data-id-otorisasi="{{ $h->id_otorisasi }}"
                                     data-kode-referensi="{{ $h->kode_referensi }}"
                                     data-id-reservasi="{{ $h->id_reservasi ?? '' }}"
                                     data-pelanggan="{{ $h->label_target }}"
-                                    data-kode-promo="{{ $snapshotAwal['kode_promo'] ?? '' }}"
-                                    data-items='@json($itemsAwalJson)'
-                                    data-items-awal='@json($itemsAwalJson)'>
+                                    data-kode-promo="{{ $holdViewMap->get($h->id_otorisasi)['kode_promo_awal'] ?? '' }}"
+                                    data-items='@json($holdViewMap->get($h->id_otorisasi)["items_awal"] ?? [])'
+                                    data-items-awal='@json($holdViewMap->get($h->id_otorisasi)["items_awal"] ?? [])'>
                                 Lanjut Bayar Harga Normal
                             </button>
                             <button type="button" class="btn-muat-hold btn-hold-ulang"
@@ -121,9 +74,9 @@
                                     data-kode-referensi="{{ $h->kode_referensi }}"
                                     data-id-reservasi="{{ $h->id_reservasi ?? '' }}"
                                     data-pelanggan="{{ $h->label_target }}"
-                                    data-kode-promo="{{ $snapshotAwal['kode_promo'] ?? '' }}"
-                                    data-items='@json($itemsAwalJson)'
-                                    data-items-awal='@json($itemsAwalJson)'>
+                                    data-kode-promo="{{ $holdViewMap->get($h->id_otorisasi)['kode_promo_awal'] ?? '' }}"
+                                    data-items='@json($holdViewMap->get($h->id_otorisasi)["items_awal"] ?? [])'
+                                    data-items-awal='@json($holdViewMap->get($h->id_otorisasi)["items_awal"] ?? [])'>
                                 Ajukan Ulang Request
                             </button>
                         @endif

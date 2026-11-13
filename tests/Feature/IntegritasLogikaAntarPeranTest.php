@@ -250,6 +250,140 @@ class IntegritasLogikaAntarPeranTest extends TestCase
         $this->assertSame(Reservasi::STATUS_SELESAI, $reservasi->fresh()->status);
     }
 
+    public function test_ajax_petugas_tersedia_menghitung_timeline_berurutan_dan_jam_tutup(): void
+    {
+        $layananWajah = Layanan::create([
+            'nama_layanan' => 'Facial Glow',
+            'kategori' => 'Wajah',
+            'jabatan_petugas' => Karyawan::JABATAN_THERAPIST,
+            'harga_layanan' => 150000,
+            'durasi_menit' => 60,
+            'jeda_menit' => 15,
+        ]);
+
+        // Stylist sibuk mulai 11:00, seharusnya tetap tersedia untuk layanan 1 (10:00 - 11:00 blokir)
+        $besok = Carbon::now()->addDay()->toDateString();
+        $resLain = Reservasi::create([
+            'id_pelanggan' => $this->pelanggan->id_pelanggan,
+            'id_karyawan' => $this->stylist->id_karyawan,
+            'tgl_booking' => $besok,
+            'jam_booking' => '11:00',
+            'jam_selesai' => '11:45',
+            'total_durasi_menit' => 45,
+            'status' => Reservasi::STATUS_DITERIMA,
+        ]);
+        $resLain->layanan()->attach($this->layananRambut->id_layanan, [
+            'id_karyawan' => $this->stylist->id_karyawan,
+            'jam_mulai' => '11:00',
+            'jam_selesai' => '11:45',
+            'jam_selesai_blokir' => '12:00',
+            'durasi_saat_ini' => 45,
+            'jeda_saat_ini' => 15,
+            'harga_saat_ini' => 120000,
+            'persen_komisi' => 15,
+            'nominal_komisi' => 18000,
+            'status_layanan' => Reservasi::STATUS_MENUNGGU,
+        ]);
+
+        $resp = $this->actingAs($this->pelanggan, 'pelanggan')
+            ->getJson(route('pelanggan.booking.petugas', [
+                'tgl_booking' => $besok,
+                'jam_booking' => '10:00',
+                'layanan' => [$this->layananRambut->id_layanan, $layananWajah->id_layanan],
+            ]))
+            ->assertOk()
+            ->assertJsonPath('melewati_jam_tutup', false);
+
+        $perLayanan = $resp->json('petugas_per_layanan');
+        $this->assertCount(1, $perLayanan[$this->layananRambut->id_layanan]);
+        $this->assertCount(1, $perLayanan[$layananWajah->id_layanan]);
+
+        // Jam 20:30 dengan durasi 105 menit -> melewati jam tutup 21:00
+        $this->actingAs($this->pelanggan, 'pelanggan')
+            ->getJson(route('pelanggan.booking.petugas', [
+                'tgl_booking' => $besok,
+                'jam_booking' => '20:30',
+                'layanan' => [$this->layananRambut->id_layanan, $layananWajah->id_layanan],
+            ]))
+            ->assertOk()
+            ->assertJsonPath('melewati_jam_tutup', true)
+            ->assertJsonCount(0, 'petugas.Stylist');
+    }
+
+    public function test_kasir_dapat_ganti_petugas_di_antrean_dan_ditolak_jika_salah_jabatan_atau_sudah_selesai(): void
+    {
+        $stylistPengganti = Karyawan::create([
+            'nama_staff' => 'Sari Pengganti',
+            'email' => 'sari@salon.test',
+            'role_jabatan' => Karyawan::JABATAN_STYLIST,
+            'persen_komisi' => 20,
+            'aktif' => true,
+            'password' => 'password123',
+        ]);
+
+        $reservasi = $this->buatReservasiDenganDetail(Reservasi::STATUS_DITERIMA);
+
+        // Salah jabatan (Therapist untuk layanan Stylist) ditolak
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.antrean.ganti-petugas', [$reservasi->id_reservasi, $this->layananRambut->id_layanan]), [
+                'id_karyawan' => $this->therapist->id_karyawan,
+            ])
+            ->assertSessionHasErrors('antrean');
+
+        // Pengganti valid berhasil memperbarui petugas & komisi
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.antrean.ganti-petugas', [$reservasi->id_reservasi, $this->layananRambut->id_layanan]), [
+                'id_karyawan' => $stylistPengganti->id_karyawan,
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('detail_reservasi', [
+            'id_reservasi' => $reservasi->id_reservasi,
+            'id_layanan' => $this->layananRambut->id_layanan,
+            'id_karyawan' => $stylistPengganti->id_karyawan,
+            'persen_komisi' => 20,
+            'nominal_komisi' => 24000,
+        ]);
+
+        // Setelah petugas baru menandai selesai, ganti petugas ditolak
+        $this->actingAs($stylistPengganti, 'karyawan')
+            ->post(route('stylist.layanan.selesai', [$reservasi->id_reservasi, $this->layananRambut->id_layanan]))
+            ->assertRedirect();
+
+        $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.antrean.ganti-petugas', [$reservasi->id_reservasi, $this->layananRambut->id_layanan]), [
+                'id_karyawan' => $this->stylist->id_karyawan,
+            ])
+            ->assertSessionHasErrors('antrean');
+    }
+
+    public function test_endpoint_ringkasan_badge_kasir_dan_batal_aman_terhadap_status_terminal(): void
+    {
+        $this->buatReservasiDenganDetail(Reservasi::STATUS_MENUNGGU);
+        $siapBayar = $this->buatReservasiDenganDetail(Reservasi::STATUS_DITERIMA);
+        DB::table('detail_reservasi')
+            ->where('id_reservasi', $siapBayar->id_reservasi)
+            ->update(['status_layanan' => Reservasi::STATUS_SELESAI]);
+
+        $this->actingAs($this->kasir, 'karyawan')
+            ->getJson(route('kasir.badge-ringkasan'))
+            ->assertOk()
+            ->assertJson([
+                'menunggu' => 1,
+                'antrean' => 1,
+            ]);
+
+        $this->actingAs($this->stylist, 'karyawan')
+            ->getJson(route('kasir.badge-ringkasan'))
+            ->assertForbidden();
+
+        // Pembatalan pada reservasi yang sudah ditolak ditangani ramah (bukan 500)
+        $ditolak = $this->buatReservasiDenganDetail(Reservasi::STATUS_DITOLAK);
+        $this->actingAs($this->pelanggan, 'pelanggan')
+            ->post(route('pelanggan.booking.batal', $ditolak->id_reservasi))
+            ->assertSessionHasErrors('batal');
+    }
+
     private function buatReservasiDenganDetail(string $status): Reservasi
     {
         $reservasi = Reservasi::create([

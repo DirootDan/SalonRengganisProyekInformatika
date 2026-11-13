@@ -1,7 +1,8 @@
 @import '../../Manajer/struk.css';
 
+.form-grup .tanpa-margin,
 .tanpa-margin {
-    margin: 0 !important;
+    margin: 0;
 }
 
 .kepala-info-struk {

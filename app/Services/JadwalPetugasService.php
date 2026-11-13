@@ -234,6 +234,122 @@ class JadwalPetugasService
     }
 
     /**
+     * Menghitung ketersediaan petugas per layanan (berdasarkan timeline berurutan) dan status seluruh slot jam.
+     *
+     * @param  Collection<int, Layanan>  $layananDipilih
+     * @return array<string, mixed>
+     */
+    public function petugasTersediaUntukPilihan(string $tanggal, string $jamKedatangan, Collection $layananDipilih): array
+    {
+        $jam = substr($jamKedatangan, 0, 5);
+        $statusJam = $this->statusSlotJamOperasional($tanggal, $layananDipilih);
+        $semuaPetugas = Karyawan::whereIn('role_jabatan', Layanan::JABATAN_PETUGAS)
+            ->where('aktif', true)
+            ->orderBy('nama_staff')
+            ->get(['id_karyawan', 'nama_staff', 'role_jabatan']);
+
+        if ($layananDipilih->isEmpty()) {
+            $durasiDefault = Layanan::DEFAULT_DURASI_MENIT;
+            $blokirDefault = $durasiDefault + Layanan::DEFAULT_JEDA_MENIT;
+            $mulai = Carbon::createFromFormat('H:i', $jam);
+            $selesaiLayanan = $mulai->copy()->addMinutes($durasiDefault);
+            $batasTutup = Carbon::createFromFormat('H:i', Reservasi::JAM_TUTUP_SALON);
+            $melewatiTutup = ! $selesaiLayanan->isSameDay($mulai) || $selesaiLayanan->gt($batasTutup);
+
+            $jamSelesaiBlokir = $mulai->copy()->addMinutes($blokirDefault)->format('H:i');
+            $idSibuk = $melewatiTutup ? [] : $this->cariIdPetugasSibukPadaRentang($tanggal, $jam, $jamSelesaiBlokir);
+            $petugasTersedia = $melewatiTutup
+                ? collect()
+                : $semuaPetugas->reject(fn (Karyawan $k) => in_array((int) $k->id_karyawan, $idSibuk, true))->groupBy('role_jabatan');
+
+            return [
+                'tanggal' => $tanggal,
+                'jam' => $jam,
+                'jam_selesai' => $selesaiLayanan->format('H:i'),
+                'jam_selesai_blokir' => $jamSelesaiBlokir,
+                'total_durasi_menit' => $durasiDefault,
+                'melewati_jam_tutup' => $melewatiTutup,
+                'pesan_jam_tutup' => $melewatiTutup
+                    ? 'Jam kedatangan melewati jam operasional tutup salon (pukul '.Reservasi::JAM_TUTUP_SALON.' WIB).'
+                    : null,
+                'id_sibuk' => $idSibuk,
+                'status_jam' => $statusJam,
+                'petugas_per_layanan' => [],
+                'petugas' => [
+                    'Stylist' => $petugasTersedia->get(Karyawan::JABATAN_STYLIST, collect())->values(),
+                    'Therapist' => $petugasTersedia->get(Karyawan::JABATAN_THERAPIST, collect())->values(),
+                ],
+            ];
+        }
+
+        try {
+            $timeline = $this->susunTimelineLayanan($layananDipilih, $jam, true);
+        } catch (DomainException $e) {
+            return [
+                'tanggal' => $tanggal,
+                'jam' => $jam,
+                'jam_selesai' => null,
+                'jam_selesai_blokir' => null,
+                'total_durasi_menit' => $layananDipilih->sum(fn (Layanan $l) => max(15, (int) ($l->durasi_menit ?: Layanan::DEFAULT_DURASI_MENIT))),
+                'melewati_jam_tutup' => true,
+                'pesan_jam_tutup' => $e->getMessage(),
+                'id_sibuk' => [],
+                'status_jam' => $statusJam,
+                'petugas_per_layanan' => [],
+                'petugas' => [
+                    'Stylist' => [],
+                    'Therapist' => [],
+                ],
+            ];
+        }
+
+        $jadwalHariIni = $this->ambilJadwalAktifTanggal($tanggal);
+        $petugasPerLayanan = [];
+        $petugasPerJabatan = [
+            Karyawan::JABATAN_STYLIST => collect(),
+            Karyawan::JABATAN_THERAPIST => collect(),
+        ];
+        $semuaIdSibuk = [];
+        $jamSelesaiBlokirAkhir = $timeline['jam_selesai'];
+
+        foreach ($layananDipilih as $layanan) {
+            $slot = $timeline['items'][$layanan->id_layanan];
+            $jamSelesaiBlokirAkhir = max($jamSelesaiBlokirAkhir, $slot['jam_selesai_blokir']);
+            $idSibukSlot = $this->saringIdSibukDariKoleksi($jadwalHariIni, $slot['jam_mulai'], $slot['jam_selesai_blokir']);
+            $semuaIdSibuk = array_merge($semuaIdSibuk, $idSibukSlot);
+
+            $kandidat = $semuaPetugas
+                ->filter(fn (Karyawan $k) => $k->role_jabatan === $layanan->jabatan_petugas && ! in_array((int) $k->id_karyawan, $idSibukSlot, true))
+                ->values();
+
+            $petugasPerLayanan[$layanan->id_layanan] = $kandidat;
+            if (isset($petugasPerJabatan[$layanan->jabatan_petugas])) {
+                $petugasPerJabatan[$layanan->jabatan_petugas] = $petugasPerJabatan[$layanan->jabatan_petugas]
+                    ->merge($kandidat)
+                    ->unique('id_karyawan')
+                    ->values();
+            }
+        }
+
+        return [
+            'tanggal' => $tanggal,
+            'jam' => $jam,
+            'jam_selesai' => $timeline['jam_selesai'],
+            'jam_selesai_blokir' => $jamSelesaiBlokirAkhir,
+            'total_durasi_menit' => $timeline['total_durasi_menit'],
+            'melewati_jam_tutup' => false,
+            'pesan_jam_tutup' => null,
+            'id_sibuk' => array_values(array_unique($semuaIdSibuk)),
+            'status_jam' => $statusJam,
+            'petugas_per_layanan' => $petugasPerLayanan,
+            'petugas' => [
+                'Stylist' => $petugasPerJabatan[Karyawan::JABATAN_STYLIST],
+                'Therapist' => $petugasPerJabatan[Karyawan::JABATAN_THERAPIST],
+            ],
+        ];
+    }
+
+    /**
      * Mengecek daftar jam operasional yang tersedia berdasarkan layanan yang dipilih pelanggan.
      *
      * @param  Collection<int, Layanan>  $layananDipilih

@@ -17,30 +17,56 @@
 
         <div class="antrean-penuh-grid">
             @forelse ($antrean as $r)
-                @php
-                    $pel = $r->pelanggan;
-                @endphp
-                <div class="kartu-antrean-item" data-cari="{{ strtolower(($pel->nama_cust ?? '') . ' ' . $r->layanan->pluck('nama_layanan')->join(' ')) }}">
+                <div class="kartu-antrean-item" data-cari="{{ strtolower($r->namaPelangganTampil() . ' ' . $r->layanan->pluck('nama_layanan')->join(' ')) }}">
                     <div class="antrean-item-atas">
                         <span class="nomor-urut">#{{ $r->id_reservasi }}</span>
-                        <span class="jadwal-jam">{{ $r->tgl_booking->format('d/m/Y') }} &bull; {{ $r->jam_booking ?: '10:00' }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }} WIB</span>
+                        <span class="jadwal-jam">
+                            {{ $r->tgl_booking->format('d/m/Y') }} &bull; {{ $r->jamMulaiTampil() }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }} WIB
+                            @if ($r->apakahJadwalTerlewat())
+                                <span class="badge badge-terlewat">Jadwal Terlewat</span>
+                            @endif
+                        </span>
                     </div>
 
-                    <h3 class="nama-pelanggan-antrean">{{ $pel->nama_cust ?? 'Pelanggan' }}</h3>
-                    <p class="telp-pelanggan-antrean">{{ $pel->no_telp ?? '-' }}</p>
+                    <h3 class="nama-pelanggan-antrean">{{ $r->namaPelangganTampil() }}</h3>
+                    <p class="telp-pelanggan-antrean">{{ $r->pelanggan?->no_telp ?? 'Walk-In' }}</p>
 
                     <ul class="rincian-layanan-antrean">
                         @foreach ($r->layanan as $l)
-                            <li>
-                                <span>
-                                    <strong>{{ $l->nama_layanan }}</strong>
-                                    @if ($l->pivot->id_karyawan && isset($petugasMap[$l->pivot->id_karyawan]))
-                                        <small>({{ $l->jabatan_petugas }}: {{ $petugasMap[$l->pivot->id_karyawan] }})</small>
-                                    @endif
-                                </span>
-                                <span class="badge {{ $l->pivot->status_layanan === 'Selesai' ? 'badge-aktif' : 'badge-pending' }}">
-                                    {{ $l->pivot->status_layanan ?: 'Menunggu' }}
-                                </span>
+                            <li class="baris-layanan-antrean">
+                                <div class="baris-layanan-atas">
+                                    <span>
+                                        <strong>{{ $l->nama_layanan }}</strong>
+                                        @if ($l->pivot->id_karyawan && isset($petugasMap[$l->pivot->id_karyawan]))
+                                            <small>({{ $l->jabatan_petugas }}: {{ $petugasMap[$l->pivot->id_karyawan] }})</small>
+                                        @endif
+                                    </span>
+                                    <span class="badge {{ $l->pivot->status_layanan === 'Selesai' ? 'badge-aktif' : 'badge-pending' }}">
+                                        {{ $l->pivot->status_layanan ?: 'Menunggu' }}
+                                    </span>
+                                </div>
+                                @if ($l->pivot->status_layanan !== 'Selesai')
+                                    <form method="POST"
+                                          action="{{ route('kasir.antrean.ganti-petugas', [$r->id_reservasi, $l->id_layanan]) }}"
+                                          class="form-ganti-petugas-antrean">
+                                        @csrf
+                                        <label class="sr-only" for="gantiPetugas_{{ $r->id_reservasi }}_{{ $l->id_layanan }}">
+                                            Alihkan {{ $l->jabatan_petugas }}
+                                        </label>
+                                        <select id="gantiPetugas_{{ $r->id_reservasi }}_{{ $l->id_layanan }}"
+                                                name="id_karyawan"
+                                                class="select-ganti-petugas"
+                                                required>
+                                            <option value="">-- Ganti {{ $l->jabatan_petugas }} --</option>
+                                            @foreach ($petugasPerJabatan->get($l->jabatan_petugas, collect()) as $kandidat)
+                                                <option value="{{ $kandidat->id_karyawan }}" @selected((int) $l->pivot->id_karyawan === (int) $kandidat->id_karyawan)>
+                                                    {{ $kandidat->nama_staff }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn-ganti-petugas">Alihkan</button>
+                                    </form>
+                                @endif
                             </li>
                         @endforeach
                         @foreach ($r->produkAddon as $p)

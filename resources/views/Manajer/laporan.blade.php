@@ -46,7 +46,7 @@
         <div class="kartu-metrik">
             <span class="metrik-judul">Total Reservasi Periode Ini</span>
             <span class="metrik-angka">{{ $reservasi->count() }} Reservasi</span>
-            <span class="metrik-tren positif">{{ $reservasi->where('status', 'Selesai')->count() }} Selesai &bull; {{ $reservasi->where('status', 'Hangus')->count() }} Hangus</span>
+            <span class="metrik-tren positif">{{ $jumlahSelesai }} Selesai &bull; {{ $jumlahHangus }} Hangus</span>
         </div>
 
         <div class="kartu-metrik">

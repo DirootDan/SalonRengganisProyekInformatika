@@ -15,9 +15,10 @@
     font-size: 16px;
 }
 
+.tabel-data td.harga-produk,
 .harga-produk {
     font-weight: 700;
-    color: #db2777 !important;
+    color: var(--warna-brand);
 }
 
 .form-dua-kolom {

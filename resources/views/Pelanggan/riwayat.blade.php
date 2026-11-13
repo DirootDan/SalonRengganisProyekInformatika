@@ -17,8 +17,8 @@
     @if ($notifikasi->isNotEmpty())
         <div class="panel-notifikasi">
             <div class="notifikasi-header">
-                <h3>Pemberitahuan Akun ({{ $notifikasi->where('dibaca', false)->count() }} belum dibaca)</h3>
-                @if ($notifikasi->where('dibaca', false)->count() > 0)
+                <h3>Pemberitahuan Akun ({{ $jmlNotifBelumDibaca }} belum dibaca)</h3>
+                @if ($jmlNotifBelumDibaca > 0)
                     <form method="POST" action="{{ route('pelanggan.notifikasi.baca') }}">
                         @csrf
                         <button type="submit" class="btn-tandai-baca">✓ Tandai Semua Sudah Dibaca</button>
@@ -45,13 +45,6 @@
         </div>
     @endif
 
-    @php
-        $jmlMenunggu = $reservasi->filter(fn ($item) => $item->statusTernormalisasi() === 'Menunggu')->count();
-        $jmlDiterima = $reservasi->filter(fn ($item) => $item->statusTernormalisasi() === 'Diterima')->count();
-        $jmlSelesai  = $reservasi->filter(fn ($item) => $item->statusTernormalisasi() === 'Selesai')->count();
-        $jmlBatal    = $reservasi->filter(fn ($item) => in_array($item->statusTernormalisasi(), ['Dibatalkan', 'Ditolak', 'Hangus'], true))->count();
-    @endphp
-
     @if ($reservasi->isNotEmpty())
         <div class="filter-riwayat-bar" role="tablist" aria-label="Filter Status Reservasi">
             <button type="button" class="tab-filter-riwayat aktif" data-filter-status="semua">
@@ -73,34 +66,13 @@
     @endif
 
     @forelse ($reservasi as $r)
-        @php
-            $status = $r->statusTernormalisasi();
-            $kelasStatus = match ($status) {
-                'Menunggu' => 'status-pending',
-                'Diterima' => 'status-diterima',
-                'Selesai'  => 'status-selesai',
-                'Ditolak', 'Dibatalkan', 'Hangus' => 'status-batal',
-                default    => 'status-pending',
-            };
-            $grupFilter = in_array($status, ['Dibatalkan', 'Ditolak', 'Hangus'], true) ? 'BatalGroup' : $status;
-            $jamMulai   = $r->jam_booking ?: '10:00';
-            $jamSelesai = $r->jam_selesai ?: '';
-
-            $waktuJadwal = \Illuminate\Support\Carbon::parse($r->tgl_booking->toDateString() . ' ' . $jamMulai);
-            $batasGratis = $waktuJadwal->copy()->subHours($kebijakan->batas_batal_jam);
-
-            $statusAktifBisaBatal = in_array($status, ['Menunggu', 'Diterima'], true);
-            $lewatBatasJamBatal   = $status === 'Diterima' && now()->gt($batasGratis);
-            $bolehBatalSekarang   = $status === 'Menunggu' || ($status === 'Diterima' && ! $lewatBatasJamBatal);
-        @endphp
-
-        <div class="reservasi-item {{ $statusAktifBisaBatal ? 'aktif' : '' }}"
-             data-status-item="{{ $status }}"
-             data-grup-filter="{{ $grupFilter }}">
+        <div class="reservasi-item {{ in_array($r->statusTernormalisasi(), ['Menunggu', 'Diterima'], true) ? 'aktif' : '' }}"
+             data-status-item="{{ $r->statusTernormalisasi() }}"
+             data-grup-filter="{{ $r->grupFilterRiwayat() }}">
             <div class="reservasi-atas">
                 <div class="reservasi-info-utama">
                     <div class="reservasi-tgl">
-                        {{ $r->tgl_booking->format('d/m/Y') }} &bull; Pukul {{ $jamMulai }}{{ $jamSelesai ? ' - ' . $jamSelesai : '' }} WIB
+                        {{ $r->tgl_booking->format('d/m/Y') }} &bull; Pukul {{ $r->jamMulaiTampil() }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }} WIB
                     </div>
                     <div class="reservasi-no">
                         Reservasi #{{ $r->id_reservasi }}
@@ -112,16 +84,16 @@
                 </div>
 
                 <div class="reservasi-kanan">
-                    <span class="status {{ $kelasStatus }}">{{ $status }}</span>
+                    <span class="status {{ $r->kelasStatusBadge() }}">{{ $r->statusTernormalisasi() }}</span>
 
-                    @if ($bolehBatalSekarang)
+                    @if ($r->bolehDibatalkanPelanggan($kebijakan->batas_batal_jam))
                         <form method="POST"
                               action="{{ route('pelanggan.booking.batal', $r->id_reservasi) }}"
                               class="form-batal-booking form-batal-cepat"
                               data-id="{{ $r->id_reservasi }}"
                               data-confirm-title="Konfirmasi Pembatalan Reservasi"
-                              data-confirm-item="Reservasi #{{ $r->id_reservasi }} ({{ $r->tgl_booking->format('d/m/Y') }} pukul {{ $jamMulai }} WIB)"
-                              data-confirm-description="Apakah Anda yakin ingin membatalkan reservasi ini? Jadwal petugas akan dilepas dan stok produk add-on akan dikembalikan otomatis tanpa pinalti."
+                              data-confirm-item="Reservasi #{{ $r->id_reservasi }} ({{ $r->tgl_booking->format('d/m/Y') }} pukul {{ $r->jamMulaiTampil() }} WIB)"
+                              data-confirm-description="Apakah Anda yakin ingin membatalkan reservasi ini? Pembatalan sebelum batas {{ $kebijakan->batas_batal_jam }} jam bebas pinalti. Tidak hadir tanpa membatalkan (Hangus) dihitung pelanggaran ({{ $kebijakan->batas_pelanggaran }}x berakibat blokir {{ $kebijakan->lama_blokir_hari }} hari)."
                               data-confirm-button="Ya, Batalkan Reservasi">
                             @csrf
                             <button type="submit" class="btn-batal-cepat" title="Batalkan Reservasi #{{ $r->id_reservasi }}">
@@ -192,14 +164,14 @@
 
                 <div class="reservasi-kaki-aksi">
                     <div class="panel-aksi-batal">
-                        @if ($bolehBatalSekarang)
+                        @if ($r->bolehDibatalkanPelanggan($kebijakan->batas_batal_jam))
                             <form method="POST"
                                   action="{{ route('pelanggan.booking.batal', $r->id_reservasi) }}"
                                   class="form-batal-booking form-batal-detail"
                                   data-id="{{ $r->id_reservasi }}"
                                   data-confirm-title="Konfirmasi Pembatalan Reservasi"
-                                  data-confirm-item="Reservasi #{{ $r->id_reservasi }} ({{ $r->tgl_booking->format('d/m/Y') }} pukul {{ $jamMulai }} WIB)"
-                                  data-confirm-description="Apakah Anda yakin ingin membatalkan reservasi ini? Slot jadwal petugas akan dilepas dan stok produk add-on akan dikembalikan otomatis."
+                                  data-confirm-item="Reservasi #{{ $r->id_reservasi }} ({{ $r->tgl_booking->format('d/m/Y') }} pukul {{ $r->jamMulaiTampil() }} WIB)"
+                                  data-confirm-description="Apakah Anda yakin ingin membatalkan reservasi ini? Pembatalan sebelum batas {{ $kebijakan->batas_batal_jam }} jam bebas pinalti. Tidak hadir tanpa membatalkan (Hangus) dihitung pelanggaran."
                                   data-confirm-button="Ya, Batalkan Reservasi">
                                 @csrf
                                 <div class="baris-input-batal">
@@ -213,17 +185,17 @@
                                     </button>
                                 </div>
                                 <small class="info-kebijakan-batal">
-                                    @if ($status === 'Menunggu')
+                                    @if ($r->statusTernormalisasi() === 'Menunggu')
                                         Reservasi masih menunggu konfirmasi kasir dan dapat dibatalkan kapan saja tanpa pinalti.
                                     @else
-                                        Pembatalan gratis tersedia hingga <strong>{{ $batasGratis->format('d/m/Y H:i') }} WIB</strong> ({{ $kebijakan->batas_batal_jam }} jam sebelum jadwal).
+                                        Pembatalan gratis tersedia hingga <strong>{{ $r->batasGratisBatal($kebijakan->batas_batal_jam)->format('d/m/Y H:i') }} WIB</strong> ({{ $kebijakan->batas_batal_jam }} jam sebelum jadwal). Tidak hadir tanpa pembatalan tercatat sebagai pelanggaran (Hangus).
                                     @endif
                                 </small>
                             </form>
-                        @elseif ($lewatBatasJamBatal)
+                        @elseif ($r->lewatBatasBatalPelanggan($kebijakan->batas_batal_jam))
                             <div class="info-batal-terkunci">
                                 <strong>Batas Pembatalan Online Berakhir:</strong>
-                                Pembatalan mandiri hanya dapat dilakukan minimal {{ $kebijakan->batas_batal_jam }} jam sebelum jadwal kedatangan ({{ $batasGratis->format('d/m/Y H:i') }} WIB). Silakan hubungi kasir Salon Rengganis.
+                                Pembatalan mandiri hanya dapat dilakukan minimal {{ $kebijakan->batas_batal_jam }} jam sebelum jadwal kedatangan ({{ $r->batasGratisBatal($kebijakan->batas_batal_jam)->format('d/m/Y H:i') }} WIB). Silakan hubungi kasir Salon Rengganis (tidak hadir tanpa konfirmasi akan tercatat sebagai pelanggaran Hangus).
                             </div>
                         @endif
                     </div>

@@ -75,6 +75,9 @@ class LaporanService
             ->orderByDesc('total_pesan')
             ->first();
 
+        $jumlahSelesai = $reservasi->filter(fn (Reservasi $r) => $r->statusTernormalisasi() === Reservasi::STATUS_SELESAI)->count();
+        $jumlahHangus = $reservasi->filter(fn (Reservasi $r) => $r->statusTernormalisasi() === Reservasi::STATUS_HANGUS)->count();
+
         return compact(
             'reservasi',
             'pelangganMap',
@@ -83,7 +86,9 @@ class LaporanService
             'totalPendapatan',
             'totalKomisi',
             'kinerjaKaryawan',
-            'layananTerlaris'
+            'layananTerlaris',
+            'jumlahSelesai',
+            'jumlahHangus'
         );
     }
 

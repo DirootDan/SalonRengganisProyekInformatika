@@ -26,7 +26,9 @@ class StrukController extends Controller
         $transaksi->load(['reservasi.pelanggan', 'reservasi.layanan', 'produk', 'kasir']);
         $struk = PengaturanStruk::aktif();
         $petugasMap = $this->reservasiService->petakanNamaPetugas(collect([$transaksi->reservasi]));
+        $ukuran = $struk->ukuranTernormalisasi();
+        $nomorNota = str_pad((string) $transaksi->id_reservasi, 4, '0', STR_PAD_LEFT);
 
-        return view('Karyawan.Kasir.struk-cetak', compact('transaksi', 'struk', 'petugasMap'));
+        return view('Karyawan.Kasir.struk-cetak', compact('transaksi', 'struk', 'petugasMap', 'ukuran', 'nomorNota'));
     }
 }

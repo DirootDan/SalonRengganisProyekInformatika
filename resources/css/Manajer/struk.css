@@ -40,9 +40,10 @@
     }
 }
 
+.form-grup .input-galat,
 .input-galat {
-    border-color: #dc2626 !important;
-    background-color: #fef2f2 !important;
+    border-color: var(--warna-bahaya);
+    background-color: var(--warna-bahaya-latar);
 }
 
 .pesan-galat-field {
