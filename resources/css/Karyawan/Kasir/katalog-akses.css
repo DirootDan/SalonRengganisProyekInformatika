@@ -198,3 +198,18 @@
 .btn-kunci-modal:hover {
     background: #fee2e2;
 }
+
+@media (max-width: 640px) {
+    .info-proteksi-katalog {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 14px;
+    }
+    .toolbar-kanan-akses {
+        width: 100%;
+    }
+    .btn-minta-akses-utama {
+        width: 100%;
+        justify-content: center;
+    }
+}

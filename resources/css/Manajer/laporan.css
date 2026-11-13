@@ -8,7 +8,7 @@
 
 .ringkasan-laporan {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 18px;
     margin-bottom: 24px;
 }
@@ -67,6 +67,33 @@
 .judul-sub-panel {
     margin: 0 0 16px;
     font-size: 17px;
+}
+
+@media (max-width: 640px) {
+    .btn-turun {
+        margin-top: 0;
+    }
+    .toolbar-kiri > div {
+        width: 100%;
+    }
+    .aksi-grup {
+        width: 100%;
+    }
+    .aksi-grup > a,
+    .aksi-grup > button {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+    .ringkasan-laporan {
+        gap: 12px;
+    }
+    .kartu-metrik {
+        padding: 16px;
+        border-radius: 16px;
+    }
+    .metrik-angka {
+        font-size: 20px;
+    }
 }
 
 @media print {

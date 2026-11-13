@@ -70,3 +70,17 @@
 .paginasi-wadah {
     margin-top: 20px;
 }
+
+@media (max-width: 640px) {
+    .tab-status-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .tab-status-item {
+        white-space: nowrap;
+        padding: 8px 14px;
+        font-size: 12.5px;
+    }
+}

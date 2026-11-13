@@ -26,6 +26,9 @@
     .struk-grid {
         grid-template-columns: 1fr;
     }
+    .pratinjau-wadah {
+        position: static;
+    }
 }
 
 .form-dua-kolom {

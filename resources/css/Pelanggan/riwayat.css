@@ -383,8 +383,29 @@
 }
 
 @media (max-width: 640px) {
+    .panel-notifikasi {
+        padding: 18px 16px;
+        border-radius: 18px;
+        margin-bottom: 20px;
+    }
+
     .reservasi-item {
-        padding: 18px 18px;
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .reservasi-tgl {
+        font-size: 15.5px;
+    }
+
+    .reservasi-layanan li {
+        gap: 8px;
+        font-size: 14px;
+    }
+
+    .panel-aksi-batal {
+        min-width: 0;
+        width: 100%;
     }
 
     .baris-input-batal {
@@ -393,6 +414,8 @@
     }
 
     .input-alasan-batal {
+        min-width: 0;
+        width: 100%;
         max-width: none;
     }
 }

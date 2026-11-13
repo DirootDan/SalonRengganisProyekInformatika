@@ -1,6 +1,6 @@
 .antrean-penuh-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
     gap: 18px;
 }
 
@@ -132,6 +132,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
     font-size: 14px;
     color: #db2777;
+}
+
+@media (max-width: 640px) {
+    .antrean-penuh-grid {
+        gap: 12px;
+    }
+    .kartu-antrean-item {
+        padding: 16px 14px;
+        border-radius: 16px;
+    }
+    .baris-layanan-atas {
+        flex-wrap: wrap;
+    }
+    .form-ganti-petugas-antrean {
+        flex-wrap: wrap;
+    }
+    .select-ganti-petugas {
+        min-width: 140px;
+        min-height: 36px;
+    }
+    .btn-ganti-petugas {
+        min-height: 36px;
+        padding: 6px 12px;
+    }
 }

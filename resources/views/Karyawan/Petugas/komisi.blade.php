@@ -49,13 +49,13 @@
             <tbody>
                 @forelse ($daftarKomisi as $k)
                     <tr>
-                        <td><strong>#{{ $k->id_reservasi }}</strong></td>
-                        <td>{{ $k->tgl_booking->format('d/m/Y') }}</td>
-                        <td>{{ $k->nama_cust }}</td>
-                        <td><strong>{{ $k->nama_layanan }}</strong></td>
-                        <td>Rp {{ number_format($k->harga_saat_ini, 0, ',', '.') }}</td>
-                        <td>{{ number_format($k->persen_komisi, 0) }}%</td>
-                        <td class="teks-komisi">Rp {{ number_format($k->nominal_komisi, 0, ',', '.') }}</td>
+                        <td data-label="ID Reservasi"><strong>#{{ $k->id_reservasi }}</strong></td>
+                        <td data-label="Tanggal">{{ $k->tgl_booking->format('d/m/Y') }}</td>
+                        <td data-label="Pelanggan">{{ $k->nama_cust }}</td>
+                        <td data-label="Layanan"><strong>{{ $k->nama_layanan }}</strong></td>
+                        <td data-label="Harga Layanan">Rp {{ number_format($k->harga_saat_ini, 0, ',', '.') }}</td>
+                        <td data-label="Persentase">{{ number_format($k->persen_komisi, 0) }}%</td>
+                        <td class="teks-komisi" data-label="Komisi">Rp {{ number_format($k->nominal_komisi, 0, ',', '.') }}</td>
                     </tr>
                 @empty
                     <tr>

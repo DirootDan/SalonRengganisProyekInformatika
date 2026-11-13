@@ -56,7 +56,7 @@
 
 @media (max-width: 980px) {
     .booking-portal-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -64,6 +64,11 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    min-width: 0;
+}
+
+.portal-kanan {
+    min-width: 0;
 }
 
 .portal-kartu {
@@ -411,7 +416,7 @@
 /* ===== Kartu Tiket Layanan Modern (Tanpa Scrollbar Sempit) ===== */
 .daftar-opsi-modern {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
     gap: 14px;
 }
 
@@ -681,7 +686,7 @@
 
 .daftar-produk-addon {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
     gap: 12px;
 }
 
@@ -755,6 +760,7 @@
 .portal-kanan {
     position: sticky;
     top: 92px;
+    scroll-margin-top: 108px;
 }
 
 .kartu-ringkasan-sticky {
@@ -950,6 +956,7 @@
 
 .input-kode-promo {
     flex: 1;
+    min-width: 0;
     padding: 10px 12px;
     border: 1.5px solid #e5e7eb;
     border-radius: 10px;
@@ -1662,7 +1669,17 @@
 
 @media (max-width: 980px) {
     .container {
-        margin-bottom: 110px;
+        margin-bottom: 120px;
+    }
+
+    .portal-kanan {
+        position: static;
+    }
+
+    /* Angkat tombol WhatsApp mengambang agar tidak menutup CTA bar bawah mobile */
+    .wa-mengambang {
+        bottom: 84px;
+        right: 14px;
     }
 
     .stepper-booking {
@@ -1721,5 +1738,92 @@
         text-decoration: none;
         white-space: nowrap;
         box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+    }
+}
+
+@media (max-width: 640px) {
+    .booking-hero {
+        padding: 20px 18px;
+        border-radius: 18px;
+        margin-bottom: 18px;
+    }
+
+    .booking-hero-judul {
+        font-size: 21px;
+    }
+
+    .booking-header-ringkas {
+        padding: 14px 16px;
+        gap: 10px;
+    }
+
+    .booking-judul-ringkas {
+        font-size: 18px;
+    }
+
+    .portal-kartu {
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .kartu-ringkasan-sticky {
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .stepper-booking {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .stepper-item {
+        padding: 8px 12px;
+        min-height: 46px;
+        flex: 1 1 100%;
+    }
+
+    .filter-kategori-bar {
+        max-width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .toolbar-produk-addon .search-input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .filter-produk-grup {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .opsi-blok .opsi {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .opsi-nama {
+        font-size: 14.5px;
+    }
+
+    .indikator-pilih {
+        min-width: 82px;
+        padding: 8px 10px;
+        font-size: 12.5px;
+    }
+
+    .kartu-addon {
+        flex-wrap: wrap;
+    }
+
+    .bar-bawah-mobile {
+        padding: 10px 14px;
+    }
+
+    .kotak-blokir {
+        padding: 24px 18px;
     }
 }

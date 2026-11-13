@@ -143,7 +143,7 @@
 
 .rincian-diff-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
     gap: 14px;
     margin-bottom: 18px;
 }
@@ -198,7 +198,7 @@
 
 .aksi-keputusan-baris {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 12px;
     padding-top: 14px;
     border-top: 1px solid #f3f4f6;
@@ -319,4 +319,36 @@
     text-align: center;
     color: var(--warna-teks-redup);
     padding: 24px;
+}
+
+@media (max-width: 640px) {
+    .tab-bar-persetujuan {
+        gap: 8px;
+    }
+    .tab-persetujuan {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    .kartu-otorisasi {
+        padding: 16px;
+        border-radius: 16px;
+    }
+    .kotak-perbandingan-total {
+        width: 100%;
+        text-align: left;
+    }
+    .form-setujui-inline,
+    .form-tolak-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-filter-tanggal {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .form-filter-tanggal > * {
+        flex: 1 1 auto;
+    }
 }

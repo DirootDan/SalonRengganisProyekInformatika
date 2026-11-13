@@ -18,6 +18,7 @@
                     <span class="brand-nama">Salon Rengganis</span>
                     <span class="brand-sub">Meja Operasional Kasir</span>
                 </div>
+                <button type="button" class="btn-tutup-sidebar" id="btnTutupSidebar" aria-label="Tutup Menu">&times;</button>
             </div>
 
             <nav class="sidebar-nav">
@@ -91,6 +92,8 @@
                 </div>
             </div>
         </aside>
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
 
         <div class="main-area">
             <header class="topbar">

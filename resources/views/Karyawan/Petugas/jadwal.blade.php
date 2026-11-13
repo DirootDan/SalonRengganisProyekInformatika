@@ -61,17 +61,17 @@
             <tbody>
                 @forelse ($jadwal as $item)
                     <tr>
-                        <td><strong>#{{ $item->id_reservasi }}</strong></td>
-                        <td>{{ $item->tgl_booking->format('d/m/Y') }} &bull; {{ $item->jam_booking ?? '-' }} WIB</td>
-                        <td>{{ $item->nama_cust }}<br><small>{{ $item->no_telp }}</small></td>
-                        <td><strong>{{ $item->nama_layanan }}</strong></td>
-                        <td><span class="lencana">{{ $item->status_reservasi }}</span></td>
-                        <td>
+                        <td data-label="No. Reservasi"><strong>#{{ $item->id_reservasi }}</strong></td>
+                        <td data-label="Tanggal &amp; Jam">{{ $item->tgl_booking->format('d/m/Y') }} &bull; {{ $item->jam_booking ?? '-' }} WIB</td>
+                        <td data-label="Pelanggan"><span>{{ $item->nama_cust }}<br><small>{{ $item->no_telp }}</small></span></td>
+                        <td data-label="Layanan"><strong>{{ $item->nama_layanan }}</strong></td>
+                        <td data-label="Status Booking"><span class="lencana">{{ $item->status_reservasi }}</span></td>
+                        <td data-label="Pengerjaan">
                             <span class="lencana {{ $item->sudah_selesai ? 'lencana-hijau' : 'lencana-kuning' }}">
                                 {{ $item->status_layanan }}
                             </span>
                         </td>
-                        <td>
+                        <td class="sel-aksi-petugas" data-label="Aksi">
                             @if ($item->sudah_selesai)
                                 <span class="teks-sudah">Sudah Selesai</span>
                             @elseif ($item->bisa_ditandai_selesai)

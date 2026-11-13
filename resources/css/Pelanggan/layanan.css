@@ -1,7 +1,7 @@
 /* ===== Layanan (Card UI Premium) ===== */
 .grid-layanan {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
     gap: 24px;
 }
 
@@ -87,4 +87,14 @@
 
 .btn-pilih-layanan:hover {
     background: #be185d;
+}
+
+@media (max-width: 640px) {
+    .grid-layanan {
+        gap: 14px;
+    }
+    .kartu {
+        padding: 22px 18px;
+        border-radius: 18px;
+    }
 }

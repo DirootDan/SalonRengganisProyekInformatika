@@ -1,12 +1,12 @@
 .antrean-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
     gap: 14px;
 }
 
 .stat-kasir-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
     gap: 18px;
     margin-bottom: 24px;
 }
@@ -150,7 +150,17 @@
 
 @media (max-width: 980px) {
     .pos-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .pos-katalog-panel,
+    .pos-keranjang {
+        min-width: 0;
+    }
+    .pos-keranjang {
+        position: static;
+    }
+    .katalog-grid {
+        max-height: 380px;
     }
 }
 
@@ -202,6 +212,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 6px;
 }
 
@@ -251,7 +263,7 @@
 
 .katalog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 165px), 1fr));
     gap: 12px;
     max-height: 520px;
     overflow-y: auto;
@@ -921,4 +933,60 @@
     font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .pos-tab-bar {
+        gap: 6px;
+    }
+    .pos-tab {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    .katalog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .item-katalog {
+        padding: 12px;
+    }
+    .katalog-nama,
+    .katalog-harga {
+        font-size: 13px;
+    }
+    .keranjang-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .item-keranjang {
+        flex-wrap: wrap;
+    }
+    .antrean-kartu {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .antrean-kanan {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .banner-hold-ditolak {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .kartu-hold-kepala {
+        flex-wrap: wrap;
+    }
+    .hold-nominal-kanan {
+        align-items: flex-start;
+    }
+    .input-harga-override {
+        width: 100%;
+    }
+    .antrean-list-modal {
+        max-height: 60vh;
+    }
 }

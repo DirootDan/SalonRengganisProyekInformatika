@@ -1,6 +1,6 @@
 .metode-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 20px;
 }
 
@@ -147,4 +147,18 @@
 
 .sakelar input:checked + .slider::before {
     transform: translateX(22px);
+}
+
+@media (max-width: 640px) {
+    .metode-grid {
+        gap: 14px;
+    }
+    .kartu-metode {
+        padding: 18px 16px;
+        border-radius: 16px;
+    }
+    .baris-info {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
 }

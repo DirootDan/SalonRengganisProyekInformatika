@@ -527,7 +527,7 @@ input[type="date"]:focus,
 /* ===== Grid Scrollable Opsi Layanan ===== */
 .daftar-opsi { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); 
     gap: 12px; 
     max-height: 340px; 
     overflow-y: auto; 
@@ -633,4 +633,66 @@ input[type="date"]:focus,
     color: #9ca3af; 
     font-size: 13px; 
     margin-top: 60px; 
+}
+
+@media (max-width: 768px) {
+    .menu {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .brand {
+        font-size: 18px;
+    }
+
+    .container {
+        margin: 24px auto 80px;
+        padding: 0 16px;
+    }
+
+    .kartu-sambutan {
+        padding: 34px 20px;
+        border-radius: 18px;
+        margin-bottom: 20px;
+    }
+
+    .judul-halaman {
+        font-size: 26px;
+    }
+
+    .sub-halaman {
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    .form-box {
+        padding: 24px 18px;
+        border-radius: 18px;
+    }
+
+    .footer {
+        margin-top: 32px;
+        padding: 26px 16px 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand {
+        font-size: 16px;
+    }
+
+    .akun-sapaan {
+        max-width: 74px;
+        font-size: 12.5px;
+    }
+
+    .tombol-lonceng {
+        width: 38px;
+        height: 38px;
+    }
+
+    .akun-trigger {
+        padding: 4px 10px 4px 4px;
+        gap: 6px;
+    }
 }

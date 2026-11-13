@@ -74,7 +74,7 @@ html { scroll-behavior: smooth; }
 
 .pb-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
     gap: 18px;
 }
 
@@ -101,7 +101,7 @@ html { scroll-behavior: smooth; }
     padding: 0;
     margin: 32px 0 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 18px;
 }
 
@@ -123,7 +123,14 @@ html { scroll-behavior: smooth; }
 .pb-footer { text-align: center; padding: 26px; color: #9ca3af; font-size: 13px; border-top: 1px solid #fce7f3; }
 
 @media (max-width: 640px) {
+    .pb-wadah { padding: 0 14px; }
     .pb-menu { display: none; }
-    .pb-hero { padding: 60px 0 50px; }
-    .pb-hero h1 { font-size: 30px; }
+    .pb-brand { font-size: 15.5px; }
+    .pb-akun { gap: 8px; }
+    .pb-tautan-masuk { font-size: 13px; }
+    .pb-tombol-kecil { padding: 7px 14px; font-size: 12.5px; }
+    .pb-hero { padding: 52px 0 44px; }
+    .pb-hero h1 { font-size: 27px; }
+    .pb-seksi { padding: 42px 0; }
+    .pb-seksi h2 { font-size: 22px; }
 }
