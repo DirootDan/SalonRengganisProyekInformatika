@@ -145,57 +145,48 @@
 
                         <div class="daftar-opsi-modern" id="daftarLayananGrid">
                             @foreach ($layanan as $item)
-                                @php
-                                    $jabatan       = $item->jabatan_petugas;
-                                    $daftarPetugas = $petugas->get($jabatan, collect());
-                                    $dipilih       = in_array((int) $item->id_layanan, $daftarLayananAwal, true);
-                                    $petugasLama   = old('petugas.' . $item->id_layanan, '');
-                                    $durasiMenit   = (int) ($item->durasi_menit ?: 60);
-                                    $jedaMenit     = (int) ($item->jeda_menit ?? 15);
-                                @endphp
-
-                                <div class="opsi-blok {{ $dipilih ? 'terpilih' : '' }} {{ $errors->has('petugas.' . $item->id_layanan) ? 'galat' : '' }}"
+                                <div class="opsi-blok {{ $item->dipilih_awal ? 'terpilih' : '' }} {{ $errors->has('petugas.' . $item->id_layanan) ? 'galat' : '' }}"
                                      data-id-layanan="{{ $item->id_layanan }}"
                                      data-nama="{{ $item->nama_layanan }}"
-                                     data-jabatan="{{ $jabatan }}">
+                                     data-jabatan="{{ $item->jabatan_petugas }}">
                                     <label class="opsi">
                                         <input type="checkbox"
                                                name="layanan[]"
                                                value="{{ $item->id_layanan }}"
                                                data-nama-layanan="{{ $item->nama_layanan }}"
-                                               data-jabatan="{{ $jabatan }}"
+                                               data-jabatan="{{ $item->jabatan_petugas }}"
                                                data-harga="{{ (float) $item->harga_layanan }}"
-                                               data-durasi="{{ $durasiMenit }}"
-                                               data-jeda="{{ $jedaMenit }}"
-                                               @checked($dipilih)>
+                                               data-durasi="{{ $item->durasiEfektifMenit() }}"
+                                               data-jeda="{{ $item->jedaEfektifMenit() }}"
+                                               @checked($item->dipilih_awal)>
 
                                         <div class="opsi-info">
                                             <span class="opsi-nama">{{ $item->nama_layanan }}</span>
                                             <span class="opsi-meta-ringkas">
-                                                ⏱ {{ $durasiMenit }} menit &bull; {{ $jabatan }}
+                                                ⏱ {{ $item->durasiEfektifMenit() }} menit &bull; {{ $item->jabatan_petugas }}
                                             </span>
                                         </div>
 
                                         <div class="opsi-kanan-harga">
                                             <span class="opsi-harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</span>
-                                            <span class="indikator-pilih">{{ $dipilih ? '✓ Terpilih' : '+ Pilih' }}</span>
+                                            <span class="indikator-pilih">{{ $item->dipilih_awal ? '✓ Terpilih' : '+ Pilih' }}</span>
                                         </div>
                                     </label>
 
                                     <div class="pilih-petugas">
                                         <label for="petugas_{{ $item->id_layanan }}" class="petugas-label">
-                                            Preferensi {{ $jabatan }} (opsional):
+                                            Preferensi {{ $item->jabatan_petugas }} (opsional):
                                         </label>
                                         <select id="petugas_{{ $item->id_layanan }}"
                                                 name="petugas[{{ $item->id_layanan }}]"
                                                 class="select-petugas"
-                                                data-jabatan="{{ $jabatan }}"
-                                                data-pilihan-lama="{{ $petugasLama }}"
-                                                data-tersedia="{{ $daftarPetugas->count() }}"
-                                                @disabled(! $dipilih)>
-                                            <option value="">🤖 Pilihkan {{ $jabatan }} Otomatis ({{ $daftarPetugas->count() }} tersedia)</option>
-                                            @foreach ($daftarPetugas as $staf)
-                                                <option value="{{ $staf->id_karyawan }}" @selected((string) $petugasLama === (string) $staf->id_karyawan)>
+                                                data-jabatan="{{ $item->jabatan_petugas }}"
+                                                data-pilihan-lama="{{ $item->petugas_lama }}"
+                                                data-tersedia="{{ $item->daftar_petugas->count() }}"
+                                                @disabled(! $item->dipilih_awal)>
+                                            <option value="">🤖 Pilihkan {{ $item->jabatan_petugas }} Otomatis ({{ $item->daftar_petugas->count() }} tersedia)</option>
+                                            @foreach ($item->daftar_petugas as $staf)
+                                                <option value="{{ $staf->id_karyawan }}" @selected((string) $item->petugas_lama === (string) $staf->id_karyawan)>
                                                     {{ $staf->nama_staff }}
                                                 </option>
                                             @endforeach
@@ -354,10 +345,7 @@
 
                             <div class="daftar-produk-addon" id="daftarProdukGrid">
                                 @foreach ($produk as $prod)
-                                    @php
-                                        $qtyLama = (int) old('produk_addon.' . $prod->id_produk, 0);
-                                    @endphp
-                                    <div class="kartu-addon {{ $qtyLama > 0 ? 'aktif' : '' }}"
+                                    <div class="kartu-addon {{ $prod->qty_awal > 0 ? 'aktif' : '' }}"
                                          data-id-produk="{{ $prod->id_produk }}"
                                          data-nama-produk="{{ strtolower($prod->nama_produk) }}">
                                         <div class="addon-info">
@@ -372,7 +360,7 @@
                                                    class="input-qty-addon"
                                                    min="0"
                                                    max="{{ $prod->stok_produk }}"
-                                                   value="{{ $qtyLama }}"
+                                                   value="{{ $prod->qty_awal }}"
                                                    data-nama="{{ $prod->nama_produk }}"
                                                    data-harga="{{ (float) $prod->harga_produk }}"
                                                    data-stok="{{ (int) $prod->stok_produk }}"

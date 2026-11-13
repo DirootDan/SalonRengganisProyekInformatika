@@ -39,23 +39,19 @@
                 </thead>
                 <tbody>
                     @forelse ($daftarBooking as $r)
-                        @php
-                            $pel = $r->pelanggan;
-                            $status = $r->statusTernormalisasi();
-                        @endphp
-                        <tr class="baris-booking" data-cari="{{ strtolower('#' . $r->id_reservasi . ' ' . ($pel->nama_cust ?? '')) }}">
+                        <tr class="baris-booking" data-cari="{{ strtolower('#' . $r->id_reservasi . ' ' . ($r->pelanggan->nama_cust ?? '')) }}">
                             <td><strong>#{{ $r->id_reservasi }}</strong></td>
                             <td>
                                 <strong>{{ $r->tgl_booking->format('d/m/Y') }}</strong><br>
                                 <small>Pukul {{ $r->jam_booking ?: '10:00' }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }} WIB</small>
                             </td>
                             <td>
-                                <strong>{{ $pel->nama_cust ?? 'Pelanggan' }}</strong><br>
-                                <small>{{ $pel->no_telp ?? '-' }}</small>
-                                @if ($pel && $pel->sedangDiblokir())
-                                    <div><span class="lencana-pinalti-bahaya">Sedang Diblokir ({{ $pel->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }})</span></div>
-                                @elseif ($pel && $pel->jumlah_pelanggaran > 0)
-                                    <div><span class="lencana-pinalti-peringatan">Pelanggaran: {{ $pel->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }}</span></div>
+                                <strong>{{ $r->pelanggan->nama_cust ?? 'Pelanggan' }}</strong><br>
+                                <small>{{ $r->pelanggan->no_telp ?? '-' }}</small>
+                                @if ($r->pelanggan && $r->pelanggan->sedangDiblokir())
+                                    <div><span class="lencana-pinalti-bahaya">Sedang Diblokir ({{ $r->pelanggan->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }})</span></div>
+                                @elseif ($r->pelanggan && $r->pelanggan->jumlah_pelanggaran > 0)
+                                    <div><span class="lencana-pinalti-peringatan">Pelanggaran: {{ $r->pelanggan->jumlah_pelanggaran }}/{{ $kebijakan->batas_pelanggaran }}</span></div>
                                 @endif
                             </td>
                             <td>
@@ -80,15 +76,15 @@
                             </td>
                             <td><strong>Rp {{ number_format($r->estimasiTotalAkhir(), 0, ',', '.') }}</strong></td>
                             <td>
-                                <span class="badge {{ $status === 'Selesai' || $status === 'Diterima' ? 'badge-aktif' : ($status === 'Menunggu' ? 'badge-pending' : 'badge-nonaktif') }}">
-                                    {{ $status }}
+                                <span class="badge {{ $r->kelasStatusBadge() }}">
+                                    {{ $r->statusTernormalisasi() }}
                                 </span>
                                 @if ($r->alasan_penolakan)
                                     <small class="alasan-kecil">{{ $r->alasan_penolakan }}</small>
                                 @endif
                             </td>
                             <td>
-                                @if ($status === 'Menunggu')
+                                @if ($r->statusTernormalisasi() === 'Menunggu')
                                     <div class="aksi-grup">
                                         <form method="POST" action="{{ route('kasir.permintaan.terima', $r->id_reservasi) }}">
                                             @csrf
@@ -97,12 +93,12 @@
 
                                         <button type="button" class="btn-aksi btn-hapus btnBukaModalTolak"
                                                 data-id="{{ $r->id_reservasi }}"
-                                                data-pelanggan="{{ $pel->nama_cust ?? 'Pelanggan' }}"
+                                                data-pelanggan="{{ $r->pelanggan->nama_cust ?? 'Pelanggan' }}"
                                                 data-url="{{ route('kasir.permintaan.tolak', $r->id_reservasi) }}">
                                             ✕ Tolak
                                         </button>
                                     </div>
-                                @elseif ($status === 'Diterima')
+                                @elseif ($r->statusTernormalisasi() === 'Diterima')
                                     <a href="{{ route('kasir.dashboard', ['muat_reservasi' => $r->id_reservasi]) }}" class="btn-aksi btn-edit">Proses Bayar</a>
                                 @else
                                     <span class="teks-selesai">Selesai / Ditutup</span>

@@ -65,7 +65,12 @@ class PengaturanStruk extends Model
 
     public function ukuranTernormalisasi(): string
     {
-        $ukuran = (string) ($this->ukuran_kertas ?: self::UKURAN_80MM);
+        return $this->ukuranTerpilih();
+    }
+
+    public function ukuranTerpilih(?string $kandidat = null): string
+    {
+        $ukuran = (string) ($kandidat ?: $this->ukuran_kertas ?: self::UKURAN_80MM);
 
         return array_key_exists($ukuran, self::DAFTAR_UKURAN_KERTAS)
             ? $ukuran

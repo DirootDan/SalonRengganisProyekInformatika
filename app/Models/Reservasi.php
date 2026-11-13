@@ -212,18 +212,29 @@ class Reservasi extends Model
             ->withTrashed();
     }
 
+    public function hargaLayananTampil(Layanan $layanan): float
+    {
+        $hargaPivot = (float) ($layanan->pivot->harga_saat_ini ?? 0);
+
+        return $hargaPivot > 0 ? $hargaPivot : (float) $layanan->harga_layanan;
+    }
+
+    public function subtotalProdukAddonBaris(Produk $produk): float
+    {
+        $hargaPivot = (float) ($produk->pivot->harga_saat_ini ?? 0);
+        $harga = $hargaPivot > 0 ? $hargaPivot : (float) $produk->harga_produk;
+
+        return $harga * (int) ($produk->pivot->jumlah ?? 0);
+    }
+
     public function subtotalLayanan(): float
     {
-        return (float) $this->layanan->sum(
-            fn ($l) => (float) ($l->pivot->harga_saat_ini > 0 ? $l->pivot->harga_saat_ini : $l->harga_layanan)
-        );
+        return (float) $this->layanan->sum(fn ($l) => $this->hargaLayananTampil($l));
     }
 
     public function subtotalProdukAddon(): float
     {
-        return (float) $this->produkAddon->sum(
-            fn ($p) => (float) ($p->pivot->harga_saat_ini > 0 ? $p->pivot->harga_saat_ini : $p->harga_produk) * (int) $p->pivot->jumlah
-        );
+        return (float) $this->produkAddon->sum(fn ($p) => $this->subtotalProdukAddonBaris($p));
     }
 
     public function estimasiTotalAkhir(): float
@@ -231,6 +242,21 @@ class Reservasi extends Model
         $subtotal = $this->subtotalLayanan() + $this->subtotalProdukAddon();
 
         return max(0.0, $subtotal - (float) $this->nominal_diskon);
+    }
+
+    public function nominalTampilLaporan(): float
+    {
+        return (float) ($this->transaksi ? $this->transaksi->total_bayar : $this->estimasiTotalAkhir());
+    }
+
+    public function ringkasanNamaLayanan(): string
+    {
+        return $this->layanan->pluck('nama_layanan')->join(', ');
+    }
+
+    public function ringkasanProdukAddon(): string
+    {
+        return $this->produkAddon->map(fn ($p) => $p->nama_produk.' (x'.$p->pivot->jumlah.')')->join(', ');
     }
 
     public function scopeMenungguKonfirmasi(Builder $query): Builder

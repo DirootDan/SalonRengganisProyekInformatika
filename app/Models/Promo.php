@@ -93,6 +93,11 @@ class Promo extends Model
         return min($subtotal, max(0.0, (float) $this->nilai_diskon));
     }
 
+    public function labelStatus(): string
+    {
+        return $this->masihBerlaku() ? 'Aktif' : 'Berakhir';
+    }
+
     public function jumlahReservasiAktif(): int
     {
         return DB::table('reservasi')

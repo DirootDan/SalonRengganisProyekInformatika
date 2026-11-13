@@ -21,22 +21,10 @@
     <!-- TAB 1: ANTREAN MENUNGGU KEPUTUSAN MANAJER -->
     <section id="panelPending" class="panel-tab-konten">
         @forelse ($daftarPending as $item)
-            @php
-                $labelKonteks = match ($item->konteks) {
-                    \App\Models\PermintaanOtorisasi::KONTEKS_POS_TRANSAKSI => 'POS Transaksi (≥ Rp 150.000)',
-                    \App\Models\PermintaanOtorisasi::KONTEKS_KATALOG_LAYANAN => 'Akses 1x Katalog Layanan',
-                    \App\Models\PermintaanOtorisasi::KONTEKS_KATALOG_PRODUK => 'Akses 1x Katalog Produk',
-                    default => $item->konteks,
-                };
-                $layananAwal = collect($item->snapshot_awal['layanan'] ?? []);
-                $layananUsulan = collect($item->snapshot_keranjang['layanan'] ?? []);
-                $produkUsulan = collect($item->snapshot_keranjang['produk'] ?? []);
-            @endphp
-
             <article class="kartu-otorisasi">
                 <div class="kartu-otorisasi-atas">
                     <div>
-                        <span class="lencana-konteks">{{ $labelKonteks }}</span>
+                        <span class="lencana-konteks">{{ $item->labelKonteks() }}</span>
                         <span class="kode-tiket">#{{ $item->kode_referensi }}</span>
                         @if ($item->sedang_dihold)
                             <span class="lencana-hold">⏸️ Sedang Di-Hold di POS</span>
@@ -78,7 +66,7 @@
                         <div class="kolom-diff">
                             <h4>Kondisi Awal (Harga Normal / Booking)</h4>
                             <ul class="daftar-rincian-item">
-                                @forelse ($layananAwal as $lAwal)
+                                @forelse ($item->layananAwalList() as $lAwal)
                                     <li>
                                         <span>💇 {{ $lAwal['nama'] }}</span>
                                         <span>Rp {{ number_format((float) $lAwal['harga_normal'], 0, ',', '.') }}</span>
@@ -92,7 +80,7 @@
                         <div class="kolom-diff kolom-diff-usulan">
                             <h4>Usulan Perubahan Kasir</h4>
                             <ul class="daftar-rincian-item">
-                                @foreach ($layananUsulan as $lUsul)
+                                @foreach ($item->layananUsulanList() as $lUsul)
                                     <li>
                                         <span>
                                             💇 {{ $lUsul['nama'] }}
@@ -108,7 +96,7 @@
                                         </span>
                                     </li>
                                 @endforeach
-                                @foreach ($produkUsulan as $pUsul)
+                                @foreach ($item->produkUsulanList() as $pUsul)
                                     <li>
                                         <span>
                                             🧴 {{ $pUsul['nama'] }} (x{{ $pUsul['qty'] }})

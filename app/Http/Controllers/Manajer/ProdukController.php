@@ -11,7 +11,7 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = Produk::orderBy('nama_produk')->get();
+        $produk = Produk::withCount('reservasiAktif')->orderBy('nama_produk')->get();
 
         return view('Manajer.produk', compact('produk'));
     }

@@ -9,12 +9,6 @@
 @endpush
 
 @section('isi')
-    @php
-        $konteksLayanan = \App\Models\PermintaanOtorisasi::KONTEKS_KATALOG_LAYANAN;
-        $tiketTambah = $petaAkses[\App\Services\OtorisasiKatalogService::kunciAkses(\App\Models\PermintaanOtorisasi::AKSI_TAMBAH, null)] ?? null;
-        $bukaUlangModalLayanan = $errors->hasAny(['nama_layanan', 'kategori', 'jabatan_petugas', 'harga_layanan', 'durasi_menit', 'jeda_menit']);
-    @endphp
-
     @include('Karyawan.Kasir.partials.banner-akses-katalog')
 
     <div class="panel-kartu">
@@ -79,11 +73,6 @@
                 </thead>
                 <tbody>
                     @foreach ($layanan as $item)
-                        @php
-                            $jmlAktif = $item->jumlahReservasiAktif();
-                            $tiketEdit = $petaAkses[\App\Services\OtorisasiKatalogService::kunciAkses(\App\Models\PermintaanOtorisasi::AKSI_UBAH, $item->id_layanan)] ?? null;
-                            $tiketHapus = $petaAkses[\App\Services\OtorisasiKatalogService::kunciAkses(\App\Models\PermintaanOtorisasi::AKSI_HAPUS, $item->id_layanan)] ?? null;
-                        @endphp
                         <tr class="baris-layanan"
                             data-nama="{{ strtolower($item->nama_layanan) }}"
                             data-jabatan="{{ $item->jabatan_petugas }}">
@@ -107,10 +96,10 @@
                             <td>
                                 <div class="aksi-katalog-kolom">
                                     <div class="baris-status-akses">
-                                        @if ($tiketEdit?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
+                                        @if ($item->tiket_edit?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
                                             <button type="button" class="btn-aksi btn-edit btnEditLayanan"
                                                     data-url-update="{{ route('kasir.layanan.update', $item->id_layanan) }}"
-                                                    data-url-batal="{{ route('kasir.otorisasi-katalog.destroy', $tiketEdit->id_otorisasi) }}"
+                                                    data-url-batal="{{ route('kasir.otorisasi-katalog.destroy', $item->tiket_edit->id_otorisasi) }}"
                                                     data-nama-asli="{{ $item->nama_layanan }}"
                                                     data-kategori="{{ $item->kategori }}"
                                                     data-durasi="{{ (int) $item->durasi_menit }}"
@@ -118,14 +107,14 @@
                                                     data-harga="{{ (int) $item->harga_layanan }}">
                                                 🔓 Edit Sekarang (1x)
                                             </button>
-                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketEdit->id_otorisasi) }}">
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $item->tiket_edit->id_otorisasi) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-tarik-akses">Batal Akses</button>
                                             </form>
-                                        @elseif ($tiketEdit?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
+                                        @elseif ($item->tiket_edit?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
                                             <span class="badge-akses badge-akses-pending">⏳ Edit Pending</span>
-                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketEdit->id_otorisasi) }}">
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $item->tiket_edit->id_otorisasi) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-tarik-akses">Tarik</button>
@@ -140,14 +129,14 @@
                                             </button>
                                         @endif
 
-                                        @if ($tiketHapus?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
+                                        @if ($item->tiket_hapus?->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
                                             <form method="POST"
                                                   action="{{ route('kasir.layanan.destroy', $item->id_layanan) }}"
                                                   class="formHapusLayanan"
                                                   data-confirm="Hapus layanan '{{ $item->nama_layanan }}' menggunakan hak akses 1x pakai?"
                                                   data-confirm-title="Hapus Layanan (1x Pakai)"
                                                   data-confirm-item="{{ $item->nama_layanan }}"
-                                                  data-confirm-impact="{{ $jmlAktif > 0 ? 'Perhatian: Layanan ini masih memiliki ' . $jmlAktif . ' reservasi aktif sehingga penghapusan akan ditolak server.' : 'Setelah dihapus, hak akses otomatis terkunci kembali.' }}"
+                                                  data-confirm-impact="{{ $item->pesanDampakHapusKasir() }}"
                                                   data-confirm-label="Ya, Hapus Layanan">
                                                 @csrf
                                                 @method('DELETE')
@@ -155,14 +144,14 @@
                                                     🔓 Hapus (1x)
                                                 </button>
                                             </form>
-                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketHapus->id_otorisasi) }}">
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $item->tiket_hapus->id_otorisasi) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-tarik-akses">Batal Akses</button>
                                             </form>
-                                        @elseif ($tiketHapus?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
+                                        @elseif ($item->tiket_hapus?->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
                                             <span class="badge-akses badge-akses-pending">⏳ Hapus Pending</span>
-                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $tiketHapus->id_otorisasi) }}">
+                                            <form method="POST" action="{{ route('kasir.otorisasi-katalog.destroy', $item->tiket_hapus->id_otorisasi) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-tarik-akses">Tarik</button>

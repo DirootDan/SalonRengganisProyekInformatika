@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PengaturanStruk;
 use App\Models\Transaksi;
 use App\Services\ReservasiService;
+use Illuminate\Support\Facades\Auth;
 
 class StrukController extends Controller
 {
@@ -17,8 +18,10 @@ class StrukController extends Controller
     {
         $struk = PengaturanStruk::aktif();
         $daftarUkuran = PengaturanStruk::DAFTAR_UKURAN_KERTAS;
+        $ukuranAktif = $struk->ukuranTernormalisasi();
+        $namaKasirLogin = Auth::guard('karyawan')->user()->nama_staff ?? 'Kasir Salon';
 
-        return view('Karyawan.Kasir.struk', compact('struk', 'daftarUkuran'));
+        return view('Karyawan.Kasir.struk', compact('struk', 'daftarUkuran', 'ukuranAktif', 'namaKasirLogin'));
     }
 
     public function cetak(Transaksi $transaksi)

@@ -10,10 +10,6 @@
     @stack('styles')
 </head>
 <body>
-    @php
-        $jumlahPendingOtorisasi = \App\Models\PermintaanOtorisasi::menungguPersetujuan()->count();
-    @endphp
-
     <div class="admin-shell">
         <!-- Sidebar Kiri Khusus Manajer -->
         <aside class="sidebar" id="sidebar">

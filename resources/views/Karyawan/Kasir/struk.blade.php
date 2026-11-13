@@ -9,11 +9,6 @@
 @endpush
 
 @section('isi')
-    @php
-        $ukuranAktif = $struk->ukuranTernormalisasi();
-        $namaKasirLogin = auth('karyawan')->user()->nama_staff ?? 'Kasir Salon';
-    @endphp
-
     <div class="struk-grid">
         <div class="panel-kartu">
             <div class="kepala-info-struk">

@@ -1,4 +1,15 @@
-import { escapeHtml, inisialisasiOtorisasiPos } from './pos-otorisasi';
+import { inisialisasiOtorisasiPos } from './pos-otorisasi';
+import {
+    apakahMetodeNonTunai,
+    formatRp,
+    hitungPotonganPromoDariSubtotal,
+    hitungTotalAkhir,
+} from './dashboard/kalkulasi';
+import {
+    buatElemenBarisKeranjang,
+    perbaruiPeringatanPetugas,
+    sinkronInputHidden,
+} from './dashboard/keranjangRenderer';
 
 document.addEventListener('DOMContentLoaded', () => {
     const keranjang = new Map();
@@ -38,44 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnBukaModalAntrean')?.addEventListener('click', () => aturModalAntrean(true));
     document.getElementById('btnPilihAntreanKecil')?.addEventListener('click', () => aturModalAntrean(true));
     document.getElementById('btnTutupModalAntrean')?.addEventListener('click', () => aturModalAntrean(false));
-    modalAntreanPos?.addEventListener('click', e => { if (e.target === modalAntreanPos) aturModalAntrean(false); });
-    document.querySelectorAll('[data-buka-hold]').forEach(btn => {
+    modalAntreanPos?.addEventListener('click', (e) => { if (e.target === modalAntreanPos) aturModalAntrean(false); });
+    document.querySelectorAll('[data-buka-hold]').forEach((btn) => {
         btn.addEventListener('click', () => document.getElementById('btnBukaHoldPos')?.click());
     });
 
-    const formatRp = (angka) => new Intl.NumberFormat('id-ID', {
-        style: 'currency', currency: 'IDR', minimumFractionDigits: 0,
-    }).format(Math.max(0, Math.round(angka)));
-
-    const hitungSubtotal = () => {
-        let sub = 0;
-        keranjang.forEach(item => { sub += item.harga * item.qty; });
-        return sub;
-    };
-
-    const hitungPotonganPromoDariSubtotal = (sub) => {
-        if (!selectPromo || !selectPromo.value) return 0;
-        const opt = selectPromo.selectedOptions[0];
-        const tipe = opt?.dataset.tipe || '';
-        const nilai = parseFloat(opt?.dataset.nilai || '0');
-        const min = parseFloat(opt?.dataset.min || '0');
-        if (sub < min) return 0;
-        return tipe === 'Persentase' ? Math.round(sub * (nilai / 100)) : nilai;
-    };
-
-    const hitungTotalAkhir = () => {
-        const sub = hitungSubtotal();
-        return Math.max(0, Math.round(sub - hitungPotonganPromoDariSubtotal(sub)));
-    };
-
-    const apakahMetodeNonTunai = () => {
-        const opt = selectMetodeBayar?.selectedOptions[0];
-        const kat = (opt?.dataset.kategori || opt?.textContent || '').toLowerCase();
-        return Boolean(selectMetodeBayar) && !kat.includes('tunai');
-    };
+    const ambilTotal = () => hitungTotalAkhir(keranjang, selectPromo);
 
     const hitungKembalian = () => {
-        const total = hitungTotalAkhir();
+        const total = ambilTotal();
         if (btnPecahanEl) {
             const bulat500 = total > 0 ? Math.ceil(total / 500) * 500 : 0;
             btnPecahanEl.dataset.nominal = String(bulat500);
@@ -87,81 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const perbaruiPeringatanPetugas = () => {
-        if (!peringatanPetugas) return;
-        const daftar = [];
-        keranjang.forEach(item => {
-            if (item.kategori === 'Layanan' && item.petugasNonaktif) {
-                daftar.push(`Petugas "${escapeHtml(item.namaPetugasLama || 'Sebelumnya')}" pada layanan "${escapeHtml(item.nama)}" sudah dinonaktifkan/dihapus. Silakan pilih ${escapeHtml(item.jabatan || 'petugas')} pengganti yang aktif.`);
-            }
-        });
-        peringatanPetugas.innerHTML = daftar.map(p => `<div>&bull; ${p}</div>`).join('');
-        peringatanPetugas.hidden = daftar.length === 0;
-    };
-
-    const tambahHidden = (nama, nilai) => {
-        const inp = document.createElement('input');
-        inp.type = 'hidden';
-        inp.name = nama;
-        inp.value = String(nilai);
-        hiddenContainer.appendChild(inp);
-    };
-
-    const sinkronInputHidden = () => {
-        if (!hiddenContainer) return;
-        hiddenContainer.innerHTML = '';
-        keranjang.forEach((item) => {
-            const adaOverride = Math.abs(item.harga - item.hargaNormal) >= 1;
-            if (item.kategori === 'Layanan') {
-                tambahHidden('layanan_ids[]', item.idAsli);
-                if (item.idPetugas) tambahHidden(`petugas_layanan[${item.idAsli}]`, item.idPetugas);
-                if (adaOverride) tambahHidden(`harga_override_layanan[${item.idAsli}]`, Math.round(item.harga));
-            } else {
-                tambahHidden(`produk_items[${item.idAsli}]`, item.qty);
-                if (adaOverride) tambahHidden(`harga_override_produk[${item.idAsli}]`, Math.round(item.harga));
-            }
-        });
-    };
-
-    const buatDropdownPetugasLayanan = (item, idKeranjang) => {
-        const jabatan = item.jabatan || 'Stylist';
-        const opsiHtml = daftarPetugasAktif
-            .filter(s => s.role_jabatan === jabatan)
-            .map(staf => {
-                const terpilih = String(staf.id_karyawan) === String(item.idPetugas || '') ? 'selected' : '';
-                return `<option value="${escapeHtml(staf.id_karyawan)}" ${terpilih}>${escapeHtml(staf.nama_staff)} (${escapeHtml(staf.role_jabatan)} &bull; Komisi ${escapeHtml(staf.persen_komisi)}%)</option>`;
-            }).join('');
-        const kelasGalat = item.petugasNonaktif ? 'select-petugas-pos-galat' : '';
-        const labelKosong = item.petugasNonaktif ? `-- Wajib Pilih ${escapeHtml(jabatan)} Pengganti Aktif --` : `-- Pilih ${escapeHtml(jabatan)} --`;
-
-        return `<div class="keranjang-petugas-baris">
-            <label class="label-petugas-kecil">Petugas ${escapeHtml(jabatan)}:</label>
-            <select class="select-petugas-pos ${kelasGalat}" data-id-keranjang="${escapeHtml(idKeranjang)}">
-                <option value="">${labelKosong}</option>${opsiHtml}
-            </select>
-        </div>`;
-    };
-
-    const buatKontrolOverrideHarga = (item, id) => {
-        const idAman = escapeHtml(id);
-        if (item.sedangEditHarga) {
-            return `<div class="baris-override-harga">
-                <input type="number" class="input-harga-override" data-id="${idAman}" value="${Math.round(item.harga)}" min="0" step="500" aria-label="Harga override manual">
-                <button type="button" class="btn-simpan-override" data-id="${idAman}">Terapkan</button>
-                <button type="button" class="btn-batal-override" data-id="${idAman}">Batal</button>
-            </div>`;
-        }
-        const adaOverride = Math.abs(item.harga - item.hargaNormal) >= 1;
-        return `<div class="baris-aksi-harga">
-            <button type="button" class="btn-buka-override" data-id="${idAman}">✏️ Ubah Harga</button>
-            ${adaOverride ? `<button type="button" class="btn-reset-override" data-id="${idAman}">Reset (${formatRp(item.hargaNormal)})</button>` : ''}
-        </div>`;
-    };
-
     const renderKeranjang = () => {
         if (!daftarKeranjangEl) return;
-        sinkronInputHidden();
-        perbaruiPeringatanPetugas();
+        sinkronInputHidden(hiddenContainer, keranjang);
+        perbaruiPeringatanPetugas(peringatanPetugas, keranjang);
 
         if (keranjang.size === 0) {
             daftarKeranjangEl.innerHTML = '<div class="keranjang-kosong">Belum ada layanan atau produk yang dipilih.</div>';
@@ -173,29 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         daftarKeranjangEl.innerHTML = '';
         keranjang.forEach((item, id) => {
-            const adaOverride = Math.abs(item.harga - item.hargaNormal) >= 1;
-            const baris = document.createElement('div');
-            baris.className = 'item-keranjang';
-            baris.innerHTML = `<div class="keranjang-info">
-                <span class="keranjang-nama">${escapeHtml(item.nama)}</span>
-                <span class="keranjang-sub">
-                    ${item.qty} x ${adaOverride ? `<del class="harga-awal-coret">${formatRp(item.hargaNormal)}</del> ` : ''}${formatRp(item.harga)}
-                    ${adaOverride ? '<span class="badge-harga-override">Harga Override</span>' : ''}
-                </span>
-                ${buatKontrolOverrideHarga(item, id)}
-                ${item.kategori === 'Layanan' ? buatDropdownPetugasLayanan(item, id) : ''}
-            </div>
-            <div class="keranjang-kontrol">
-                <button type="button" class="btn-qty" data-aksi="kurang" data-id="${escapeHtml(id)}">-</button>
-                <strong>${item.qty}</strong>
-                <button type="button" class="btn-qty" data-aksi="tambah" data-id="${escapeHtml(id)}">+</button>
-            </div>`;
-            daftarKeranjangEl.appendChild(baris);
+            daftarKeranjangEl.appendChild(buatElemenBarisKeranjang(item, id, daftarPetugasAktif));
         });
 
-        const total = hitungTotalAkhir();
+        const total = ambilTotal();
         teksTotalEl.textContent = formatRp(total);
-        if (apakahMetodeNonTunai() && inputUangEl) inputUangEl.value = total;
+        if (apakahMetodeNonTunai(selectMetodeBayar) && inputUangEl) inputUangEl.value = total;
         hitungKembalian();
         otorisasiCtrl?.perbaruiPanelOtorisasi(total);
     };
@@ -207,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (inputPelangganEl) {
             inputPelangganEl.readOnly = Boolean(idRes);
-            inputPelangganEl.required = !Boolean(idRes);
+            inputPelangganEl.required = !idRes;
             if (idRes) {
                 inputPelangganEl.value = pelanggan.includes('Reservasi #') ? pelanggan : `${pelanggan} (Reservasi #${idRes})`;
             } else {
@@ -220,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let petugasPertama = '';
-        items.forEach(it => {
+        items.forEach((it) => {
             const isLayanan = (it.tipe || 'Layanan') === 'Layanan';
             const aktif = it.petugas_aktif !== false;
             if (isLayanan && it.id_petugas && aktif && !petugasPertama) petugasPertama = String(it.id_petugas);
@@ -243,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectPetugasPos) selectPetugasPos.value = petugasPertama;
         if (selectPromo) {
             if (kodePromo) {
-                let opt = Array.from(selectPromo.options).find(o => o.value === kodePromo);
+                let opt = Array.from(selectPromo.options).find((o) => o.value === kodePromo);
                 if (!opt) {
                     opt = document.createElement('option');
                     opt.value = kodePromo;
@@ -264,11 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
     otorisasiCtrl = inisialisasiOtorisasiPos({
         keranjang, formTransaksi, inputIdReservasi, inputIdOtorisasi, inputPelangganEl,
         selectPromo, btnProsesBayar, formatRp,
-        ambilTotalAkhir: () => hitungTotalAkhir(),
-        hitungPotonganPromoDariSubtotal, muatItemKeKeranjang,
+        ambilTotalAkhir: ambilTotal,
+        hitungPotonganPromoDariSubtotal: (sub) => hitungPotonganPromoDariSubtotal(sub, selectPromo),
+        muatItemKeKeranjang,
     });
 
-    itemKatalogList.forEach(btn => {
+    itemKatalogList.forEach((btn) => {
         btn.addEventListener('click', () => {
             const { id, idAsli, nama, kategori = 'Layanan', jabatan = 'Stylist' } = btn.dataset;
             const harga = parseInt(btn.dataset.harga || '0', 10);
@@ -277,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const idPetugasDefault = selectPetugasPos?.value || '';
                 const stafDefault = idPetugasDefault
-                    ? daftarPetugasAktif.find(s => String(s.id_karyawan) === String(idPetugasDefault))
+                    ? daftarPetugasAktif.find((s) => String(s.id_karyawan) === String(idPetugasDefault))
                     : null;
                 const idPetugasCocok = (kategori === 'Layanan' && stafDefault && stafDefault.role_jabatan === jabatan)
                     ? idPetugasDefault
@@ -304,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
             select.classList.remove('select-petugas-pos-galat');
             if (selectPetugasPos) selectPetugasPos.value = item.idPetugas;
         }
-        sinkronInputHidden();
-        perbaruiPeringatanPetugas();
+        sinkronInputHidden(hiddenContainer, keranjang);
+        perbaruiPeringatanPetugas(peringatanPetugas, keranjang);
     });
 
     const terapkanOverrideBaris = (id) => {
@@ -328,27 +223,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     daftarKeranjangEl?.addEventListener('click', (e) => {
-        const btnBuka = e.target.closest('.btn-buka-override');
-        if (btnBuka) {
-            const it = keranjang.get(btnBuka.dataset.id);
-            if (it) { it.sedangEditHarga = true; renderKeranjang(); }
-            return;
-        }
+        const aksiMap = [
+            ['.btn-buka-override', (it) => { it.sedangEditHarga = true; }],
+            ['.btn-batal-override', (it) => { it.sedangEditHarga = false; }],
+            ['.btn-reset-override', (it) => { it.harga = it.hargaNormal; it.sedangEditHarga = false; }],
+        ];
         const btnSimpan = e.target.closest('.btn-simpan-override');
         if (btnSimpan) { terapkanOverrideBaris(btnSimpan.dataset.id); return; }
 
-        const btnBatal = e.target.closest('.btn-batal-override');
-        if (btnBatal) {
-            const it = keranjang.get(btnBatal.dataset.id);
-            if (it) { it.sedangEditHarga = false; renderKeranjang(); }
-            return;
+        for (const [selector, mutasi] of aksiMap) {
+            const btn = e.target.closest(selector);
+            if (btn) {
+                const it = keranjang.get(btn.dataset.id);
+                if (it) { mutasi(it); renderKeranjang(); }
+                return;
+            }
         }
-        const btnReset = e.target.closest('.btn-reset-override');
-        if (btnReset) {
-            const it = keranjang.get(btnReset.dataset.id);
-            if (it) { it.harga = it.hargaNormal; it.sedangEditHarga = false; renderKeranjang(); }
-            return;
-        }
+
         const btnQty = e.target.closest('.btn-qty');
         const item = btnQty ? keranjang.get(btnQty.dataset.id) : null;
         if (!item) return;
@@ -361,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderKeranjang();
     });
 
-    document.querySelectorAll('.btn-muat-booking').forEach(btn => {
+    document.querySelectorAll('.btn-muat-booking').forEach((btn) => {
         btn.addEventListener('click', () => {
             const d = btn.dataset;
             const items = JSON.parse(d.items || '[]');
@@ -378,16 +269,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const saringKatalog = () => {
         const kata = (cariInput?.value || '').toLowerCase().trim();
-        itemKatalogList.forEach(item => {
+        itemKatalogList.forEach((item) => {
             const cocokKat = kategoriAktif === 'semua' || item.dataset.kategori === kategoriAktif;
             const cocokNama = (item.dataset.nama || '').toLowerCase().includes(kata);
             item.style.display = (cocokKat && cocokNama) ? 'flex' : 'none';
         });
     };
 
-    tabBtns.forEach(tab => {
+    tabBtns.forEach((tab) => {
         tab.addEventListener('click', () => {
-            tabBtns.forEach(t => t.classList.remove('aktif'));
+            tabBtns.forEach((t) => t.classList.remove('aktif'));
             tab.classList.add('aktif');
             kategoriAktif = tab.dataset.kategori || 'semua';
             saringKatalog();
@@ -397,15 +288,15 @@ document.addEventListener('DOMContentLoaded', () => {
     cariInput?.addEventListener('input', saringKatalog);
     selectPromo?.addEventListener('change', renderKeranjang);
     selectMetodeBayar?.addEventListener('change', () => {
-        if (apakahMetodeNonTunai() && inputUangEl) inputUangEl.value = hitungTotalAkhir();
+        if (apakahMetodeNonTunai(selectMetodeBayar) && inputUangEl) inputUangEl.value = ambilTotal();
         hitungKembalian();
     });
     inputUangEl?.addEventListener('input', hitungKembalian);
     document.getElementById('btnUangPas')?.addEventListener('click', () => {
-        if (inputUangEl) inputUangEl.value = hitungTotalAkhir();
+        if (inputUangEl) inputUangEl.value = ambilTotal();
         hitungKembalian();
     });
-    document.querySelectorAll('.btn-nominal').forEach(btn => {
+    document.querySelectorAll('.btn-nominal').forEach((btn) => {
         btn.addEventListener('click', () => {
             if (inputUangEl) inputUangEl.value = btn.dataset.nominal;
             hitungKembalian();
@@ -435,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inputPelangganEl?.focus();
             return;
         }
-        if (!otorisasiCtrl.validasiSebelumSubmitBayar(hitungTotalAkhir())) {
+        if (!otorisasiCtrl.validasiSebelumSubmitBayar(ambilTotal())) {
             e.preventDefault();
             return;
         }

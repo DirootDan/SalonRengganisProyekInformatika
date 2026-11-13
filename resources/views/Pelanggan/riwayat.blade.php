@@ -120,9 +120,6 @@
 
                 <ul class="reservasi-layanan">
                     @foreach ($r->layanan as $l)
-                        @php
-                            $hargaTampil = $l->pivot->harga_saat_ini > 0 ? $l->pivot->harga_saat_ini : $l->harga_layanan;
-                        @endphp
                         <li>
                             <span class="layanan-info">
                                 <span>
@@ -135,20 +132,16 @@
                                     <small class="layanan-petugas">{{ $l->jabatan_petugas }}: {{ $petugas[$l->pivot->id_karyawan] }}</small>
                                 @endif
                             </span>
-                            <span>Rp {{ number_format($hargaTampil, 0, ',', '.') }}</span>
+                            <span>Rp {{ number_format($r->hargaLayananTampil($l), 0, ',', '.') }}</span>
                         </li>
                     @endforeach
 
                     @foreach ($r->produkAddon as $prod)
-                        @php
-                            $hargaProd = $prod->pivot->harga_saat_ini > 0 ? $prod->pivot->harga_saat_ini : $prod->harga_produk;
-                            $qtyProd   = (int) $prod->pivot->jumlah;
-                        @endphp
                         <li>
                             <span class="layanan-info">
-                                <span>Produk Add-On: <strong>{{ $prod->nama_produk }} ({{ $qtyProd }}x)</strong></span>
+                                <span>Produk Add-On: <strong>{{ $prod->nama_produk }} ({{ (int) $prod->pivot->jumlah }}x)</strong></span>
                             </span>
-                            <span>Rp {{ number_format($hargaProd * $qtyProd, 0, ',', '.') }}</span>
+                            <span>Rp {{ number_format($r->subtotalProdukAddonBaris($prod), 0, ',', '.') }}</span>
                         </li>
                     @endforeach
 

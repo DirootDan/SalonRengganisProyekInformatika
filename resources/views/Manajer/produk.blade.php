@@ -38,12 +38,9 @@
                 </thead>
                 <tbody>
                     @foreach ($produk as $item)
-                        @php
-                            $menipis = $item->stok_produk < 10;
-                        @endphp
                         <tr class="baris-produk"
                             data-nama="{{ strtolower($item->nama_produk) }}"
-                            data-status="{{ $menipis ? 'menipis' : 'aman' }}">
+                            data-status="{{ $item->apakahStokMenipis() ? 'menipis' : 'aman' }}">
                             <td><strong>#{{ $item->id_produk }}</strong></td>
                             <td>
                                 <div class="nama-produk-sel">
@@ -53,7 +50,7 @@
                             </td>
                             <td><strong>{{ $item->stok_produk }} pcs</strong></td>
                             <td>
-                                @if ($menipis)
+                                @if ($item->apakahStokMenipis())
                                     <span class="badge badge-nonaktif">⚠️ Stok Menipis</span>
                                 @else
                                     <span class="badge badge-aktif">✓ Tersedia</span>

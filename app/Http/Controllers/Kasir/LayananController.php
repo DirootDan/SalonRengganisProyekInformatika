@@ -21,11 +21,21 @@ class LayananController extends Controller
     public function index()
     {
         $idKasir = (int) Auth::guard('karyawan')->id();
-        $layanan = Layanan::orderBy('kategori')->orderBy('nama_layanan')->get();
+        $layanan = Layanan::withCount('reservasiAktif')
+            ->orderBy('kategori')
+            ->orderBy('nama_layanan')
+            ->get();
         $ringkasanAkses = $this->otorisasiKatalog->ringkasanAksesKasir($idKasir, PermintaanOtorisasi::KONTEKS_KATALOG_LAYANAN);
+        $this->otorisasiKatalog->pasangTiketKeKoleksi($layanan, $ringkasanAkses['peta_akses'], 'id_layanan');
+
+        $errorsBag = session()->get('errors');
+        $tiketTambah = $ringkasanAkses['peta_akses'][OtorisasiKatalogService::kunciAkses(PermintaanOtorisasi::AKSI_TAMBAH, null)] ?? null;
 
         return view('Karyawan.Kasir.layanan', [
             'layanan' => $layanan,
+            'konteksLayanan' => PermintaanOtorisasi::KONTEKS_KATALOG_LAYANAN,
+            'tiketTambah' => $tiketTambah,
+            'bukaUlangModalLayanan' => $errorsBag?->hasAny(['nama_layanan', 'kategori', 'jabatan_petugas', 'harga_layanan', 'durasi_menit', 'jeda_menit']) ?? false,
             'petaAkses' => $ringkasanAkses['peta_akses'],
             'penolakanTerbaru' => $ringkasanAkses['penolakan_terbaru'],
         ]);

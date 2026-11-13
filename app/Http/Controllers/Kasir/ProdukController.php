@@ -21,11 +21,18 @@ class ProdukController extends Controller
     public function index()
     {
         $idKasir = (int) Auth::guard('karyawan')->id();
-        $produk = Produk::orderBy('nama_produk')->get();
+        $produk = Produk::withCount('reservasiAktif')->orderBy('nama_produk')->get();
         $ringkasanAkses = $this->otorisasiKatalog->ringkasanAksesKasir($idKasir, PermintaanOtorisasi::KONTEKS_KATALOG_PRODUK);
+        $this->otorisasiKatalog->pasangTiketKeKoleksi($produk, $ringkasanAkses['peta_akses'], 'id_produk');
+
+        $errorsBag = session()->get('errors');
+        $tiketTambah = $ringkasanAkses['peta_akses'][OtorisasiKatalogService::kunciAkses(PermintaanOtorisasi::AKSI_TAMBAH, null)] ?? null;
 
         return view('Karyawan.Kasir.produk', [
             'produk' => $produk,
+            'konteksProduk' => PermintaanOtorisasi::KONTEKS_KATALOG_PRODUK,
+            'tiketTambah' => $tiketTambah,
+            'bukaUlangModalProduk' => $errorsBag?->hasAny(['nama_produk', 'stok_produk', 'harga_produk']) ?? false,
             'petaAkses' => $ringkasanAkses['peta_akses'],
             'penolakanTerbaru' => $ringkasanAkses['penolakan_terbaru'],
         ]);

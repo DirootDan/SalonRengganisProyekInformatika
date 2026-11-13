@@ -282,6 +282,40 @@ class PermintaanOtorisasi extends Model
         $this->forceFill(['status' => self::STATUS_KEDALUWARSA, 'sedang_dihold' => false])->save();
     }
 
+    public function labelKonteks(): string
+    {
+        return match ($this->konteks) {
+            self::KONTEKS_POS_TRANSAKSI => 'POS Transaksi (≥ Rp 150.000)',
+            self::KONTEKS_KATALOG_LAYANAN => 'Akses 1x Katalog Layanan',
+            self::KONTEKS_KATALOG_PRODUK => 'Akses 1x Katalog Produk',
+            default => (string) $this->konteks,
+        };
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function layananAwalList(): array
+    {
+        return (array) ($this->snapshot_awal['layanan'] ?? []);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function layananUsulanList(): array
+    {
+        return (array) ($this->snapshot_keranjang['layanan'] ?? []);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function produkUsulanList(): array
+    {
+        return (array) ($this->snapshot_keranjang['produk'] ?? []);
+    }
+
     private function pastikanBolehTransisi(string $statusTujuan): void
     {
         if (! $this->bolehTransisiKe($statusTujuan)) {

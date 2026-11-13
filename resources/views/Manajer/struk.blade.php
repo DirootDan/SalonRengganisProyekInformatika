@@ -9,10 +9,6 @@
 @endpush
 
 @section('isi')
-    @php
-        $ukuranTerpilih = old('ukuran_kertas', $struk->ukuranTernormalisasi());
-    @endphp
-
     <div class="struk-grid">
         <!-- Kolom Kiri: Form Pengaturan Struk -->
         <div class="panel-kartu">
@@ -111,7 +107,7 @@
                             id="pilihUkuranKertas"
                             class="form-select @error('ukuran_kertas') input-galat @enderror">
                         @foreach ($daftarUkuran as $kodeUkuran => $labelUkuran)
-                            <option value="{{ $kodeUkuran }}" @selected($ukuranTerpilih === $kodeUkuran)>
+                            <option value="{{ $kodeUkuran }}" @selected($struk->ukuranTerpilih(old('ukuran_kertas')) === $kodeUkuran)>
                                 {{ $labelUkuran }}
                             </option>
                         @endforeach

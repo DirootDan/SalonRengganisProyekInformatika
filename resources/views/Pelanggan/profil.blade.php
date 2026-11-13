@@ -81,12 +81,6 @@
 
         <!-- Area Pengaturan Tab (Edit Data Diri & Ganti Kata Sandi) -->
         <section class="profil-konten">
-            @php
-                $bukaTabPassword = request()->query('tab') === 'password'
-                    || $errors->has('password_lama')
-                    || $errors->has('password');
-            @endphp
-
             <div class="profil-tabs">
                 <button type="button" class="tab-btn {{ !$bukaTabPassword ? 'aktif' : '' }}" data-target="tab-biodata">
                     👤 Data Diri

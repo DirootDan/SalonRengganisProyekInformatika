@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\NotifikasiPelanggan;
+use App\Models\PermintaanOtorisasi;
 use App\Models\Reservasi;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
                 'token' => $token,
                 'email' => $user->getEmailForPasswordReset(),
             ]);
+        });
+
+        View::composer('Manajer.layout', function ($view): void {
+            $view->with('jumlahPendingOtorisasi', PermintaanOtorisasi::menungguPersetujuan()->count());
         });
 
         View::composer('Karyawan.Kasir.layout', function ($view): void {

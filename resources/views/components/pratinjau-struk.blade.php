@@ -3,16 +3,12 @@
     'namaKasir' => 'Kasir Salon',
 ])
 
-@php
-    $ukuranAktif = $struk->ukuranTernormalisasi();
-@endphp
-
 <div class="pratinjau-wadah">
     <span class="label-pratinjau" id="labelPratinjauStruk">
         {{ $struk->labelPratinjau() }}
     </span>
 
-    <div class="kertas-struk kertas-{{ $ukuranAktif }}" id="kertasStruk" data-ukuran="{{ $ukuranAktif }}">
+    <div class="kertas-struk kertas-{{ $struk->ukuranTernormalisasi() }}" id="kertasStruk" data-ukuran="{{ $struk->ukuranTernormalisasi() }}">
         <div class="struk-kepala">
             <div class="struk-logo {{ $struk->tampil_logo ? '' : 'elemen-tersembunyi' }}" id="prevLogo">🌸</div>
             <div class="struk-judul" id="prevNamaSalon">{{ $struk->nama_salon }}</div>

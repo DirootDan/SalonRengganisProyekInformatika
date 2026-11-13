@@ -39,9 +39,6 @@
                 </thead>
                 <tbody>
                     @foreach ($layanan as $item)
-                        @php
-                            $jmlAktif = $item->jumlahReservasiAktif();
-                        @endphp
                         <tr class="baris-layanan"
                             data-nama="{{ strtolower($item->nama_layanan . ' ' . $item->kategori) }}"
                             data-jabatan="{{ $item->jabatan_petugas }}">
@@ -82,7 +79,7 @@
                                           class="form-hapus-layanan"
                                           data-confirm-title="Hapus Layanan Perawatan"
                                           data-confirm-item="{{ $item->nama_layanan }}"
-                                          data-confirm-impact="{{ $jmlAktif > 0 ? 'Perhatian: Layanan ini masih memiliki ' . $jmlAktif . ' reservasi aktif (Menunggu/Diterima) sehingga penghapusan akan ditolak server.' : 'Layanan ini akan diarsipkan dari daftar pemesanan baru, namun riwayat nota lama tetap tersimpan.' }}"
+                                          data-confirm-impact="{{ $item->pesanDampakHapusManajer() }}"
                                           data-confirm-label="Ya, Hapus Layanan"
                                           data-nama="{{ $item->nama_layanan }}">
                                         @csrf

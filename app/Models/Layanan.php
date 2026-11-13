@@ -56,19 +56,55 @@ class Layanan extends Model
         );
     }
 
+    public function reservasiAktif(): BelongsToMany
+    {
+        return $this->reservasi()->whereIn('reservasi.status', Reservasi::STATUS_AKTIF_SLOT);
+    }
+
+    public function durasiEfektifMenit(): int
+    {
+        return max(15, (int) ($this->durasi_menit ?: self::DEFAULT_DURASI_MENIT));
+    }
+
+    public function jedaEfektifMenit(): int
+    {
+        return max(0, (int) ($this->jeda_menit ?? self::DEFAULT_JEDA_MENIT));
+    }
+
     public function totalBlokirMenit(): int
     {
-        return max(15, (int) ($this->durasi_menit ?: self::DEFAULT_DURASI_MENIT))
-            + max(0, (int) ($this->jeda_menit ?? self::DEFAULT_JEDA_MENIT));
+        return $this->durasiEfektifMenit() + $this->jedaEfektifMenit();
     }
 
     public function jumlahReservasiAktif(): int
     {
+        if (array_key_exists('reservasi_aktif_count', $this->attributes)) {
+            return (int) $this->attributes['reservasi_aktif_count'];
+        }
+
         return DB::table('detail_reservasi')
             ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
             ->where('detail_reservasi.id_layanan', $this->id_layanan)
             ->whereIn('reservasi.status', Reservasi::STATUS_AKTIF_SLOT)
             ->count();
+    }
+
+    public function pesanDampakHapusKasir(): string
+    {
+        $jmlAktif = $this->jumlahReservasiAktif();
+
+        return $jmlAktif > 0
+            ? 'Perhatian: Layanan ini masih memiliki '.$jmlAktif.' reservasi aktif sehingga penghapusan akan ditolak server.'
+            : 'Setelah dihapus, hak akses otomatis terkunci kembali.';
+    }
+
+    public function pesanDampakHapusManajer(): string
+    {
+        $jmlAktif = $this->jumlahReservasiAktif();
+
+        return $jmlAktif > 0
+            ? 'Perhatian: Layanan ini masih memiliki '.$jmlAktif.' reservasi aktif (Menunggu/Diterima) sehingga penghapusan akan ditolak server.'
+            : 'Layanan ini akan diarsipkan dari daftar pemesanan baru, namun riwayat nota lama tetap tersimpan.';
     }
 
     public static function jabatanDariKategori(string $kategori): string

@@ -15,7 +15,6 @@ use App\Services\JadwalPetugasService;
 use App\Services\ReservasiService;
 use DomainException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -77,6 +76,16 @@ class PelangganController extends Controller
         $tglTerpilihAwal = (string) old('tgl_booking', now()->toDateString());
         $idLayananDariQuery = $request->integer('layanan');
         $daftarLayananAwal = array_map('intval', (array) old('layanan', $idLayananDariQuery > 0 ? [$idLayananDariQuery] : []));
+
+        foreach ($layanan as $item) {
+            $item->setAttribute('daftar_petugas', $petugas->get($item->jabatan_petugas, collect()));
+            $item->setAttribute('dipilih_awal', in_array((int) $item->id_layanan, $daftarLayananAwal, true));
+            $item->setAttribute('petugas_lama', (string) old('petugas.'.$item->id_layanan, ''));
+        }
+
+        foreach ($produk as $prod) {
+            $prod->setAttribute('qty_awal', (int) old('produk_addon.'.$prod->id_produk, 0));
+        }
 
         return view('Pelanggan.booking', compact(
             'layanan',
@@ -261,11 +270,14 @@ class PelangganController extends Controller
         return back()->with('status', 'Semua notifikasi telah ditandai sudah dibaca.');
     }
 
-    public function profil()
+    public function profil(Request $request)
     {
         $pelanggan = Auth::guard('pelanggan')->user();
+        $errorsBag = session()->get('errors');
+        $bukaTabPassword = $request->query('tab') === 'password'
+            || ($errorsBag?->hasAny(['password_lama', 'password']) ?? false);
 
-        return view('Pelanggan.profil', compact('pelanggan'));
+        return view('Pelanggan.profil', compact('pelanggan', 'bukaTabPassword'));
     }
 
     public function updateProfil(Request $request)

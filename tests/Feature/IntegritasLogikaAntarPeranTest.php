@@ -6,6 +6,8 @@ use App\Models\Karyawan;
 use App\Models\Layanan;
 use App\Models\MetodePembayaran;
 use App\Models\Pelanggan;
+use App\Models\PermintaanOtorisasi;
+use App\Models\Produk;
 use App\Models\Reservasi;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -382,6 +384,80 @@ class IntegritasLogikaAntarPeranTest extends TestCase
         $this->actingAs($this->pelanggan, 'pelanggan')
             ->post(route('pelanggan.booking.batal', $ditolak->id_reservasi))
             ->assertSessionHasErrors('batal');
+    }
+
+    public function test_katalog_bebas_n_plus_1_dan_layout_manajer_terima_badge_dari_composer(): void
+    {
+        for ($i = 1; $i <= 12; $i++) {
+            Layanan::create([
+                'nama_layanan' => "Layanan Ekstra {$i}",
+                'kategori' => 'Perawatan Rambut',
+                'jabatan_petugas' => Karyawan::JABATAN_STYLIST,
+                'harga_layanan' => 80000 + ($i * 1000),
+                'durasi_menit' => 45,
+                'jeda_menit' => 15,
+            ]);
+            Produk::create([
+                'nama_produk' => "Produk Ekstra {$i}",
+                'stok_produk' => $i <= 3 ? 5 : 20,
+                'harga_produk' => 45000,
+            ]);
+        }
+
+        $this->buatReservasiDenganDetail(Reservasi::STATUS_MENUNGGU);
+
+        PermintaanOtorisasi::create([
+            'id_kasir' => $this->kasir->id_karyawan,
+            'konteks' => PermintaanOtorisasi::KONTEKS_KATALOG_LAYANAN,
+            'jenis_aksi' => PermintaanOtorisasi::AKSI_TAMBAH,
+            'tipe_target' => PermintaanOtorisasi::TARGET_LAYANAN,
+            'label_target' => 'Tambah Layanan Uji Composer',
+            'alasan_kasir' => 'Pengujian View Composer Manajer',
+            'total_awal' => 0,
+            'total_akhir' => 0,
+        ]);
+
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+
+        $resManajerLayanan = $this->actingAs($this->manajer, 'karyawan')
+            ->get(route('manajer.layanan'));
+        $jumlahKueri = count(DB::getQueryLog());
+        DB::disableQueryLog();
+
+        $resManajerLayanan
+            ->assertOk()
+            ->assertSee('1 permintaan otorisasi menunggu keputusan')
+            ->assertSee('memiliki 1 reservasi aktif');
+
+        // Dengan 13+ layanan, kueri harus konstan O(1) tanpa 1 kueri per baris katalog
+        $this->assertLessThanOrEqual(6, $jumlahKueri);
+
+        $this->actingAs($this->manajer, 'karyawan')->get(route('manajer.produk'))->assertOk();
+        $this->actingAs($this->kasir, 'karyawan')->get(route('kasir.layanan'))->assertOk();
+        $this->actingAs($this->kasir, 'karyawan')->get(route('kasir.produk'))->assertOk();
+    }
+
+    public function test_halaman_utama_tiap_peran_render_bersih_dan_tab_profil_aktif_dari_controller(): void
+    {
+        $this->buatReservasiDenganDetail(Reservasi::STATUS_DITERIMA);
+
+        foreach (['manajer.persetujuan', 'manajer.laporan', 'manajer.promo', 'manajer.struk'] as $ruteManajer) {
+            $this->actingAs($this->manajer, 'karyawan')->get(route($ruteManajer))->assertOk();
+        }
+
+        foreach (['kasir.laporan', 'kasir.permintaan', 'kasir.struk'] as $ruteKasir) {
+            $this->actingAs($this->kasir, 'karyawan')->get(route($ruteKasir))->assertOk();
+        }
+
+        foreach (['pelanggan.booking', 'pelanggan.riwayat'] as $rutePelanggan) {
+            $this->actingAs($this->pelanggan, 'pelanggan')->get(route($rutePelanggan))->assertOk();
+        }
+
+        $this->actingAs($this->pelanggan, 'pelanggan')
+            ->get(route('pelanggan.profil', ['tab' => 'password']))
+            ->assertOk()
+            ->assertViewHas('bukaTabPassword', true);
     }
 
     private function buatReservasiDenganDetail(string $status): Reservasi

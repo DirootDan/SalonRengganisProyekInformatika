@@ -39,12 +39,9 @@
                 </thead>
                 <tbody>
                     @foreach ($promo as $item)
-                        @php
-                            $labelStatus = $item->masihBerlaku() ? 'Aktif' : 'Berakhir';
-                        @endphp
                         <tr class="baris-promo"
                             data-nama="{{ strtolower($item->kode_promo . ' ' . $item->nama_promo) }}"
-                            data-status="{{ $labelStatus }}">
+                            data-status="{{ $item->labelStatus() }}">
                             <td><span class="kode-voucer">{{ $item->kode_promo }}</span></td>
                             <td><strong>{{ $item->nama_promo }}</strong></td>
                             <td class="nilai-potongan">
@@ -57,8 +54,8 @@
                             <td>Rp {{ number_format($item->min_transaksi, 0, ',', '.') }}</td>
                             <td>{{ $item->berlaku_sampai->format('d/m/Y') }}</td>
                             <td>
-                                <span class="badge {{ $labelStatus === 'Aktif' ? 'badge-aktif' : 'badge-nonaktif' }}">
-                                    {{ $labelStatus }}
+                                <span class="badge {{ $item->masihBerlaku() ? 'badge-aktif' : 'badge-nonaktif' }}">
+                                    {{ $item->labelStatus() }}
                                 </span>
                             </td>
                             <td>

@@ -31,26 +31,21 @@
             </thead>
             <tbody>
                 @forelse ($reservasi as $r)
-                @php
-                $nominal = $r->transaksi ? $r->transaksi->total_bayar : $r->estimasiTotalAkhir();
-                $rincianLayanan = $r->layanan->pluck('nama_layanan')->join(', ');
-                $rincianProduk = $r->produkAddon->map(fn ($p) => $p->nama_produk . ' (x' . $p->pivot->jumlah . ')')->join(', ');
-                @endphp
                 <tr>
                     <td><strong>#INV-{{ str_pad($r->id_reservasi, 4, '0', STR_PAD_LEFT) }}</strong></td>
                     <td>{{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }})</td>
                     <td>{{ $r->namaPelangganTampil() }}</td>
                     <td>
-                        <div>{{ $rincianLayanan ?: '-' }}</div>
-                        @if ($rincianProduk)
-                        <small>+ Produk: {{ $rincianProduk }}</small>
+                        <div>{{ $r->ringkasanNamaLayanan() ?: '-' }}</div>
+                        @if ($r->ringkasanProdukAddon())
+                        <small>+ Produk: {{ $r->ringkasanProdukAddon() }}</small>
                         @endif
                         @if ($r->kode_promo)
                         <div><small class="badge badge-aktif">Promo: {{ $r->kode_promo }} (-Rp {{ number_format((float) $r->nominal_diskon, 0, ',', '.') }})</small></div>
                         @endif
                     </td>
                     <td>{{ $r->transaksi->metode_bayar ?? '-' }}</td>
-                    <td class="nominal-tebal">Rp {{ number_format($nominal, 0, ',', '.') }}</td>
+                    <td class="nominal-tebal">Rp {{ number_format($r->nominalTampilLaporan(), 0, ',', '.') }}</td>
                     <td>
                         <span class="badge {{ $r->statusTernormalisasi() === 'Selesai' ? 'badge-aktif' : 'badge-pending' }}">
                             {{ $r->statusTernormalisasi() }}

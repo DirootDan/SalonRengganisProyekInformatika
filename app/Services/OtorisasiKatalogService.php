@@ -55,6 +55,21 @@ class OtorisasiKatalogService
     }
 
     /**
+     * Menyematkan atribut tiket_edit dan tiket_hapus ke setiap item koleksi katalog agar Blade bebas dari logika @php.
+     *
+     * @param  Collection<int, mixed>  $koleksi
+     * @param  array<string, PermintaanOtorisasi>  $petaAkses
+     */
+    public function pasangTiketKeKoleksi(Collection $koleksi, array $petaAkses, string $kolomId): void
+    {
+        foreach ($koleksi as $item) {
+            $id = (int) $item->{$kolomId};
+            $item->setAttribute('tiket_edit', $petaAkses[self::kunciAkses(PermintaanOtorisasi::AKSI_UBAH, $id)] ?? null);
+            $item->setAttribute('tiket_hapus', $petaAkses[self::kunciAkses(PermintaanOtorisasi::AKSI_HAPUS, $id)] ?? null);
+        }
+    }
+
+    /**
      * Mengajukan permintaan hak akses 1x pakai katalog Layanan atau Produk ke Manajer.
      *
      * @param  array<string, mixed>  $data

@@ -11,7 +11,10 @@ class LayananController extends Controller
 {
     public function index()
     {
-        $layanan = Layanan::orderBy('kategori')->orderBy('nama_layanan')->get();
+        $layanan = Layanan::withCount('reservasiAktif')
+            ->orderBy('kategori')
+            ->orderBy('nama_layanan')
+            ->get();
 
         return view('Manajer.layanan', compact('layanan'));
     }
