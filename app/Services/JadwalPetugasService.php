@@ -18,7 +18,7 @@ class JadwalPetugasService
      * @param  Collection<int, Layanan>  $layananDipilih
      * @return array{jam_mulai: string, jam_selesai: string, total_durasi_menit: int, items: array<int, array<string, mixed>>}
      */
-    public function susunTimelineLayanan(Collection $layananDipilih, string $jamKedatangan): array
+    public function susunTimelineLayanan(Collection $layananDipilih, string $jamKedatangan, bool $batasiJamTutup = true): array
     {
         $jamAwal = substr($jamKedatangan, 0, 5);
         $mulaiAwal = Carbon::createFromFormat('H:i', $jamAwal);
@@ -51,7 +51,7 @@ class JadwalPetugasService
             $totalDurasi += $durasi;
         }
 
-        if (! $kursor->isSameDay($mulaiAwal) || $kursor->gt($batasTutup)) {
+        if ($batasiJamTutup && (! $kursor->isSameDay($mulaiAwal) || $kursor->gt($batasTutup))) {
             $jamSelesaiTeks = $kursor->format('H:i');
 
             throw new DomainException(
@@ -295,7 +295,7 @@ class JadwalPetugasService
      */
     private function normalisasiRentangBaris(object $baris): array
     {
-        $mulai = substr((string) ($baris->jam_mulai ?: ($baris->jam_booking ?: '10:00')), 0, 5);
+        $mulai = substr((string) ($baris->jam_mulai ?: ($baris->jam_booking ?: Reservasi::JAM_BUKA_SALON)), 0, 5);
 
         if (! empty($baris->jam_selesai_blokir)) {
             return [$mulai, substr((string) $baris->jam_selesai_blokir, 0, 5)];

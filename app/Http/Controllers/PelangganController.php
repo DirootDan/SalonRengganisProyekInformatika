@@ -185,7 +185,7 @@ class PelangganController extends Controller
         }
 
         $kebijakan = PengaturanKebijakan::aktif();
-        $waktuJadwal = Carbon::parse($reservasi->tgl_booking->toDateString().' '.($reservasi->jam_booking ?: '10:00'));
+        $waktuJadwal = Carbon::parse($reservasi->tgl_booking->toDateString().' '.($reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON));
         $batasGratis = $waktuJadwal->copy()->subHours($kebijakan->batas_batal_jam);
 
         if ($reservasi->statusTernormalisasi() === Reservasi::STATUS_DITERIMA && now()->gt($batasGratis)) {
@@ -201,13 +201,9 @@ class PelangganController extends Controller
 
         DB::transaction(function () use ($reservasi, $pelanggan, $keteranganBatal) {
             $reservasi->ubahStatus(Reservasi::STATUS_DIBATALKAN, [
-                'dibatalkan_oleh' => 'Pelanggan',
+                'dibatalkan_oleh' => Reservasi::DIBATALKAN_OLEH_PELANGGAN,
                 'alasan_penolakan' => $keteranganBatal,
             ]);
-
-            DB::table('detail_reservasi')
-                ->where('id_reservasi', $reservasi->id_reservasi)
-                ->update(['status_layanan' => Reservasi::STATUS_DIBATALKAN]);
 
             NotifikasiPelanggan::kirim(
                 $pelanggan->id_pelanggan,

@@ -41,6 +41,17 @@ class KaryawanController extends Controller
             ]);
         }
 
+        // Lindungi integritas jadwal: cegah penonaktifan atau pindah jabatan bila masih ada booking aktif
+        $perubahanKritis = ! $statusAktif || $data['role_jabatan'] !== $karyawan->role_jabatan;
+        if ($perubahanKritis) {
+            $bookingAktif = $karyawan->jumlahBookingAktif();
+            if ($bookingAktif > 0) {
+                return back()->withErrors([
+                    'karyawan' => "Karyawan {$karyawan->nama_staff} tidak dapat dinonaktifkan atau diubah jabatannya karena masih memiliki {$bookingAktif} reservasi aktif (Menunggu/Diterima). Silakan alihkan atau selesaikan reservasi tersebut terlebih dahulu.",
+                ]);
+            }
+        }
+
         $atributUpdate = Arr::except($data, ['password']);
         $atributUpdate['aktif'] = $statusAktif;
 
@@ -49,6 +60,7 @@ class KaryawanController extends Controller
         }
 
         $karyawan->update($atributUpdate);
+        Cache::forget(DashboardController::CACHE_KEY_RINGKASAN);
 
         return back()->with('status', "Data karyawan {$karyawan->nama_staff} berhasil diperbarui.");
     }

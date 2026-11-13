@@ -11,10 +11,8 @@
 </head>
 <body>
     @php
-        $notifMenunggu = \App\Models\Reservasi::whereIn('status', [\App\Models\Reservasi::STATUS_MENUNGGU, 'pending'])->count();
-        $notifAntrean  = \App\Models\Reservasi::where('status', \App\Models\Reservasi::STATUS_DITERIMA)
-            ->doesntHave('transaksi')
-            ->count();
+        $notifMenunggu = \App\Models\Reservasi::menungguKonfirmasi()->count();
+        $notifAntrean  = \App\Models\Reservasi::siapBayarKasir()->count();
     @endphp
 
     <div class="kasir-shell">

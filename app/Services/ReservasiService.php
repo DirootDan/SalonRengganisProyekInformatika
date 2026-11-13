@@ -174,7 +174,7 @@ class ReservasiService
     }
 
     /**
-     * Memastikan petugas pada reservasi tidak bentrok dengan reservasi lain yang sudah berstatus Diterima.
+     * Memastikan petugas pada reservasi masih aktif/sesuai jabatan dan tidak bentrok dengan reservasi Diterima lain.
      */
     private function pastikanTidakBentrokDiterima(Reservasi $reservasi): void
     {
@@ -186,10 +186,35 @@ class ReservasiService
             [Reservasi::STATUS_DITERIMA]
         );
 
+        $idPetugasReservasi = $reservasi->layanan
+            ->pluck('pivot.id_karyawan')
+            ->filter()
+            ->unique()
+            ->values();
+
+        $petaPetugas = $idPetugasReservasi->isNotEmpty()
+            ? Karyawan::withTrashed()->whereIn('id_karyawan', $idPetugasReservasi)->lockForUpdate()->get()->keyBy('id_karyawan')
+            : collect();
+
         foreach ($reservasi->layanan as $layanan) {
             $idStaf = $layanan->pivot->id_karyawan ? (int) $layanan->pivot->id_karyawan : null;
             if (! $idStaf) {
                 continue;
+            }
+
+            /** @var Karyawan|null $staf */
+            $staf = $petaPetugas->get($idStaf);
+            if (! $staf || $staf->trashed() || ! $staf->aktif) {
+                $namaStaf = $staf->nama_staff ?? "Petugas #{$idStaf}";
+                throw new DomainException(
+                    "Tidak dapat menerima reservasi #{$reservasi->id_reservasi} karena petugas '{$namaStaf}' untuk layanan '{$layanan->nama_layanan}' sudah tidak aktif atau diarsipkan."
+                );
+            }
+
+            if ($staf->role_jabatan !== $layanan->jabatan_petugas) {
+                throw new DomainException(
+                    "Tidak dapat menerima reservasi #{$reservasi->id_reservasi} karena jabatan '{$staf->nama_staff}' ({$staf->role_jabatan}) tidak sesuai untuk layanan '{$layanan->nama_layanan}' ({$layanan->jabatan_petugas})."
+                );
             }
 
             [$jamMulai, $jamBlokir] = $this->tentukanRentangBlokirPivot($reservasi, $layanan);

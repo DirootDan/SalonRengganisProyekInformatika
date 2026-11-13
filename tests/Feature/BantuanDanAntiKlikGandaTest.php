@@ -29,7 +29,7 @@ class BantuanDanAntiKlikGandaTest extends TestCase
     {
         $layoutBerform = [
             'Auth/registerpage', 'Auth/lupapassword', 'Auth/resetpassword',
-            'Karyawan/Kasir/layout', 'Karyawan/Stylist/layout', 'Karyawan/Therapist/layout',
+            'Karyawan/Kasir/layout', 'Karyawan/Petugas/layout',
             'Manajer/layout', 'Pelanggan/layout',
         ];
 

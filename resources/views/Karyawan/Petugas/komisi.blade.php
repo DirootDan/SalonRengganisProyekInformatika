@@ -1,17 +1,19 @@
-@extends('Karyawan.Stylist.layout')
+@extends('Karyawan.Petugas.layout')
 
-@section('judul', 'Laporan Komisi Stylist - Salon Rengganis')
+@section('judul', "Laporan Komisi {$peran} - Salon Rengganis")
 
 @section('isi')
     <div class="kepala-halaman">
         <div>
-            <h1>Laporan Komisi Stylist</h1>
+            <h1>Laporan Komisi {{ $peran }}</h1>
             <p>Komisi dihitung sebesar <strong>{{ number_format($petugas->persen_komisi, 0) }}%</strong> dari layanan yang telah selesai dan dibayar lunas.</p>
         </div>
 
-        <form method="GET" action="{{ route('stylist.komisi') }}" class="filter-bar">
-            <input type="date" name="mulai" class="input-filter" value="{{ $tglMulai }}">
-            <input type="date" name="selesai" class="input-filter" value="{{ $tglSelesai }}">
+        <form method="GET" action="{{ route($tampilan['prefix_rute'].'.komisi') }}" class="filter-bar">
+            <label class="sr-only" for="filterMulai">Tanggal mulai</label>
+            <input id="filterMulai" type="date" name="mulai" class="input-filter" value="{{ $tglMulai }}">
+            <label class="sr-only" for="filterSelesai">Tanggal selesai</label>
+            <input id="filterSelesai" type="date" name="selesai" class="input-filter" value="{{ $tglSelesai }}">
             <button type="submit" class="btn-filter">Filter Periode</button>
         </form>
     </div>
@@ -48,7 +50,7 @@
                 @forelse ($daftarKomisi as $k)
                     <tr>
                         <td><strong>#{{ $k->id_reservasi }}</strong></td>
-                        <td>{{ \Carbon\Carbon::parse($k->tgl_booking)->format('d/m/Y') }}</td>
+                        <td>{{ $k->tgl_booking->format('d/m/Y') }}</td>
                         <td>{{ $k->nama_cust }}</td>
                         <td><strong>{{ $k->nama_layanan }}</strong></td>
                         <td>Rp {{ number_format($k->harga_saat_ini, 0, ',', '.') }}</td>

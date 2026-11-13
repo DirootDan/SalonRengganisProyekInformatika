@@ -84,11 +84,8 @@ export default defineConfig({
                 'resources/js/Karyawan/Kasir/struk.js',
                 'resources/js/Karyawan/Kasir/struk-cetak.js',
 
-                // Karyawan - Stylist & Therapist
-                'resources/css/Karyawan/Stylist/dashboard.css',
-                'resources/css/Karyawan/Therapist/dashboard.css',
-                'resources/js/Karyawan/Stylist/dashboard.js',
-                'resources/js/Karyawan/Therapist/dashboard.js',
+                // Karyawan - Petugas (Stylist & Therapist)
+                'resources/css/Karyawan/Petugas/dashboard.css',
 
                 // Komponen Bersama
                 'resources/css/components/confirm-modal.css',

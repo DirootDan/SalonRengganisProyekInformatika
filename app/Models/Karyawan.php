@@ -24,6 +24,8 @@ class Karyawan extends Authenticatable
 
     public const JABATAN_THERAPIST = 'Therapist';
 
+    public const DEFAULT_PERSEN_KOMISI = 15;
+
     public const DAFTAR_JABATAN = [
         self::JABATAN_MANAJER,
         self::JABATAN_KASIR,

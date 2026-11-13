@@ -59,7 +59,11 @@
 
                     <div class="antrean-item-kaki">
                         <strong>Total: Rp {{ number_format($r->estimasiTotalAkhir(), 0, ',', '.') }}</strong>
-                        <a href="{{ route('kasir.dashboard', ['muat_reservasi' => $r->id_reservasi]) }}" class="btn-aksi btn-edit">Proses di POS</a>
+                        @if ($r->semuaLayananSudahSelesai())
+                            <a href="{{ route('kasir.dashboard', ['muat_reservasi' => $r->id_reservasi]) }}" class="btn-aksi btn-edit">Proses di POS</a>
+                        @else
+                            <span class="badge badge-pending">Menunggu Petugas Selesai</span>
+                        @endif
                     </div>
                 </div>
             @empty

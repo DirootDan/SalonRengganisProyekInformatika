@@ -297,7 +297,12 @@ class LimaKebutuhanSalonTest extends TestCase
         $reservasi = Reservasi::firstOrFail();
         $reservasi->ubahStatus(Reservasi::STATUS_DITERIMA);
 
-        // Kasus tepi: Stylist 1 dinonaktifkan setelah reservasi dibuat -> kasir wajib mengganti petugas
+        // Petugas menyelesaikan layanan terlebih dahulu sebelum dinonaktifkan
+        $this->actingAs($this->stylist1, 'karyawan')
+            ->post(route('stylist.layanan.selesai', [$reservasi->id_reservasi, $this->layananRambut->id_layanan]))
+            ->assertRedirect();
+
+        // Kasus tepi: Stylist 1 dinonaktifkan setelah layanan selesai -> kasir wajib mengganti petugas saat checkout
         $this->stylist1->update(['aktif' => false]);
 
         $this->actingAs($this->kasir, 'karyawan')

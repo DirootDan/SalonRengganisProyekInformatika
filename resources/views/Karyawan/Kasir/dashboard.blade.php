@@ -275,8 +275,8 @@
                     </div>
                 @empty
                     <div class="antrean-kosong">
-                        Belum ada antrean berstatus Diterima yang menunggu pembayaran.
-                        <a href="{{ route('kasir.permintaan') }}">Cek Permintaan Booking &rarr;</a>
+                        Belum ada antrean berstatus Diterima yang sudah ditandai selesai oleh petugas untuk dibayar.
+                        <a href="{{ route('kasir.antrean') }}">Cek Progres Antrean &rarr;</a>
                     </div>
                 @endforelse
             </div>

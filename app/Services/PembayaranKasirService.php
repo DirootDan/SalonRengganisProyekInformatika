@@ -8,6 +8,7 @@ use App\Models\MetodePembayaran;
 use App\Models\Produk;
 use App\Models\Reservasi;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 
@@ -38,7 +39,7 @@ class PembayaranKasirService
 
             $reservasi = $reservasiExisting
                 ? $this->sinkronkanLayananReservasi($reservasiExisting, $usulan['layanan'])
-                : $this->buatReservasiWalkIn($idKasir, $data, $usulan['layanan']);
+                : $this->buatReservasiWalkIn($data, $usulan['layanan']);
 
             $petugasInput = (array) ($data['petugas_layanan'] ?? []);
             $idPetugasFallback = ! empty($data['id_petugas']) ? (int) $data['id_petugas'] : null;
@@ -65,9 +66,6 @@ class PembayaranKasirService
                 );
             }
 
-            if ($reservasi->statusTernormalisasi() === Reservasi::STATUS_MENUNGGU) {
-                $reservasi->ubahStatus(Reservasi::STATUS_DITERIMA);
-            }
             $reservasi->ubahStatus(Reservasi::STATUS_SELESAI);
 
             $transaksi = Transaksi::create([
@@ -119,6 +117,19 @@ class PembayaranKasirService
             throw new DomainException("Reservasi #{$reservasi->id_reservasi} berstatus '{$status}' dan tidak dapat diproses pembayarannya.");
         }
 
+        if ($status !== Reservasi::STATUS_DITERIMA) {
+            throw new DomainException("Reservasi #{$reservasi->id_reservasi} berstatus '{$status}'. Terima permintaan booking dan tunggu petugas menandai layanan selesai sebelum checkout.");
+        }
+
+        $belumSelesai = $reservasi->namaLayananBelumSelesai();
+        if (! empty($belumSelesai)) {
+            $daftarLayanan = implode(', ', $belumSelesai);
+
+            throw new DomainException(
+                "Reservasi #{$reservasi->id_reservasi} belum dapat dibayar karena layanan berikut belum ditandai selesai oleh petugas: {$daftarLayanan}."
+            );
+        }
+
         return $reservasi;
     }
 
@@ -142,31 +153,47 @@ class PembayaranKasirService
 
         $idDitambah = array_diff($idUsulan, $idLama);
         if (! empty($idDitambah)) {
-            $jamRef = (string) ($reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON);
-            foreach (Layanan::whereIn('id_layanan', $idDitambah)->get() as $baru) {
+            $jamRef = substr((string) ($reservasi->jam_selesai ?: $reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON), 0, 5);
+            $layananBaru = Layanan::whereIn('id_layanan', $idDitambah)->orderBy('id_layanan')->get();
+            $timelineBaru = $layananBaru->isNotEmpty()
+                ? $this->jadwalService->susunTimelineLayanan($layananBaru, $jamRef, false)
+                : ['items' => []];
+
+            foreach ($layananBaru as $baru) {
+                $slot = $timelineBaru['items'][$baru->id_layanan] ?? null;
                 $reservasi->layanan()->attach($baru->id_layanan, [
                     'id_karyawan' => null,
-                    'jam_mulai' => $jamRef,
-                    'jam_selesai' => $jamRef,
-                    'jam_selesai_blokir' => $jamRef,
-                    'durasi_saat_ini' => (int) ($baru->durasi_menit ?: Layanan::DEFAULT_DURASI_MENIT),
-                    'jeda_saat_ini' => (int) ($baru->jeda_menit ?? Layanan::DEFAULT_JEDA_MENIT),
+                    'jam_mulai' => $slot['jam_mulai'] ?? $jamRef,
+                    'jam_selesai' => $slot['jam_selesai'] ?? $jamRef,
+                    'jam_selesai_blokir' => $slot['jam_selesai_blokir'] ?? $jamRef,
+                    'durasi_saat_ini' => $slot['durasi_saat_ini'] ?? (int) ($baru->durasi_menit ?: Layanan::DEFAULT_DURASI_MENIT),
+                    'jeda_saat_ini' => $slot['jeda_saat_ini'] ?? (int) ($baru->jeda_menit ?? Layanan::DEFAULT_JEDA_MENIT),
                     'harga_saat_ini' => (float) $baru->harga_layanan,
-                    'persen_komisi' => 15,
+                    'persen_komisi' => 0,
                     'nominal_komisi' => 0,
                     'status_layanan' => Reservasi::STATUS_SELESAI,
                 ]);
             }
         }
 
-        return $reservasi->load(['layanan', 'produkAddon']);
+        $reservasi->load(['layanan', 'produkAddon']);
+
+        if (! empty($idDihapus) || ! empty($idDitambah)) {
+            $jamSelesaiAkhir = $reservasi->layanan->max(fn (Layanan $l) => (string) $l->pivot->jam_selesai);
+            $reservasi->update([
+                'total_durasi_menit' => (int) $reservasi->layanan->sum(fn (Layanan $l) => (int) $l->pivot->durasi_saat_ini),
+                'jam_selesai' => $jamSelesaiAkhir ?: $reservasi->jam_selesai,
+            ]);
+        }
+
+        return $reservasi;
     }
 
     /**
      * @param  array<string, mixed>  $data
      * @param  array<int, array<string, mixed>>  $layananUsulan
      */
-    private function buatReservasiWalkIn(int $idKasir, array $data, array $layananUsulan): Reservasi
+    private function buatReservasiWalkIn(array $data, array $layananUsulan): Reservasi
     {
         $namaWalkIn = trim((string) ($data['nama_pelanggan_walkin'] ?? ''));
         if ($namaWalkIn === '') {
@@ -175,39 +202,47 @@ class PembayaranKasirService
 
         $idPetugasWalkIn = ! empty($data['id_petugas']) ? (int) $data['id_petugas'] : null;
         $stafWalkIn = $idPetugasWalkIn ? Karyawan::where('aktif', true)->find($idPetugasWalkIn) : null;
-        $persenWalkIn = (float) ($stafWalkIn->persen_komisi ?? 15);
+        $persenWalkIn = (float) ($stafWalkIn->persen_komisi ?? Karyawan::DEFAULT_PERSEN_KOMISI);
         $jamSekarang = now()->format('H:i');
+
+        $idLayanan = array_values(array_unique(array_filter(array_map(fn (array $i) => (int) ($i['id_layanan'] ?? 0), $layananUsulan))));
+        $katalogLayanan = Layanan::whereIn('id_layanan', $idLayanan)->orderBy('id_layanan')->get();
+        $katalogMap = $katalogLayanan->keyBy('id_layanan');
+
+        $timeline = $katalogLayanan->isNotEmpty()
+            ? $this->jadwalService->susunTimelineLayanan($katalogLayanan, $jamSekarang, false)
+            : ['jam_mulai' => $jamSekarang, 'jam_selesai' => $jamSekarang, 'total_durasi_menit' => 0, 'items' => []];
 
         $reservasi = Reservasi::create([
             'id_pelanggan' => null,
             'nama_pelanggan_walkin' => $namaWalkIn,
-            'id_karyawan' => $stafWalkIn?->id_karyawan ?? $idKasir,
+            'id_karyawan' => $stafWalkIn?->id_karyawan,
             'tgl_booking' => now()->toDateString(),
-            'jam_booking' => $jamSekarang,
-            'jam_selesai' => $jamSekarang,
-            'total_durasi_menit' => 60,
+            'jam_booking' => $timeline['jam_mulai'],
+            'jam_selesai' => $timeline['jam_selesai'],
+            'total_durasi_menit' => $timeline['total_durasi_menit'],
             'status' => Reservasi::STATUS_DITERIMA,
         ]);
 
         $lampiran = [];
-        $katalogMap = Layanan::whereIn('id_layanan', array_column($layananUsulan, 'id_layanan'))->get()->keyBy('id_layanan');
 
         foreach ($layananUsulan as $item) {
             $master = $katalogMap->get((int) $item['id_layanan']);
             if (! $master) {
                 continue;
             }
+            $slot = $timeline['items'][$master->id_layanan] ?? null;
             $harga = (float) $item['harga_aktif'];
             $lampiran[$master->id_layanan] = [
                 'id_karyawan' => $stafWalkIn?->id_karyawan,
-                'jam_mulai' => $jamSekarang,
-                'jam_selesai' => $jamSekarang,
-                'jam_selesai_blokir' => $jamSekarang,
-                'durasi_saat_ini' => (int) ($master->durasi_menit ?: 60),
-                'jeda_saat_ini' => (int) ($master->jeda_menit ?? 15),
+                'jam_mulai' => $slot['jam_mulai'] ?? $jamSekarang,
+                'jam_selesai' => $slot['jam_selesai'] ?? $jamSekarang,
+                'jam_selesai_blokir' => $slot['jam_selesai_blokir'] ?? $jamSekarang,
+                'durasi_saat_ini' => $slot['durasi_saat_ini'] ?? (int) ($master->durasi_menit ?: Layanan::DEFAULT_DURASI_MENIT),
+                'jeda_saat_ini' => $slot['jeda_saat_ini'] ?? (int) ($master->jeda_menit ?? Layanan::DEFAULT_JEDA_MENIT),
                 'harga_saat_ini' => $harga,
-                'persen_komisi' => $persenWalkIn,
-                'nominal_komisi' => round($harga * ($persenWalkIn / 100), 2),
+                'persen_komisi' => $stafWalkIn ? $persenWalkIn : 0,
+                'nominal_komisi' => $stafWalkIn ? round($harga * ($persenWalkIn / 100), 2) : 0,
                 'status_layanan' => Reservasi::STATUS_SELESAI,
             ];
         }
@@ -239,7 +274,9 @@ class PembayaranKasirService
                 ? (float) $petaHargaLayanan[$layanan->id_layanan]
                 : (float) ($layanan->pivot->harga_saat_ini > 0 ? $layanan->pivot->harga_saat_ini : $layanan->harga_layanan);
 
-            $persenFinal = $petugasFinal ? (float) $petugasFinal->persen_komisi : (float) ($layanan->pivot->persen_komisi ?: 15);
+            $persenFinal = $petugasFinal
+                ? (float) $petugasFinal->persen_komisi
+                : (float) ($layanan->pivot->persen_komisi ?: Karyawan::DEFAULT_PERSEN_KOMISI);
             $komisiFinal = $petugasFinal ? round($hargaSnap * ($persenFinal / 100), 2) : 0.0;
             $idSimpan = $petugasFinal ? (int) $petugasFinal->id_karyawan : null;
             $idPetugasUtama ??= $idSimpan;
@@ -283,8 +320,13 @@ class PembayaranKasirService
         }
 
         if ($idAwal !== null && (int) $staf->id_karyawan !== $idAwal) {
-            $jamMulai = (string) ($layanan->pivot->jam_mulai ?: $reservasi->jam_booking ?: '10:00');
-            $jamBlokir = (string) ($layanan->pivot->jam_selesai_blokir ?: $reservasi->jam_selesai ?: '11:15');
+            $jamMulai = substr((string) ($layanan->pivot->jam_mulai ?: $reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON), 0, 5);
+            $jamBlokir = substr((string) ($layanan->pivot->jam_selesai_blokir ?: $reservasi->jam_selesai), 0, 5);
+            if ($jamBlokir === '') {
+                $jamBlokir = Carbon::createFromFormat('H:i', $jamMulai)
+                    ->addMinutes($layanan->totalBlokirMenit())
+                    ->format('H:i');
+            }
             $idSibuk = $this->jadwalService->cariIdPetugasSibukPadaRentang($reservasi->tgl_booking->toDateString(), $jamMulai, $jamBlokir, (int) $reservasi->id_reservasi, true);
 
             if (in_array((int) $staf->id_karyawan, $idSibuk, true)) {

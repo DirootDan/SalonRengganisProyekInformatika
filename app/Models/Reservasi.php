@@ -185,19 +185,55 @@ class Reservasi extends Model
 
     public function scopeSiapBayarKasir(Builder $query): Builder
     {
-        return $query->where('status', self::STATUS_DITERIMA)->doesntHave('transaksi');
+        return $query->where('status', self::STATUS_DITERIMA)
+            ->doesntHave('transaksi')
+            ->whereDoesntHave('layanan', function (Builder $sub): void {
+                $sub->where(function (Builder $q): void {
+                    $q->whereNull('detail_reservasi.status_layanan')
+                        ->orWhere('detail_reservasi.status_layanan', '!=', self::STATUS_SELESAI);
+                });
+            });
+    }
+
+    /**
+     * Daftar nama layanan pada reservasi ini yang belum ditandai selesai oleh petugas.
+     *
+     * @return array<int, string>
+     */
+    public function namaLayananBelumSelesai(): array
+    {
+        $layanan = $this->relationLoaded('layanan') ? $this->layanan : $this->layanan()->get();
+
+        return $layanan
+            ->filter(fn ($l) => self::normalisasiStatus((string) ($l->pivot->status_layanan ?? '')) !== self::STATUS_SELESAI)
+            ->pluck('nama_layanan')
+            ->values()
+            ->all();
+    }
+
+    public function semuaLayananSudahSelesai(): bool
+    {
+        return empty($this->namaLayananBelumSelesai());
     }
 
     public function statusTernormalisasi(): string
     {
-        return match (strtolower($this->status)) {
+        return self::normalisasiStatus((string) $this->status);
+    }
+
+    /**
+     * Ubah teks status (termasuk variasi huruf/legacy) menjadi konstanta STATUS_* resmi.
+     */
+    public static function normalisasiStatus(string $status): string
+    {
+        return match (strtolower($status)) {
             'pending', 'menunggu' => self::STATUS_MENUNGGU,
             'diterima' => self::STATUS_DITERIMA,
             'ditolak' => self::STATUS_DITOLAK,
             'selesai' => self::STATUS_SELESAI,
             'batal', 'dibatalkan' => self::STATUS_DIBATALKAN,
             'hangus' => self::STATUS_HANGUS,
-            default => $this->status,
+            default => $status,
         };
     }
 
@@ -222,6 +258,14 @@ class Reservasi extends Model
 
         $this->fill(array_merge(['status' => $statusTujuan], $atributTambahan));
         $this->save();
+
+        // Sinkronkan status layanan pada detail_reservasi saat reservasi ditutup non-bayar
+        if (in_array($statusTujuan, [self::STATUS_DITOLAK, self::STATUS_DIBATALKAN, self::STATUS_HANGUS], true)) {
+            DB::table('detail_reservasi')
+                ->where('id_reservasi', $this->id_reservasi)
+                ->where('status_layanan', '!=', self::STATUS_SELESAI)
+                ->update(['status_layanan' => $statusTujuan]);
+        }
     }
 
     /**
