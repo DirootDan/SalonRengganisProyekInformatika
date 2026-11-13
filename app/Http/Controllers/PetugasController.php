@@ -122,6 +122,13 @@ class PetugasController extends Controller
         }
 
         $jadwal = $this->lengkapiBarisJadwal($query->get());
+        $totalJadwal = $jadwal->count();
+        $layananSelesai = $jadwal->where('sudah_selesai', true)->count();
+        $layananBelumSelesai = $totalJadwal - $layananSelesai;
+        $jadwalHariIni = $this->kueriLayananPetugas($petugas->id_karyawan)
+            ->whereIn('reservasi.status', self::STATUS_JADWAL_TAMPIL)
+            ->whereDate('reservasi.tgl_booking', now()->toDateString())
+            ->count();
 
         return view('Karyawan.Petugas.jadwal', [
             'petugas' => $petugas,
@@ -130,6 +137,10 @@ class PetugasController extends Controller
             'tanggal' => $tanggal->toDateString(),
             'peran' => $peran,
             'tampilan' => self::TAMPILAN_PERAN[$peran],
+            'totalJadwal' => $totalJadwal,
+            'layananSelesai' => $layananSelesai,
+            'layananBelumSelesai' => $layananBelumSelesai,
+            'jadwalHariIni' => $jadwalHariIni,
         ]);
     }
 
