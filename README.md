@@ -1,13 +1,13 @@
 # Aplikasi Web Manajemen & Reservasi "Salon Rengganis"
 
-Aplikasi web berbasis **Laravel 12 + Vite + Blade** untuk operasional menyeluruh **Salon Rengganis**, mencakup pemesanan perawatan (*booking*) tanpa pembayaran di muka oleh pelanggan, pengelolaan antrean dan pembayaran (*Point of Sale*) oleh Kasir, jadwal perawatan & laporan komisi untuk Stylist/Therapist, serta panel kendali Manajer lengkap dengan **Sistem Kebijakan Pinalti & Pemblokiran Bertingkat**.
+Aplikasi web berbasis **Laravel 13 + Vite + Blade** untuk operasional menyeluruh **Salon Rengganis**, mencakup pemesanan perawatan (*booking*) tanpa pembayaran di muka oleh pelanggan, pengelolaan antrean dan pembayaran (*Point of Sale*) oleh Kasir, jadwal perawatan & laporan komisi untuk Stylist/Therapist, serta panel kendali Manajer lengkap dengan **Sistem Kebijakan Pinalti & Pemblokiran Bertingkat**.
 
 ---
 
 ## 1. Persyaratan Sistem & Instalasi
 
 ### Prasyarat
-- **Laragon** (PHP $\ge$ 8.2, MySQL / MariaDB, Apache / Nginx)
+- **Laragon** (PHP $\ge$ 8.3, MySQL / MariaDB, Apache / Nginx)
 - **Composer**
 - **Node.js & NPM**
 
@@ -41,11 +41,17 @@ php artisan migrate
 # 2. Isi data contoh lengkap (akun tiap peran, layanan, produk, promo, booking berbagai status, & pelanggan hampir terblokir)
 php artisan db:seed
 
-# 3. Jalankan server kompilasi aset CSS & JS (Vite)
+# 3. Jalankan server kompilasi aset CSS & JS (Vite) saat pengembangan lokal
 npm run dev
 
-# 4. Jalankan pengujian otomatis (PHPUnit Feature Test)
+#    Atau bangun aset produksi sebelum menjalankan server publik / demo tanpa Vite dev
+npm run build
+
+# 4. Jalankan pengujian otomatis (PHPUnit; konfigurasi bawaan di phpunit.xml memakai SQLite :memory:)
 php artisan test
+
+# 5. Periksa format kode PHP (Laravel Pint)
+php vendor/bin/pint --test
 ```
 
 ### Perintah Penjadwalan Evaluasi Booking Hangus (Scheduler)
