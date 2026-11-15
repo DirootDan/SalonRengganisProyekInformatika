@@ -1,0 +1,241 @@
+/* ===== Tombol Aksi Utama & Sekunder Staf ===== */
+.btn-utama {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: var(--warna-brand);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sedang);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-utama:hover {
+    background: var(--warna-brand-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(219, 39, 119, 0.28);
+}
+
+.btn-sekunder {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--warna-batas-input);
+    color: var(--warna-teks-sekunder);
+    border: none;
+    border-radius: var(--radius-sedang);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-sekunder:hover {
+    background: var(--warna-batas-abu);
+}
+
+.btn-aksi {
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: var(--radius-kecil);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-edit {
+    background: var(--warna-brand-kartu);
+    color: var(--warna-brand-hover);
+}
+
+.btn-edit:hover {
+    background: var(--warna-brand-batas);
+}
+
+.btn-hapus {
+    background: var(--warna-bahaya-latar);
+    color: var(--warna-bahaya-teks);
+}
+
+.btn-hapus:hover {
+    background: var(--warna-bahaya-batas);
+}
+
+/* ===== Tombol Keluar per Peran Staf ===== */
+.admin-shell .btn-keluar,
+.kasir-shell .btn-keluar {
+    padding: 8px 18px;
+    background: white;
+    color: var(--warna-brand);
+    border: 2px solid var(--warna-brand);
+    border-radius: var(--radius-penuh);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-shell .btn-keluar:hover,
+.kasir-shell .btn-keluar:hover {
+    background: var(--warna-brand);
+    color: white;
+}
+
+.petugas-shell .btn-keluar {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid #fecdd3;
+    background: #fff1f2;
+    color: #be123c;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.petugas-shell .btn-keluar:hover {
+    background: #ffe4e6;
+}
+
+/* ===== Tombol Pelanggan & Publik ===== */
+.pelanggan-app .btn {
+    display: inline-flex;
+    justify-content: center;
+    padding: 14px 32px;
+    background: #db2777;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pelanggan-app .btn:hover {
+    background: #be185d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(219, 39, 119, 0.3);
+}
+
+.btn-penuh {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.pb-tombol {
+    display: inline-block;
+    padding: 13px 26px;
+    background: #be185d;
+    color: #ffffff;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: 2px solid #be185d;
+    transition: all 0.2s ease;
+}
+
+.pb-tombol:hover {
+    background: #9d174d;
+    border-color: #9d174d;
+}
+
+.pb-tombol-kecil {
+    padding: 8px 18px;
+}
+
+.pb-tombol-garis {
+    background: transparent;
+    color: #be185d;
+}
+
+.pb-tombol-garis:hover {
+    background: #fdf2f8;
+    color: #9d174d;
+}
+
+/* ===== Tombol WhatsApp Mengambang ===== */
+.wa-mengambang {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: #15803d;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(21, 128, 61, 0.35);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.wa-mengambang:hover {
+    background: #166534;
+    transform: translateY(-2px);
+}
+
+.wa-ikon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* ===== Responsif Tombol ===== */
+@media (max-width: 768px) {
+    .petugas-shell .btn-keluar {
+        padding: 7px 14px;
+        font-size: 12.5px;
+    }
+}
+
+@media (max-width: 640px) {
+    .admin-shell .btn-keluar,
+    .kasir-shell .btn-keluar {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    .toolbar-atas > .btn-utama,
+    .toolbar-atas > .btn-sekunder {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pb-tombol-kecil {
+        padding: 10px 16px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 13px;
+    }
+
+    .wa-mengambang {
+        padding: 14px;
+        right: 14px;
+        bottom: 14px;
+    }
+
+    .wa-teks {
+        display: none;
+    }
+}

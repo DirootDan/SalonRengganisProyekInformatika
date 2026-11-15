@@ -1,9 +1,15 @@
-@import './global/variables.css';
+/* Base */
+@import './base/variables.css';
+@import './base/reset.css';
 
-body {
-    font-family: var(--font-utama);
-    margin: 0;
-    padding: 40px;
-    color: var(--warna-teks-utama);
-    background-color: var(--warna-latar-input);
-}
+/* Layouts */
+@import './layouts/staf-layout.css';
+@import './layouts/publik-layout.css';
+
+/* Components */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/forms.css';
+@import './components/modals.css';
+@import './components/tables.css';
+@import './components/struk.css';

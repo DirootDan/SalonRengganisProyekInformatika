@@ -1,0 +1,136 @@
+/* ===== Toolbar Pencarian & Filter ===== */
+.toolbar-atas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.toolbar-kiri {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.input-cari {
+    padding: 11px 16px;
+    border: 2px solid var(--warna-batas-input);
+    border-radius: var(--radius-sedang);
+    font-family: inherit;
+    font-size: 14px;
+    min-width: 250px;
+    background: var(--warna-latar-input);
+    transition: all 0.2s ease;
+}
+
+.input-cari:focus,
+.select-filter:focus {
+    outline: 2px solid var(--warna-brand-hover);
+    outline-offset: 1px;
+    border-color: var(--warna-brand-hover);
+    background: white;
+}
+
+.select-filter {
+    padding: 11px 14px;
+    border: 2px solid var(--warna-batas-input);
+    border-radius: var(--radius-sedang);
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--warna-latar-input);
+    color: var(--warna-teks-sekunder);
+    cursor: pointer;
+}
+
+/* ===== Kontrol Formulir & Validasi ===== */
+.form-dua-kolom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.form-grup {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--warna-teks-sekunder);
+    margin-bottom: 6px;
+}
+
+.label-kecil {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--warna-batas-input);
+    border-radius: var(--radius-sedang);
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--warna-latar-input);
+    color: var(--warna-teks-utama);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: 2px solid var(--warna-brand-hover);
+    outline-offset: 1px;
+    border-color: var(--warna-brand-hover);
+    background: white;
+}
+
+.form-grup .input-galat,
+.input-galat {
+    border-color: var(--warna-bahaya);
+    background-color: var(--warna-bahaya-latar);
+}
+
+.pesan-galat-field {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #dc2626;
+}
+
+/* ===== Responsif Toolbar & Form ===== */
+@media (max-width: 640px) {
+    .toolbar-atas {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .toolbar-kiri {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .input-cari,
+    .select-filter {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .form-dua-kolom {
+        grid-template-columns: 1fr !important;
+    }
+}

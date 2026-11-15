@@ -1,0 +1,472 @@
+:root {
+    --lebar-cetak-struk: 80mm;
+    --lebar-cetak: 80mm;
+}
+
+.elemen-tersembunyi {
+    display: none !important;
+}
+
+/* ===== Layout Pengaturan & Pratinjau Struk (Manajer & Kasir) ===== */
+.struk-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.judul-sub-struk {
+    margin: 0 0 18px;
+    font-size: 18px;
+}
+
+.kaki-sebar {
+    justify-content: space-between;
+}
+
+@media (max-width: 960px) {
+    .struk-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pratinjau-wadah {
+        position: static;
+    }
+}
+
+.opsi-ceklis-grup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f9fafb;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #f3f4f6;
+}
+
+.opsi-ceklis {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+}
+
+.opsi-ceklis input {
+    accent-color: #db2777;
+    width: 17px;
+    height: 17px;
+}
+
+/* ===== Panel Info Struk Baca-Saja (Kasir) ===== */
+.kepala-info-struk {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.lencana-baca-saja {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #9d174d;
+    background: #fdf2f8;
+    border: 1px solid #fbcfe8;
+}
+
+.catatan-info-struk {
+    margin: 0 0 18px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #6b7280;
+}
+
+.daftar-info-struk {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0 0 20px;
+}
+
+.baris-dua-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    .baris-dua-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+.item-info-struk {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6;
+}
+
+.item-info-struk dt {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 3px;
+}
+
+.item-info-struk dd {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.45;
+}
+
+.kotak-simulasi-cetak {
+    padding-top: 16px;
+    border-top: 1.5px dashed #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ===== Pratinjau Kertas Struk Thermal ===== */
+.pratinjau-wadah {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    top: 96px;
+}
+
+.label-pratinjau {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9d174d;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+}
+
+.kertas-struk {
+    width: 100%;
+    max-width: 360px;
+    background: #fffef9;
+    color: #1f2937;
+    font-family: 'Courier New', Courier, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    padding: 28px 24px;
+    border-radius: 6px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    border-top: 6px dashed #e5e7eb;
+    border-bottom: 6px dashed #e5e7eb;
+    transition: max-width 0.25s ease, padding 0.25s ease, font-size 0.25s ease;
+}
+
+.kertas-struk.kertas-58mm {
+    max-width: 240px;
+    font-size: 11.5px;
+    padding: 20px 14px;
+}
+
+.kertas-struk.kertas-58mm .struk-judul {
+    font-size: 14.5px;
+}
+
+.kertas-struk.kertas-58mm .struk-grand-total {
+    font-size: 13px;
+}
+
+.kertas-struk.kertas-76mm {
+    max-width: 315px;
+    font-size: 12.5px;
+    padding: 24px 20px;
+}
+
+.kertas-struk.kertas-80mm {
+    max-width: 360px;
+    font-size: 13px;
+    padding: 28px 24px;
+}
+
+.kertas-struk .struk-kepala {
+    text-align: center;
+}
+
+.struk-logo {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.struk-judul {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.struk-sub {
+    font-size: 12px;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+
+.struk-alamat,
+.struk-telp,
+.struk-header-tambahan {
+    font-size: 11.5px;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+.struk-header-tambahan {
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.struk-garis {
+    text-align: center;
+    color: #4b5563;
+    margin: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.baris-struk {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    line-height: 1.6;
+}
+
+.struk-item {
+    margin-bottom: 8px;
+}
+
+.prev-petugas {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.struk-grand-total {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 4px 0;
+    padding: 4px 0;
+    border-top: 1px dashed #d1d5db;
+    border-bottom: 1px dashed #d1d5db;
+}
+
+.struk-kaki {
+    text-align: center;
+    font-size: 11.5px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.struk-kaki p {
+    margin: 0 0 6px;
+}
+
+.struk-ig {
+    font-weight: 700;
+    color: #111827;
+}
+
+/* ===== Mode Cetak Thermal Langsung (body.struk-cetak) ===== */
+body.struk-cetak {
+    font-family: 'VT323', 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.15;
+    color: #000;
+    background: #fff;
+    width: var(--lebar-cetak);
+    margin: 0 auto;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+body.struk-cetak.kertas-58mm {
+    --lebar-cetak: 58mm;
+}
+
+body.struk-cetak.kertas-76mm {
+    --lebar-cetak: 76mm;
+}
+
+body.struk-cetak.kertas-80mm {
+    --lebar-cetak: 80mm;
+}
+
+body.struk-cetak .struk-kepala {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px dashed #000;
+}
+
+body.struk-cetak .struk-kepala-teks {
+    text-align: left;
+}
+
+body.struk-cetak .struk-kepala-teks.pusat {
+    text-align: center;
+}
+
+body.struk-cetak .struk-logo-cetak {
+    font-size: 36px;
+    line-height: 1;
+}
+
+body.struk-cetak .struk-nama {
+    margin: 0;
+    font-size: 24px;
+    line-height: 0.95;
+    text-transform: uppercase;
+}
+
+body.struk-cetak .pusat {
+    text-align: center;
+}
+
+body.struk-cetak .kecil {
+    font-size: 14px;
+    line-height: 1.1;
+}
+
+body.struk-cetak .garis {
+    border-top: 1px dashed #000;
+    margin: 6px 0;
+}
+
+body.struk-cetak .baris {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+body.struk-cetak .baris > span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+body.struk-cetak .baris > span:last-child {
+    white-space: nowrap;
+}
+
+body.struk-cetak .butir {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dotted #000;
+}
+
+body.struk-cetak .petugas {
+    font-style: italic;
+    font-size: 14px;
+}
+
+body.struk-cetak .total-besar {
+    font-size: 24px;
+    margin-top: 4px;
+}
+
+body.struk-cetak .aksi-cetak {
+    margin-top: 14px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+}
+
+body.struk-cetak .aksi-cetak a,
+body.struk-cetak .aksi-cetak button {
+    display: inline-block;
+    margin: 4px;
+    padding: 8px 14px;
+    font-size: 13px;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.struk-cetak .notif-sukses-cetak {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* ===== Mode Cetak Murni CSS (Tanpa HTML/CSS di File JS) ===== */
+@media print {
+    @page {
+        margin: 0;
+    }
+
+    body:not(.struk-cetak) .sidebar,
+    body:not(.struk-cetak) .topbar,
+    body:not(.struk-cetak) .panel-kartu,
+    body:not(.struk-cetak) .label-pratinjau,
+    body:not(.struk-cetak) .alert-sukses,
+    body:not(.struk-cetak) .alert-galat,
+    body:not(.struk-cetak) .toast-notif,
+    body:not(.struk-cetak) .footer-admin,
+    body:not(.struk-cetak) .footer-kasir {
+        display: none !important;
+    }
+
+    html,
+    body:not(.struk-cetak),
+    .admin-shell,
+    .kasir-shell,
+    .main-area,
+    .konten,
+    .struk-grid,
+    .pratinjau-wadah {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        position: static !important;
+    }
+
+    #kertasStruk {
+        width: var(--lebar-cetak-struk, 80mm) !important;
+        max-width: var(--lebar-cetak-struk, 80mm) !important;
+        margin: 0 auto !important;
+        padding: 4mm 3mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+        color: #111827 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    body.struk-cetak {
+        padding: 0;
+    }
+
+    body.struk-cetak .aksi-cetak,
+    body.struk-cetak .notif-sukses-cetak {
+        display: none;
+    }
+}
