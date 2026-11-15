@@ -4,10 +4,6 @@
 @section('header', 'Pengaturan Format Struk Nota')
 @section('sub_header', 'Sesuaikan tampilan nota pembayaran yang dicetak untuk pelanggan di meja Kasir.')
 
-@push('styles')
-    @vite(['resources/css/Manajer/struk.css'])
-@endpush
-
 @section('isi')
     <div class="struk-grid">
         <!-- Kolom Kiri: Form Pengaturan Struk -->

@@ -5,7 +5,7 @@
 @section('sub_header', 'Kelola ketersediaan stok barang kecantikan dan harga jual produk di kasir.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/produk.css'])
+    @vite(['resources/css/pages/staf/katalog.css'])
 @endpush
 
 @section('isi')

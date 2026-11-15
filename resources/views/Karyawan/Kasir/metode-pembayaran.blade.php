@@ -5,7 +5,7 @@
 @section('sub_header', 'Daftar kanal pembayaran yang aktif dan siap digunakan saat melayani pelanggan.')
 
 @push('styles')
-    @vite(['resources/css/Karyawan/Kasir/metode.css'])
+    @vite(['resources/css/pages/staf/katalog.css'])
 @endpush
 
 @section('isi')

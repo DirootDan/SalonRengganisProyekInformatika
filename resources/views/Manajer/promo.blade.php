@@ -5,7 +5,7 @@
 @section('sub_header', 'Kelola voucer diskon, potongan harga spesial, dan masa berlaku promo pelanggan.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/promo.css'])
+    @vite(['resources/css/pages/staf/manajer-admin.css'])
 @endpush
 
 @section('isi')

@@ -5,7 +5,7 @@
 @section('sub_header', 'Rekap penerimaan pembayaran harian dan riwayat nota transaksi di meja kasir.')
 
 @push('styles')
-@vite(['resources/css/Karyawan/Kasir/laporan.css'])
+@vite(['resources/css/pages/staf/laporan.css'])
 @endpush
 
 @section('isi')

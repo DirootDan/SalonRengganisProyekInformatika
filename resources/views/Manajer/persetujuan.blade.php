@@ -5,7 +5,7 @@
 @section('sub_header', 'Tinjau permintaan override harga POS, perubahan layanan reservasi, hak akses 1x pakai, serta log mandiri kasir.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/persetujuan.css'])
+    @vite(['resources/css/pages/staf/manajer-admin.css'])
 @endpush
 
 @section('isi')

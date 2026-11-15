@@ -91,6 +91,14 @@ export default defineConfig({
                 // Karyawan - Petugas (Stylist & Therapist)
                 'resources/css/Karyawan/Petugas/dashboard.css',
 
+                // Komponen & Halaman Staf Modular Baru
+                'resources/css/components/struk.css',
+                'resources/css/pages/staf/dashboard.css',
+                'resources/css/pages/staf/katalog.css',
+                'resources/css/pages/staf/laporan.css',
+                'resources/css/pages/staf/kasir-pos.css',
+                'resources/css/pages/staf/manajer-admin.css',
+
                 // Komponen Bersama
                 'resources/css/components/confirm-modal.css',
                 'resources/css/components/tombol-whatsapp.css',

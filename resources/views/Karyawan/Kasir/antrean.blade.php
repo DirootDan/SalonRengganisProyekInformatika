@@ -5,7 +5,7 @@
 @section('sub_header', 'Daftar seluruh reservasi berstatus Diterima yang sedang berlangsung atau menunggu giliran.')
 
 @push('styles')
-    @vite(['resources/css/Karyawan/Kasir/antrean.css'])
+    @vite(['resources/css/pages/staf/kasir-pos.css'])
 @endpush
 
 @section('isi')

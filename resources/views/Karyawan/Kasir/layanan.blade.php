@@ -5,7 +5,7 @@
 @section('sub_header', 'Lihat daftar perawatan salon atau ajukan izin 1x pakai ke Manajer untuk perubahan data layanan.')
 
 @push('styles')
-    @vite(['resources/css/Karyawan/Kasir/layanan.css'])
+    @vite(['resources/css/pages/staf/katalog.css'])
 @endpush
 
 @section('isi')

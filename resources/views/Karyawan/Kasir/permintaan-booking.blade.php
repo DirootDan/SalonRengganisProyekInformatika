@@ -5,7 +5,7 @@
 @section('sub_header', 'Terima atau tolak permintaan reservasi pelanggan. Pelanggan akan menerima notifikasi otomatis.')
 
 @push('styles')
-    @vite(['resources/css/Karyawan/Kasir/permintaan.css'])
+    @vite(['resources/css/pages/staf/kasir-pos.css'])
 @endpush
 
 @section('isi')

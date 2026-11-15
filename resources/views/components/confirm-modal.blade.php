@@ -1,4 +1,4 @@
-@vite(['resources/css/components/confirm-modal.css', 'resources/js/components/confirm-modal.js'])
+@vite(['resources/js/components/confirm-modal.js'])
 
 <div id="modalKonfirmasi"
      class="cm-backdrop"

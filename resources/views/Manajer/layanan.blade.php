@@ -5,7 +5,7 @@
 @section('sub_header', 'Atur kategori perawatan, harga, durasi pengerjaan nyata, waktu jeda persiapan, dan jabatan petugas.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/layanan.css'])
+    @vite(['resources/css/pages/staf/katalog.css'])
 @endpush
 
 @section('isi')

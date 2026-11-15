@@ -1,0 +1,246 @@
+/* ===== Antrean Hari Ini (Kasir) ===== */
+.antrean-penuh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+    gap: 18px;
+}
+
+.kartu-antrean-item {
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.antrean-item-atas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nomor-urut {
+    background: var(--warna-brand-hover, #be185d);
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.jadwal-jam {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #9d174d;
+    font-variant-numeric: tabular-nums;
+}
+
+.nama-pelanggan-antrean {
+    margin: 2px 0 0;
+    font-size: 17px;
+    color: #111827;
+}
+
+.telp-pelanggan-antrean {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--warna-teks-redup, #4b5563);
+}
+
+.rincian-layanan-antrean {
+    list-style: none;
+    padding: 10px 0;
+    margin: 4px 0;
+    border-top: 1px dashed #f9a8d4;
+    border-bottom: 1px dashed #f9a8d4;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.rincian-layanan-antrean li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.rincian-layanan-antrean li.baris-layanan-antrean {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+}
+
+.baris-layanan-atas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-ganti-petugas-antrean {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.select-ganti-petugas {
+    flex: 1;
+    min-width: 0;
+    padding: 5px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--warna-brand-batas, #fbcfe8);
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--warna-teks-utama, #111827);
+}
+
+.btn-ganti-petugas {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 8px;
+    background: var(--warna-brand, #db2777);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-ganti-petugas:hover {
+    background: var(--warna-brand-hover, #be185d);
+}
+
+.badge-terlewat {
+    margin-left: 6px;
+    background: var(--warna-bahaya-latar, #fee2e2);
+    color: var(--warna-bahaya-gelap, #991b1b);
+}
+
+.antrean-item-kaki {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--warna-brand-hover, #be185d);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ===== Permintaan Booking Pelanggan (Kasir) ===== */
+.tab-status-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.tab-status-item {
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: white;
+    color: #4b5563;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1.5px solid #fce7f3;
+    transition: all 0.2s ease;
+}
+
+.tab-status-item:hover {
+    border-color: #db2777;
+    color: #db2777;
+}
+
+.tab-status-item.aktif {
+    background: #db2777;
+    color: white;
+    border-color: #db2777;
+}
+
+.lencana-pinalti-bahaya {
+    display: inline-block;
+    margin-top: 4px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.lencana-pinalti-peringatan {
+    display: inline-block;
+    margin-top: 4px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.item-layanan-kecil {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.alasan-kecil {
+    display: block;
+    margin-top: 4px;
+    font-size: 11.5px;
+    color: #6b7280;
+}
+
+.teks-selesai {
+    font-size: 12px;
+    color: var(--warna-teks-redup, #4b5563);
+}
+
+.paginasi-wadah {
+    margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+    .antrean-penuh-grid {
+        gap: 12px;
+    }
+
+    .kartu-antrean-item {
+        padding: 16px 14px;
+        border-radius: 16px;
+    }
+
+    .baris-layanan-atas,
+    .form-ganti-petugas-antrean {
+        flex-wrap: wrap;
+    }
+
+    .select-ganti-petugas {
+        min-width: 140px;
+        min-height: 36px;
+    }
+
+    .btn-ganti-petugas {
+        min-height: 36px;
+        padding: 6px 12px;
+    }
+
+    .tab-status-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-status-item {
+        white-space: nowrap;
+        padding: 8px 14px;
+        font-size: 12.5px;
+    }
+}

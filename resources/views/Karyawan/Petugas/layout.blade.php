@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/Karyawan/Petugas/dashboard.css'])
+    @vite(['resources/css/app.css', 'resources/css/pages/staf/dashboard.css'])
 </head>
-<body>
+<body class="petugas-app">
     <div class="petugas-shell">
         <header class="topbar-petugas">
             <div class="topbar-inner">

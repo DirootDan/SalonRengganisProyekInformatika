@@ -4,10 +4,6 @@
 @section('header', 'Format Struk Nota Pembayaran')
 @section('sub_header', 'Pratinjau kertas struk pembayaran sesuai pengaturan resmi Manajer Salon Rengganis.')
 
-@push('styles')
-    @vite(['resources/css/Karyawan/Kasir/struk.css'])
-@endpush
-
 @section('isi')
     <div class="struk-grid">
         <div class="panel-kartu">

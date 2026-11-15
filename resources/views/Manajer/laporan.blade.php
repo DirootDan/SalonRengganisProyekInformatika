@@ -5,7 +5,7 @@
 @section('sub_header', 'Rekap pendapatan salon, riwayat transaksi, layanan terlaris, dan kinerja komisi karyawan.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/laporan.css'])
+    @vite(['resources/css/pages/staf/laporan.css'])
 @endpush
 
 @section('isi')

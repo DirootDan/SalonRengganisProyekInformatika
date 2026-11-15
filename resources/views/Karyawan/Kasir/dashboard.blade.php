@@ -5,7 +5,7 @@
 @section('sub_header', 'Fokus memproses pembayaran pelanggan walk-in maupun reservasi yang telah diterima.')
 
 @push('styles')
-    @vite(['resources/css/Karyawan/Kasir/dashboard.css'])
+    @vite(['resources/css/pages/staf/dashboard.css'])
 @endpush
 
 @section('isi')

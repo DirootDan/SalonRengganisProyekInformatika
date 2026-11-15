@@ -5,7 +5,7 @@
 @section('sub_header', 'Pantau kinerja salon, data master, dan pengaturan kasir dalam satu halaman.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/dashboard.css'])
+    @vite(['resources/css/pages/staf/dashboard.css'])
 @endpush
 
 @section('isi')

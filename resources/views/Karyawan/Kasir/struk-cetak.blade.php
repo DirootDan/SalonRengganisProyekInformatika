@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
-    @vite(['resources/css/Karyawan/Kasir/struk-cetak.css', 'resources/js/Karyawan/Kasir/struk-cetak.js'])
+    @vite(['resources/css/components/struk.css', 'resources/js/Karyawan/Kasir/struk-cetak.js'])
 </head>
 <body class="struk-cetak kertas-{{ $ukuran }}" data-ukuran="{{ $ukuran }}">
     <main class="struk-main">

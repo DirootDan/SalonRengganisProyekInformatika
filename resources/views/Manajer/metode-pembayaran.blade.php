@@ -5,7 +5,7 @@
 @section('sub_header', 'Kelola pilihan pembayaran yang tersedia saat Kasir memproses transaksi pelanggan.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/metode.css'])
+    @vite(['resources/css/pages/staf/katalog.css'])
 @endpush
 
 @section('isi')

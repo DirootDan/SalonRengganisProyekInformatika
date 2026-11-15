@@ -5,7 +5,7 @@
 @section('sub_header', 'Pantau ketersediaan produk kecantikan atau ajukan izin 1x pakai ke Manajer untuk perubahan stok dan harga.')
 
 @push('styles')
-    @vite(['resources/css/Karyawan/Kasir/produk.css'])
+    @vite(['resources/css/pages/staf/katalog.css'])
 @endpush
 
 @section('isi')

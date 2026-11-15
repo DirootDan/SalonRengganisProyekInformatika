@@ -5,7 +5,7 @@
 @section('sub_header', 'Atur parameter pelanggaran, lama pemblokiran, dan kelola pembukaan blokir pelanggan.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/kebijakan.css'])
+    @vite(['resources/css/pages/staf/manajer-admin.css'])
 @endpush
 
 @section('isi')

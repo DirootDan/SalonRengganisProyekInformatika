@@ -5,7 +5,7 @@
 @section('sub_header', 'Kelola akun staf salon (Manajer, Kasir, Stylist, dan Therapist) beserta persentase komisinya.')
 
 @push('styles')
-    @vite(['resources/css/Manajer/karyawan.css'])
+    @vite(['resources/css/pages/staf/manajer-admin.css'])
 @endpush
 
 @section('isi')
