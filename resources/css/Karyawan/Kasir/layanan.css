@@ -1,8 +1,2 @@
 @import '../../Manajer/layanan.css';
 @import './katalog-akses.css';
-
-.form-dua-kolom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-}

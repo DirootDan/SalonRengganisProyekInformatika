@@ -88,7 +88,7 @@
     <div class="modal-backdrop" id="modalProduk" role="dialog" aria-modal="true" aria-labelledby="judulModalProduk" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
-                <h3 id="judulModalProduk">Tambah Produk Baru</h3>
+                <h2 id="judulModalProduk">Tambah Produk Baru</h2>
                 <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 

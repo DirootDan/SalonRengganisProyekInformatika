@@ -80,7 +80,7 @@
 
             <div class="keranjang-header">
                 <div>
-                    <h3>Tagihan &amp; Pembayaran</h3>
+                    <h2>Tagihan &amp; Pembayaran</h2>
                     <small class="sub-keranjang" id="labelModeTransaksi">Mode: Pelanggan Walk-In / Umum</small>
                 </div>
                 <button type="button" class="btn-reset-keranjang" id="btnBersihkan">Reset / Walk-In</button>
@@ -200,7 +200,7 @@
         <div class="modal-kotak modal-kotak-lebar">
             <div class="modal-header">
                 <div>
-                    <h3 id="judulModalPilihAntrean">Pilih Reservasi Siap Bayar ({{ $reservasiAktif->count() }})</h3>
+                    <h2 id="judulModalPilihAntrean">Pilih Reservasi Siap Bayar ({{ $reservasiAktif->count() }})</h2>
                     <small class="sub-antrean">Petugas, layanan, produk add-on, dan promo dari reservasi akan langsung terisi otomatis ke keranjang POS.</small>
                 </div>
                 <button type="button" class="btn-tutup-modal" id="btnTutupModalAntrean" aria-label="Tutup">&times;</button>
@@ -213,7 +213,7 @@
                             <span class="antrean-id">
                                 #{{ $r->id_reservasi }} &bull; {{ $r->tgl_booking->format('d/m/Y') }} ({{ $r->jam_booking }}{{ $r->jam_selesai ? ' - ' . $r->jam_selesai : '' }})
                             </span>
-                            <h4 class="antrean-nama">{{ $r->namaPelangganTampil() }}</h4>
+                            <h3 class="antrean-nama">{{ $r->namaPelangganTampil() }}</h3>
                             <p class="antrean-rincian">
                                 {{ $r->layanan->pluck('nama_layanan')->join(', ') }}
                                 @if ($r->produkAddon->isNotEmpty())

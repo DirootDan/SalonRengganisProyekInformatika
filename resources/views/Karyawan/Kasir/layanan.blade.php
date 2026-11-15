@@ -179,7 +179,7 @@
     <div class="modal-backdrop {{ $bukaUlangModalLayanan ? 'tampil' : '' }}" id="modalLayanan" role="dialog" aria-modal="true" aria-labelledby="judulModalLayanan" aria-hidden="{{ $bukaUlangModalLayanan ? 'false' : 'true' }}">
         <div class="modal-kotak">
             <div class="modal-header">
-                <h3 id="judulModalLayanan">{{ old('_method', 'POST') === 'PUT' ? 'Perbarui Data Layanan (1x Pakai)' : 'Tambah Layanan Baru (1x Pakai)' }}</h3>
+                <h2 id="judulModalLayanan">{{ old('_method', 'POST') === 'PUT' ? 'Perbarui Data Layanan (1x Pakai)' : 'Tambah Layanan Baru (1x Pakai)' }}</h2>
                 <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 

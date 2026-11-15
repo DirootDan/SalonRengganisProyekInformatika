@@ -3,7 +3,7 @@
     <div class="modal-kotak">
         <div class="modal-header">
             <div>
-                <h3 id="judulModalAksesKatalog">🔑 Ajukan Izin Akses 1x Pakai</h3>
+                <h2 id="judulModalAksesKatalog">🔑 Ajukan Izin Akses 1x Pakai</h2>
                 <small class="sub-modal-katalog">Permintaan akan dikirim ke halaman Persetujuan Manajer.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalAksesKatalog" aria-label="Tutup">&times;</button>

@@ -2,10 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Struk #INV-{{ $nomorNota }}</title>
     @vite(['resources/css/Karyawan/Kasir/struk-cetak.css', 'resources/js/Karyawan/Kasir/struk-cetak.js'])
 </head>
 <body class="struk-cetak kertas-{{ $ukuran }}" data-ukuran="{{ $ukuran }}">
+    <main class="struk-main">
     @if (session('status'))
         <div class="notif-sukses-cetak">✅ {{ session('status') }}</div>
     @endif
@@ -15,7 +17,7 @@
             <div aria-hidden="true" class="struk-logo-cetak">🌸</div>
         @endif
         <div class="struk-kepala-teks {{ $struk->tampil_logo ? '' : 'pusat' }}">
-            <h3 class="struk-nama">{{ $struk->nama_salon }}</h3>
+            <h1 class="struk-nama">{{ $struk->nama_salon }}</h1>
             @if ($struk->slogan)<div class="kecil">{{ $struk->slogan }}</div>@endif
             <div class="kecil">{{ $struk->alamat }}</div>
             <div class="kecil">{{ $struk->telepon }}</div>
@@ -81,5 +83,6 @@
         <button type="button" id="btnCetakUlang">🖨️ Cetak Ulang</button>
         <a href="{{ route('kasir.dashboard') }}">← Kembali ke Kasir</a>
     </div>
+    </main>
 </body>
 </html>

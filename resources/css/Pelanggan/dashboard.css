@@ -1,3 +1,5 @@
+@import '../global/aksesibilitas.css';
+
 * { 
     box-sizing: border-box; 
 }
@@ -576,6 +578,11 @@ input[type="date"]:focus,
 .opsi:has(input:checked) { 
     border-color: #db2777; 
     background: #fdf2f8; 
+}
+
+.opsi:has(input:focus-visible) {
+    outline: 2px solid #be185d;
+    outline-offset: 2px;
 }
 
 .opsi input { 

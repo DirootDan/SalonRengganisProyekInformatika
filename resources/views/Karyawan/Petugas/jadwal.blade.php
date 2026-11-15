@@ -24,22 +24,22 @@
 
     <div class="ringkasan-grid">
         <div class="ringkasan-card">
-            <h3>Total Layanan</h3>
+            <h2>Total Layanan</h2>
             <p class="angka">{{ $totalJadwal }}</p>
             <p class="keterangan">Total layanan sesuai filter</p>
         </div>
         <div class="ringkasan-card belum">
-            <h3>Layanan Belum Selesai</h3>
+            <h2>Layanan Belum Selesai</h2>
             <p class="angka">{{ $layananBelumSelesai }}</p>
             <p class="keterangan">Diterima ({{ $layananSiapKerja }}) &bull; Menunggu Kasir ({{ $layananMenungguKasir }})</p>
         </div>
         <div class="ringkasan-card selesai">
-            <h3>Layanan Selesai</h3>
+            <h2>Layanan Selesai</h2>
             <p class="angka">{{ $layananSelesai }}</p>
             <p class="keterangan">Layanan yang telah diselesaikan</p>
         </div>
         <div class="ringkasan-card hari-ini">
-            <h3>Layanan Hari Ini</h3>
+            <h2>Layanan Hari Ini</h2>
             <p class="angka">{{ $jadwalHariIni }}</p>
             <p class="keterangan">Total jadwal hari ini (semua filter)</p>
         </div>

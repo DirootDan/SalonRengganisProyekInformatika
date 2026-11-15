@@ -1,7 +1,11 @@
+import { ikatNavigasiTabAria, sinkronTabAria } from '../components/aria-widget';
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Navigasi Tab (Data Diri & Ganti Password)
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabPanels = document.querySelectorAll('.tab-panel');
+
+    ikatNavigasiTabAria(tabBtns);
 
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -11,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabPanels.forEach(p => p.classList.remove('aktif'));
 
             btn.classList.add('aktif');
+            sinkronTabAria(tabBtns);
             const targetPanel = document.getElementById(targetId);
             if (targetPanel) {
                 targetPanel.classList.add('aktif');

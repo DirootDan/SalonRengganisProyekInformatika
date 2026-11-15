@@ -16,12 +16,6 @@
     color: var(--warna-sukses-teks);
 }
 
-.form-dua-kolom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-}
-
 .input-huruf-besar {
     text-transform: uppercase;
 }

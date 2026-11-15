@@ -1,3 +1,5 @@
+import { sinkronRadioAria } from '../../components/aria-widget';
+
 export const buatPengelolaJadwalAjax = ({
     formBooking,
     inputTanggal,
@@ -16,6 +18,8 @@ export const buatPengelolaJadwalAjax = ({
         });
     };
 
+    const gridSlotJamEl = document.getElementById('gridSlotJam');
+
     const sinkronUIWaktu = () => {
         const jamNilai = (inputJam?.value || '10:00').slice(0, 5);
         const mntBagian = jamNilai.split(':')[1] || '00';
@@ -26,6 +30,7 @@ export const buatPengelolaJadwalAjax = ({
         btnMenitCepatList.forEach((btn) => {
             btn.classList.toggle('aktif', btn.dataset.menit === mntBagian);
         });
+        sinkronRadioAria(gridSlotJamEl, '.chip-jam');
     };
 
     const muatPetugasTersedia = async () => {
@@ -65,6 +70,7 @@ export const buatPengelolaJadwalAjax = ({
                 chip.classList.toggle('aktif', jamOpt === jam);
                 if (statusEl) statusEl.textContent = tersedia ? 'Tersedia' : 'Penuh / Tutup';
             });
+            sinkronRadioAria(gridSlotJamEl, '.chip-jam');
 
             document.querySelectorAll('.select-petugas').forEach((select) => {
                 const jabatan = select.dataset.jabatan || 'Stylist';

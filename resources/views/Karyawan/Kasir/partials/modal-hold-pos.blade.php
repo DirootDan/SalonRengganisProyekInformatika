@@ -3,7 +3,7 @@
     <div class="modal-kotak modal-kotak-lebar">
         <div class="modal-header">
             <div>
-                <h3 id="judulModalHoldPos">⏸️ Daftar Transaksi Hold &amp; Status Approval ({{ $daftarHold->count() }})</h3>
+                <h2 id="judulModalHoldPos">⏸️ Daftar Transaksi Hold &amp; Status Approval ({{ $daftarHold->count() }})</h2>
                 <small class="sub-antrean">Pantau respons persetujuan Manajer atau lanjutkan transaksi yang telah diputuskan.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalHold" aria-label="Tutup">&times;</button>

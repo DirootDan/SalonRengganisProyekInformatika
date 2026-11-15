@@ -12,7 +12,7 @@
     <div class="struk-grid">
         <div class="panel-kartu">
             <div class="kepala-info-struk">
-                <h3 class="judul-sub-struk tanpa-margin">Identitas &amp; Format Struk Aktif</h3>
+                <h2 class="judul-sub-struk tanpa-margin">Identitas &amp; Format Struk Aktif</h2>
                 <span class="lencana-baca-saja">🔒 Diatur oleh Manajer</span>
             </div>
 

@@ -5,7 +5,7 @@
     <div class="modal-kotak">
         <div class="modal-header">
             <div>
-                <h3 id="judulModalDirectPos">🔑 Otorisasi Manajer di Tempat</h3>
+                <h2 id="judulModalDirectPos">🔑 Otorisasi Manajer di Tempat</h2>
                 <small class="sub-antrean">Verifikasi instan tanpa mengubah sesi login Kasir yang sedang aktif.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalDirect" aria-label="Tutup">&times;</button>

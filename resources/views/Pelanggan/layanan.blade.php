@@ -14,7 +14,7 @@
                 <div class="kartu">
                     <div class="kartu-ikon">{{ $item->jabatan_petugas === 'Stylist' ? '💇‍♀️' : '🌿' }}</div>
                     <span class="lencana-kategori-layanan">{{ $item->kategori }}</span>
-                    <h3>{{ $item->nama_layanan }}</h3>
+                    <h2>{{ $item->nama_layanan }}</h2>
                     <p class="meta-layanan">⏱ {{ (int) ($item->durasi_menit ?: 60) }} menit &bull; Ditangani {{ $item->jabatan_petugas }}</p>
                     <div class="harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</div>
                     <div class="kartu-aksi-booking">

@@ -10,9 +10,9 @@
 </head>
 <body>
 
-    <div class="login-card">
+    <main class="login-card">
         <div class="logo">🌸</div>
-        <h2>Buat Akun</h2>
+        <h1>Buat Akun</h1>
         <p class="subtitle">Daftar untuk mulai booking di Salon Rengganis</p>
 
         @if ($errors->any())
@@ -58,7 +58,7 @@
         <p class="footer-note">
             <a href="{{ route('beranda.publik') }}">&larr; Kembali ke Beranda Salon</a>
         </p>
-    </div>
+    </main>
 
 <x-anti-klik-ganda />
 

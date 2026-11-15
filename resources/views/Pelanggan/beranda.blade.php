@@ -11,7 +11,7 @@
     @if (isset($reservasiAktif) && $reservasiAktif->isNotEmpty())
         <div class="panel-notifikasi">
             <div class="notifikasi-header">
-                <h3>Jadwal Booking Aktif Anda ({{ $reservasiAktif->count() }} Reservasi)</h3>
+                <h2>Jadwal Booking Aktif Anda ({{ $reservasiAktif->count() }} Reservasi)</h2>
                 <a href="{{ route('pelanggan.riwayat') }}" class="btn-tandai-baca">Lihat Semua Riwayat &rarr;</a>
             </div>
 

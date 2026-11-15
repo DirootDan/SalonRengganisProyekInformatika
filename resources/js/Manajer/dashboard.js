@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
     // Efek animasi kemunculan bertahap pada kartu pintasan
     const items = document.querySelectorAll('.pintas-item');
     items.forEach((el, idx) => {

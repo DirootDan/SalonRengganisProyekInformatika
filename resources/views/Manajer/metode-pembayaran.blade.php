@@ -26,7 +26,7 @@
                         <span class="metode-ikon">{{ $m->ikon }}</span>
                         <div>
                             <span class="metode-kategori">{{ $m->kategori }}</span>
-                            <h3 class="metode-nama">{{ $m->nama_metode }}</h3>
+                            <h2 class="metode-nama">{{ $m->nama_metode }}</h2>
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@
     <div class="modal-backdrop" id="modalMetode" role="dialog" aria-modal="true" aria-labelledby="judulModalMetode" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
-                <h3 id="judulModalMetode">Ubah Metode Pembayaran</h3>
+                <h2 id="judulModalMetode">Ubah Metode Pembayaran</h2>
                 <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 

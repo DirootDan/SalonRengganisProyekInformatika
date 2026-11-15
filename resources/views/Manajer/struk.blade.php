@@ -12,7 +12,7 @@
     <div class="struk-grid">
         <!-- Kolom Kiri: Form Pengaturan Struk -->
         <div class="panel-kartu">
-            <h3 class="judul-sub-struk">Kustomisasi Identitas &amp; Isi Nota</h3>
+            <h2 class="judul-sub-struk">Kustomisasi Identitas &amp; Isi Nota</h2>
 
             <form method="POST" action="{{ route('manajer.struk.simpan') }}" id="formStruk" novalidate>
                 @csrf

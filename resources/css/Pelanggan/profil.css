@@ -159,6 +159,7 @@
     margin-bottom: 24px;
 }
 
+.panel-header h2,
 .panel-header h3 {
     margin: 0 0 6px;
     font-size: 20px;

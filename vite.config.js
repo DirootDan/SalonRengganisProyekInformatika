@@ -17,6 +17,7 @@ export default defineConfig({
 
                 // Publik
                 'resources/css/Publik/beranda.css',
+                'resources/js/Publik/beranda.js',
                 'resources/css/errors/halaman-error.css',
                 
                 // Pelanggan CSS

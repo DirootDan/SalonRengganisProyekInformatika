@@ -400,7 +400,7 @@
                 <aside class="portal-kanan" id="kartuRingkasanSticky">
                     <div class="kartu-ringkasan-sticky">
                         <div class="ringkasan-kepala">
-                            <h3>Ringkasan Reservasi</h3>
+                            <h2>Ringkasan Reservasi</h2>
                             <span class="lencana-jadwal-live" id="lencanaJadwalLive">
                                 {{ $tglTerpilihAwal }} &bull; {{ $jamTerpilihAwal }} WIB
                             </span>

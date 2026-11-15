@@ -11,7 +11,7 @@
 @section('isi')
 <div class="panel-kartu">
     <div class="toolbar-atas">
-        <h3 class="tanpa-margin">Riwayat Nota Pembayaran &amp; Reservasi</h3>
+        <h2 class="tanpa-margin">Riwayat Nota Pembayaran &amp; Reservasi</h2>
         <button type="button" class="btn-utama" id="btnCetakLaporan">🖨️ Cetak Rekap Shift</button>
     </div>
 

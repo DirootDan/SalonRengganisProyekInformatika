@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="kasir-shell">
-        <aside class="sidebar" id="sidebar" data-url-badge="{{ route('kasir.badge-ringkasan') }}">
+        <aside class="sidebar" id="sidebar" aria-label="Menu utama kasir" data-url-badge="{{ route('kasir.badge-ringkasan') }}">
             <div class="sidebar-brand">
                 <span class="brand-ikon">🌸</span>
                 <div class="brand-teks">
@@ -21,7 +21,7 @@
                 <button type="button" class="btn-tutup-sidebar" id="btnTutupSidebar" aria-label="Tutup Menu">&times;</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="sidebar-nav" aria-label="Navigasi panel kasir">
                 <div class="nav-grup">
                     <span class="nav-label">TRANSAKSI &amp; RESERVASI</span>
                     <a href="{{ route('kasir.dashboard') }}" class="nav-item {{ request()->routeIs('kasir.dashboard') ? 'aktif' : '' }}">

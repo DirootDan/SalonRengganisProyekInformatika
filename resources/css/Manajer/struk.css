@@ -31,18 +31,6 @@
     }
 }
 
-.form-dua-kolom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-}
-
-@media (max-width: 640px) {
-    .form-dua-kolom {
-        grid-template-columns: 1fr;
-    }
-}
-
 .form-grup .input-galat,
 .input-galat {
     border-color: var(--warna-bahaya);

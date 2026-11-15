@@ -10,16 +10,16 @@
 
 @section('isi')
     <div class="tab-bar-persetujuan" role="tablist">
-        <button type="button" class="tab-persetujuan aktif" data-target="panelPending" role="tab" aria-selected="true">
+        <button type="button" id="tabPending" class="tab-persetujuan aktif" data-target="panelPending" role="tab" aria-controls="panelPending" aria-selected="true" tabindex="0">
             ⏳ Menunggu Keputusan ({{ $daftarPending->count() }})
         </button>
-        <button type="button" class="tab-persetujuan" data-target="panelAudit" role="tab" aria-selected="false">
+        <button type="button" id="tabAudit" class="tab-persetujuan" data-target="panelAudit" role="tab" aria-controls="panelAudit" aria-selected="false" tabindex="-1">
             📋 Log Audit Perubahan &amp; Riwayat ({{ $logPerubahan->count() }})
         </button>
     </div>
 
     <!-- TAB 1: ANTREAN MENUNGGU KEPUTUSAN MANAJER -->
-    <section id="panelPending" class="panel-tab-konten">
+    <section id="panelPending" class="panel-tab-konten" role="tabpanel" aria-labelledby="tabPending">
         @forelse ($daftarPending as $item)
             <article class="kartu-otorisasi">
                 <div class="kartu-otorisasi-atas">
@@ -29,7 +29,7 @@
                         @if ($item->sedang_dihold)
                             <span class="lencana-hold">⏸️ Sedang Di-Hold di POS</span>
                         @endif
-                        <h3 class="judul-target-otorisasi">{{ $item->label_target }}</h3>
+                        <h2 class="judul-target-otorisasi">{{ $item->label_target }}</h2>
                         <small class="meta-pengajuan">
                             Diajukan oleh <strong>{{ $item->kasir?->nama_staff ?? 'Kasir' }}</strong>
                             &bull; {{ $item->created_at?->format('d/m/Y H:i') }} WIB
@@ -64,7 +64,7 @@
                 @if ($item->konteks === \App\Models\PermintaanOtorisasi::KONTEKS_POS_TRANSAKSI)
                     <div class="rincian-diff-grid">
                         <div class="kolom-diff">
-                            <h4>Kondisi Awal (Harga Normal / Booking)</h4>
+                            <h3>Kondisi Awal (Harga Normal / Booking)</h3>
                             <ul class="daftar-rincian-item">
                                 @forelse ($item->layananAwalList() as $lAwal)
                                     <li>
@@ -78,7 +78,7 @@
                         </div>
 
                         <div class="kolom-diff kolom-diff-usulan">
-                            <h4>Usulan Perubahan Kasir</h4>
+                            <h3>Usulan Perubahan Kasir</h3>
                             <ul class="daftar-rincian-item">
                                 @foreach ($item->layananUsulanList() as $lUsul)
                                     <li>
@@ -143,11 +143,11 @@
     </section>
 
     <!-- TAB 2: LOG AUDIT PERUBAHAN MANDIRI (< Rp 150.000) & RIWAYAT KEPUTUSAN -->
-    <section id="panelAudit" class="panel-tab-konten tersembunyi">
+    <section id="panelAudit" class="panel-tab-konten tersembunyi" role="tabpanel" aria-labelledby="tabAudit">
         <div class="panel-kartu">
             <div class="header-audit-filter">
                 <div>
-                    <h3 class="judul-seksi">🔍 Jejak Audit Perubahan Harga, Layanan &amp; Katalog</h3>
+                    <h2 class="judul-seksi">🔍 Jejak Audit Perubahan Harga, Layanan &amp; Katalog</h2>
                     <p class="sub-seksi">Mencatat seluruh perubahan, termasuk override mandiri Kasir di bawah Rp 150.000 maupun persetujuan Manajer.</p>
                 </div>
                 <form method="GET" action="{{ route('manajer.persetujuan') }}" class="form-filter-tanggal">

@@ -10,9 +10,9 @@
 </head>
 <body>
 
-    <div class="login-card">
+    <main class="login-card">
         <div class="logo">🔑</div>
-        <h2>Password Baru</h2>
+        <h1>Password Baru</h1>
         <p class="subtitle">Silakan buat password baru untuk akun Anda</p>
 
         @if ($errors->any())
@@ -45,7 +45,7 @@
         <div class="link-row center">
             <a href="{{ route('login') }}">Kembali ke Login</a>
         </div>
-    </div>
+    </main>
 
 <x-anti-klik-ganda />
 

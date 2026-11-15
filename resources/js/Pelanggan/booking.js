@@ -2,6 +2,10 @@ import { muatKatalogPromo } from './booking/formatters';
 import { terapkanPaginasiKatalog } from './booking/paginasiKatalog';
 import { buatPengelolaJadwalAjax } from './booking/jadwalAjax';
 import { renderRingkasanBooking } from './booking/ringkasanUI';
+import {
+    ikatNavigasiTabAria,
+    ikatNavigasiRadioAria,
+} from '../components/aria-widget';
 
 document.addEventListener('DOMContentLoaded', () => {
     const formBooking        = document.getElementById('formBooking');
@@ -199,7 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
         sinkronStepperVisual();
         updateRingkasan();
         if (gulir) {
-            document.getElementById(`panelStep${stepAktif}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const kurangiGerak = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+            document.getElementById(`panelStep${stepAktif}`)?.scrollIntoView({
+                behavior: kurangiGerak ? 'auto' : 'smooth',
+                block: 'start',
+            });
         }
     };
 
@@ -237,6 +245,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    ikatNavigasiTabAria(tabKategoriList);
+
     tabKategoriList.forEach((tab) => {
         tab.addEventListener('click', () => {
             tabKategoriList.forEach((t) => t.classList.remove('aktif'));
@@ -251,6 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnNextLayanan?.addEventListener('click', () => { halLayananAktif++; renderLayananBerhalaman(); });
 
     searchProdukInput?.addEventListener('input', () => { halProdukAktif = 1; renderProdukBerhalaman(); });
+
+    ikatNavigasiTabAria(chipFilterProduk);
+
     chipFilterProduk.forEach((chip) => {
         chip.addEventListener('click', () => {
             chipFilterProduk.forEach((c) => c.classList.remove('aktif'));
@@ -260,6 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderProdukBerhalaman();
         });
     });
+
+    ikatNavigasiRadioAria(document.getElementById('gridSlotJam'), '.chip-jam');
     btnPrevProduk?.addEventListener('click', () => { halProdukAktif--; renderProdukBerhalaman(); });
     btnNextProduk?.addEventListener('click', () => { halProdukAktif++; renderProdukBerhalaman(); });
 

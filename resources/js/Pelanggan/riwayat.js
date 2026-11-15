@@ -1,3 +1,4 @@
+import { ikatNavigasiTabAria } from '../components/aria-widget';
 import { perbaruiEmptyStateGrid } from '../components/staf-ui';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tombolTab = document.querySelectorAll('.tab-filter-riwayat');
     const daftarKartu = document.querySelectorAll('.reservasi-item');
     const wadahRiwayat = daftarKartu[0]?.parentElement || null;
+
+    ikatNavigasiTabAria(tombolTab);
 
     tombolTab.forEach((btn) => {
         btn.addEventListener('click', () => {

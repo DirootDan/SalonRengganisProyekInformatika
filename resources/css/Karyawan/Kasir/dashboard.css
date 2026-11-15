@@ -160,7 +160,9 @@
         position: static;
     }
     .katalog-grid {
-        max-height: 380px;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
     }
 }
 
@@ -322,6 +324,7 @@
     margin-bottom: 16px;
 }
 
+.keranjang-header h2,
 .keranjang-header h3 {
     margin: 0;
     font-size: 17px;
@@ -344,8 +347,6 @@
     border-bottom: 2px dashed #f3f4f6;
     padding: 12px 0;
     margin: 14px 0;
-    max-height: 240px;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -392,13 +393,19 @@
 }
 
 .btn-qty {
-    width: 26px;
-    height: 26px;
-    border-radius: 6px;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
     border: 1px solid #e5e7eb;
     background: white;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-qty:disabled {

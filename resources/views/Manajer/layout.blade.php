@@ -12,7 +12,7 @@
 <body>
     <div class="admin-shell">
         <!-- Sidebar Kiri Khusus Manajer -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="sidebar" aria-label="Menu utama manajer">
             <div class="sidebar-brand">
                 <span class="brand-ikon">🌸</span>
                 <div class="brand-teks">
@@ -22,7 +22,7 @@
                 <button type="button" class="btn-tutup-sidebar" id="btnTutupSidebar" aria-label="Tutup Menu">&times;</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="sidebar-nav" aria-label="Navigasi panel manajer">
                 <div class="nav-grup">
                     <span class="nav-label">RINGKASAN</span>
                     <a href="{{ route('manajer.dashboard') }}" class="nav-item {{ request()->routeIs('manajer.dashboard') ? 'aktif' : '' }}">

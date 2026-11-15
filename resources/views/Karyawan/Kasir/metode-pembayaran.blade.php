@@ -23,7 +23,7 @@
                         <span class="metode-ikon" aria-hidden="true">{{ $m->ikon }}</span>
                         <div>
                             <span class="metode-kategori">{{ $m->kategori }}</span>
-                            <h3 class="metode-nama">{{ $m->nama_metode }}</h3>
+                            <h2 class="metode-nama">{{ $m->nama_metode }}</h2>
                         </div>
                     </div>
 

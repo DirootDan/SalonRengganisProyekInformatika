@@ -10,9 +10,9 @@
 </head>
 <body>
 
-    <div class="login-card">
+    <main class="login-card">
         <div class="logo">🌸</div>
-        <h2>Salon Rengganis</h2>
+        <h1>Salon Rengganis</h1>
         <p class="subtitle">Silakan masuk ke akun Anda</p>
 
         @if (session('status'))
@@ -45,7 +45,7 @@
         <p class="footer-note">
             <a href="{{ route('beranda.publik') }}">&larr; Kembali ke Beranda Salon</a>
         </p>
-    </div>
+    </main>
 
 </body>
 </html>

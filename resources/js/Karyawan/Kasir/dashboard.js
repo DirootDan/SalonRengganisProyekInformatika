@@ -1,3 +1,4 @@
+import { ikatNavigasiTabAria } from '../../components/aria-widget';
 import {
     bukaModalAksesibel,
     perbaruiEmptyStateGrid,
@@ -296,6 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
             perbaruiEmptyStateGrid(katalogGridEl, jumlahTampak, 'Tidak ada layanan atau produk yang cocok dengan pencarian.');
         }
     };
+
+    ikatNavigasiTabAria(tabBtns);
 
     tabBtns.forEach((tab) => {
         tab.addEventListener('click', () => {

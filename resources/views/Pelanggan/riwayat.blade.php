@@ -17,7 +17,7 @@
     @if ($notifikasi->isNotEmpty())
         <div class="panel-notifikasi">
             <div class="notifikasi-header">
-                <h3>Pemberitahuan Akun ({{ $jmlNotifBelumDibaca }} belum dibaca)</h3>
+                <h2>Pemberitahuan Akun ({{ $jmlNotifBelumDibaca }} belum dibaca)</h2>
                 @if ($jmlNotifBelumDibaca > 0)
                     <form method="POST" action="{{ route('pelanggan.notifikasi.baca') }}">
                         @csrf
@@ -47,19 +47,19 @@
 
     @if ($reservasi->isNotEmpty())
         <div class="filter-riwayat-bar" role="tablist" aria-label="Filter Status Reservasi">
-            <button type="button" class="tab-filter-riwayat aktif" data-filter-status="semua">
+            <button type="button" class="tab-filter-riwayat aktif" data-filter-status="semua" role="tab" aria-selected="true" tabindex="0">
                 Semua ({{ $reservasi->count() }})
             </button>
-            <button type="button" class="tab-filter-riwayat" data-filter-status="Menunggu">
+            <button type="button" class="tab-filter-riwayat" data-filter-status="Menunggu" role="tab" aria-selected="false" tabindex="-1">
                 Menunggu ({{ $jmlMenunggu }})
             </button>
-            <button type="button" class="tab-filter-riwayat" data-filter-status="Diterima">
+            <button type="button" class="tab-filter-riwayat" data-filter-status="Diterima" role="tab" aria-selected="false" tabindex="-1">
                 Diterima ({{ $jmlDiterima }})
             </button>
-            <button type="button" class="tab-filter-riwayat" data-filter-status="Selesai">
+            <button type="button" class="tab-filter-riwayat" data-filter-status="Selesai" role="tab" aria-selected="false" tabindex="-1">
                 Selesai ({{ $jmlSelesai }})
             </button>
-            <button type="button" class="tab-filter-riwayat" data-filter-status="BatalGroup">
+            <button type="button" class="tab-filter-riwayat" data-filter-status="BatalGroup" role="tab" aria-selected="false" tabindex="-1">
                 Dibatalkan / Ditolak ({{ $jmlBatal }})
             </button>
         </div>

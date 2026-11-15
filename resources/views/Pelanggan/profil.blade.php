@@ -81,19 +81,19 @@
 
         <!-- Area Pengaturan Tab (Edit Data Diri & Ganti Kata Sandi) -->
         <section class="profil-konten">
-            <div class="profil-tabs">
-                <button type="button" class="tab-btn {{ !$bukaTabPassword ? 'aktif' : '' }}" data-target="tab-biodata">
+            <div class="profil-tabs" role="tablist" aria-label="Pengaturan Profil">
+                <button type="button" class="tab-btn {{ !$bukaTabPassword ? 'aktif' : '' }}" id="tabBtnBiodata" data-target="tab-biodata" role="tab" aria-controls="tab-biodata" aria-selected="{{ !$bukaTabPassword ? 'true' : 'false' }}" tabindex="{{ !$bukaTabPassword ? '0' : '-1' }}">
                     👤 Data Diri
                 </button>
-                <button type="button" class="tab-btn {{ $bukaTabPassword ? 'aktif' : '' }}" data-target="tab-password">
+                <button type="button" class="tab-btn {{ $bukaTabPassword ? 'aktif' : '' }}" id="tabBtnPassword" data-target="tab-password" role="tab" aria-controls="tab-password" aria-selected="{{ $bukaTabPassword ? 'true' : 'false' }}" tabindex="{{ $bukaTabPassword ? '0' : '-1' }}">
                     🔒 Ganti Kata Sandi
                 </button>
             </div>
 
             <!-- Panel 1: Edit Data Diri -->
-            <div class="tab-panel {{ !$bukaTabPassword ? 'aktif' : '' }}" id="tab-biodata">
+            <div class="tab-panel {{ !$bukaTabPassword ? 'aktif' : '' }}" id="tab-biodata" role="tabpanel" aria-labelledby="tabBtnBiodata">
                 <div class="panel-header">
-                    <h3>Informasi Pribadi</h3>
+                    <h2>Informasi Pribadi</h2>
                     <p>Pastikan nomor telepon dan email Anda aktif untuk mempermudah konfirmasi reservasi.</p>
                 </div>
 
@@ -129,9 +129,9 @@
             </div>
 
             <!-- Panel 2: Ganti Kata Sandi -->
-            <div class="tab-panel {{ $bukaTabPassword ? 'aktif' : '' }}" id="tab-password">
+            <div class="tab-panel {{ $bukaTabPassword ? 'aktif' : '' }}" id="tab-password" role="tabpanel" aria-labelledby="tabBtnPassword">
                 <div class="panel-header">
-                    <h3>Ubah Kata Sandi Akun</h3>
+                    <h2>Ubah Kata Sandi Akun</h2>
                     <p>Gunakan kombinasi minimal 6 karakter agar akun Anda tetap aman.</p>
                 </div>
 

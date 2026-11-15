@@ -12,7 +12,7 @@
     <div class="kebijakan-grid">
         <!-- Form Pengaturan Parameter Kebijakan -->
         <div class="panel-kartu">
-            <h3 class="judul-seksi-kebijakan">⚙️ Parameter Kebijakan Pinalti</h3>
+            <h2 class="judul-seksi-kebijakan">⚙️ Parameter Kebijakan Pinalti</h2>
             <p class="sub-seksi-kebijakan">
                 Semua aturan pinalti reservasi diambil dari pengaturan ini secara dinamis tanpa mengubah kode program.
             </p>
@@ -83,7 +83,7 @@
 
         <!-- Daftar Pelanggan yang Sedang Diblokir -->
         <div class="panel-kartu">
-            <h3 class="judul-seksi-kebijakan">🚫 Daftar Pelanggan yang Sedang Diblokir</h3>
+            <h2 class="judul-seksi-kebijakan">🚫 Daftar Pelanggan yang Sedang Diblokir</h2>
             <p class="sub-seksi-kebijakan">
                 Manajer dapat membuka blokir pelanggan lebih awal dengan wajib mencantumkan alasan pembukaan.
             </p>
@@ -114,7 +114,7 @@
                 </div>
             @endforelse
 
-            <h3 class="judul-seksi-kebijakan spasi-atas">⚠️ Pelanggan dengan Catatan Pelanggaran</h3>
+            <h2 class="judul-seksi-kebijakan spasi-atas">⚠️ Pelanggan dengan Catatan Pelanggaran</h2>
             <div class="tabel-responsif">
                 <table class="tabel-data">
                     <thead>
@@ -150,7 +150,7 @@
 
     <!-- Riwayat Log Pelanggaran & Pembukaan Blokir -->
     <div class="panel-kartu spasi-atas">
-        <h3 class="judul-seksi-kebijakan">📜 Riwayat Pelanggaran &amp; Aktivitas Blokir</h3>
+        <h2 class="judul-seksi-kebijakan">📜 Riwayat Pelanggaran &amp; Aktivitas Blokir</h2>
         <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>

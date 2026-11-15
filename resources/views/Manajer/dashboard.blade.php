@@ -115,7 +115,7 @@
     <!-- Ringkasan Reservasi Terbaru -->
     <div class="panel-kartu spasi-atas">
         <div class="toolbar-atas">
-            <h3 class="tanpa-margin">Reservasi Pelanggan Terbaru</h3>
+            <h2 class="tanpa-margin">Reservasi Pelanggan Terbaru</h2>
             <a href="{{ route('manajer.laporan') }}" class="btn-sekunder">Lihat Semua Laporan &rarr;</a>
         </div>
 

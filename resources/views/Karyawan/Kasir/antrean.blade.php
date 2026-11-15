@@ -28,7 +28,7 @@
                         </span>
                     </div>
 
-                    <h3 class="nama-pelanggan-antrean">{{ $r->namaPelangganTampil() }}</h3>
+                    <h2 class="nama-pelanggan-antrean">{{ $r->namaPelangganTampil() }}</h2>
                     <p class="telp-pelanggan-antrean">{{ $r->pelanggan?->no_telp ?? 'Walk-In' }}</p>
 
                     <ul class="rincian-layanan-antrean">

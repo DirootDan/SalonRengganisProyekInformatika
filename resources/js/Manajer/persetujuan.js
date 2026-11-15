@@ -1,3 +1,5 @@
+import { ikatNavigasiTabAria, sinkronTabAria } from '../components/aria-widget';
+
 document.addEventListener('DOMContentLoaded', () => {
     const tombolTabList = document.querySelectorAll('.tab-persetujuan');
     const panelKontenList = document.querySelectorAll('.panel-tab-konten');
@@ -6,13 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
         tombolTabList.forEach((btn) => {
             const cocok = btn.dataset.target === idTarget;
             btn.classList.toggle('aktif', cocok);
-            btn.setAttribute('aria-selected', cocok ? 'true' : 'false');
         });
+
+        sinkronTabAria(tombolTabList);
 
         panelKontenList.forEach((panel) => {
             panel.classList.toggle('tersembunyi', panel.id !== idTarget);
         });
     };
+
+    ikatNavigasiTabAria(tombolTabList);
 
     tombolTabList.forEach((btn) => {
         btn.addEventListener('click', () => {

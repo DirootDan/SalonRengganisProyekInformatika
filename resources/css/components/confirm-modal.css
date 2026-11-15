@@ -1,3 +1,5 @@
+@import '../global/aksesibilitas.css';
+
 /* =========================================================
    Komponen Modal Konfirmasi (<x-confirm-modal>)
    Sesuai docs/design.md — Warm Rose & Cream Salon Rengganis
@@ -98,10 +100,10 @@
 .cm-btn-silang {
     background: transparent;
     border: none;
-    color: #6b7280;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    color: #4b5563;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

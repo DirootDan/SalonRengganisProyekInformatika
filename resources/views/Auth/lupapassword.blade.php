@@ -10,9 +10,9 @@
 </head>
 <body>
 
-    <div class="login-card">
+    <main class="login-card">
         <div class="logo">🔑</div>
-        <h2>Lupa Password</h2>
+        <h1>Lupa Password</h1>
         <p class="subtitle">Masukkan email akun Anda (Karyawan/Pelanggan) untuk menerima link reset password</p>
 
         @if (session('status'))
@@ -40,7 +40,7 @@
         <p class="footer-note">
             <a href="{{ route('beranda.publik') }}">&larr; Kembali ke Beranda Salon</a>
         </p>
-    </div>
+    </main>
 
 <x-anti-klik-ganda />
 

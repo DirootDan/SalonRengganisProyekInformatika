@@ -443,6 +443,11 @@
     box-shadow: 0 10px 24px rgba(219, 39, 119, 0.12);
 }
 
+.opsi-blok:has(input[type="checkbox"]:focus-visible) {
+    outline: 2px solid #be185d;
+    outline-offset: 2px;
+}
+
 .opsi-blok.galat {
     border-color: #dc2626;
 }
@@ -736,14 +741,20 @@
 }
 
 .btn-qty-addon {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
     border: 1.5px solid #e5e7eb;
     background: #ffffff;
     color: #111827;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-qty-addon {
@@ -782,6 +793,7 @@
     margin-bottom: 14px;
 }
 
+.ringkasan-kepala h2,
 .ringkasan-kepala h3 {
     margin: 0;
     font-size: 18px;
@@ -1423,11 +1435,12 @@
 }
 
 .btn-hapus-chip-layanan {
+    position: relative;
     background: #fce7f3;
     border: none;
     color: #9d174d;
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     font-size: 14px;
     font-weight: 700;
@@ -1437,6 +1450,13 @@
     align-items: center;
     justify-content: center;
     padding: 0;
+}
+
+.btn-hapus-chip-layanan::after,
+.btn-hapus-item-live::after {
+    content: '';
+    position: absolute;
+    inset: -9px;
 }
 
 .btn-hapus-chip-layanan:hover {
@@ -1492,11 +1512,12 @@
 }
 
 .btn-hapus-item-live {
+    position: relative;
     background: #fce7f3;
     border: none;
     color: #9d174d;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     border-radius: 8px;
     font-size: 15px;
     font-weight: 700;

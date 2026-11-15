@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
     // Animasi masuk berurutan untuk kartu layanan
     const cards = document.querySelectorAll('.kartu');
     cards.forEach((card, index) => {
