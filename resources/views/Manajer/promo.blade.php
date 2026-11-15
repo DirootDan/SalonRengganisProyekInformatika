@@ -12,7 +12,7 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariPromo" class="input-cari" aria-label="Cari kode atau nama promo" placeholder="🔍 Cari kode atau nama promo...">
+                <input type="text" id="cariPromo" class="input-cari" aria-label="Cari kode atau nama promo" placeholder="Cari kode atau nama promo...">
                 <select id="filterStatusPromo" class="select-filter" aria-label="Filter status promo">
                     <option value="">Semua Status</option>
                     <option value="Aktif">Promo Aktif</option>
@@ -69,13 +69,13 @@
                                             data-min="{{ (float) $item->min_transaksi }}"
                                             data-sampai="{{ $item->berlaku_sampai->toDateString() }}"
                                             data-aktif="{{ $item->aktif ? '1' : '0' }}">
-                                        ✏️ Ubah
+                                        <x-ikon name="edit" /> Ubah
                                     </button>
                                     <form method="POST" action="{{ route('manajer.promo.hapus', $item->id_promo) }}"
                                           class="form-hapus-promo"
                                           data-kode="{{ $item->kode_promo }}"
                                           data-confirm-title="Konfirmasi Hapus Program Promo"
-                                          data-confirm-item="{{ $item->kode_promo }} — {{ $item->nama_promo }}">
+                                          data-confirm-item="{{ $item->kode_promo }} - {{ $item->nama_promo }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-aksi btn-hapus">Hapus</button>

@@ -34,6 +34,7 @@
     font-size: 24px;
     font-weight: 700;
     color: #111827;
+    font-variant-numeric: tabular-nums;
 }
 
 .metrik-tren {
@@ -50,6 +51,7 @@
 .nominal-tebal {
     font-weight: 700;
     color: var(--warna-brand);
+    font-variant-numeric: tabular-nums;
 }
 
 .panel-filter-laporan {

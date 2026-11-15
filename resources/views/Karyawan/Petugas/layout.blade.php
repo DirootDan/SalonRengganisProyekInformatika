@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('judul', "Panel {$peran} - Salon Rengganis")</title>
     <x-meta-situs />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/Karyawan/Petugas/dashboard.css'])
 </head>
@@ -13,7 +15,7 @@
         <header class="topbar-petugas">
             <div class="topbar-inner">
                 <div class="brand-grup">
-                    <span class="brand-ikon" aria-hidden="true">{{ $tampilan['ikon'] }}</span>
+                    <span class="brand-ikon" aria-hidden="true"><x-ikon :name="$tampilan['ikon']" /></span>
                     <div>
                         <span class="brand-nama">Salon Rengganis</span>
                         <span class="brand-sub">Portal Kerja {{ $peran }}</span>
@@ -22,9 +24,9 @@
 
                 <nav class="menu-petugas" aria-label="Menu {{ $peran }}">
                     <a href="{{ route($tampilan['prefix_rute'].'.dashboard') }}"
-                       class="{{ request()->routeIs($tampilan['prefix_rute'].'.dashboard') ? 'aktif' : '' }}">📅 Jadwal Reservasi Pribadi</a>
+                       class="{{ request()->routeIs($tampilan['prefix_rute'].'.dashboard') ? 'aktif' : '' }}"><x-ikon name="kalender" /> Jadwal Reservasi Pribadi</a>
                     <a href="{{ route($tampilan['prefix_rute'].'.komisi') }}"
-                       class="{{ request()->routeIs($tampilan['prefix_rute'].'.komisi') ? 'aktif' : '' }}">💰 Laporan Komisi Saya</a>
+                       class="{{ request()->routeIs($tampilan['prefix_rute'].'.komisi') ? 'aktif' : '' }}"><x-ikon name="uang" /> Laporan Komisi Saya</a>
                 </nav>
 
                 <div class="akun-petugas">
@@ -39,12 +41,12 @@
 
         <main class="wadah-petugas">
             @if (session('status'))
-                <div class="alert-sukses" role="status">✅ {{ session('status') }}</div>
+                <div class="alert-sukses" role="status"><x-ikon name="cek" /> {{ session('status') }}</div>
             @endif
             @if ($errors->any())
                 <div class="alert-galat" role="alert">
                     @foreach ($errors->all() as $pesan)
-                        <div>⚠️ {{ $pesan }}</div>
+                        <div><x-ikon name="peringatan" /> {{ $pesan }}</div>
                     @endforeach
                 </div>
             @endif

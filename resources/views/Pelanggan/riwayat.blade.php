@@ -2,6 +2,10 @@
 
 @section('judul', 'Riwayat Reservasi - Salon Rengganis')
 
+@push('styles')
+    @vite(['resources/css/Pelanggan/riwayat.css'])
+@endpush
+
 @section('isi')
     <h1 class="judul-halaman">Riwayat &amp; Pembatalan Reservasi</h1>
     <p class="sub-halaman">Pantau status permintaan booking Anda, lihat rincian perawatan, atau batalkan jadwal reservasi yang masih aktif.</p>
@@ -21,7 +25,7 @@
                 @if ($jmlNotifBelumDibaca > 0)
                     <form method="POST" action="{{ route('pelanggan.notifikasi.baca') }}">
                         @csrf
-                        <button type="submit" class="btn-tandai-baca">✓ Tandai Semua Sudah Dibaca</button>
+                        <button type="submit" class="btn-tandai-baca"><x-ikon name="tanda-cek" /> Tandai Semua Sudah Dibaca</button>
                     </form>
                 @endif
             </div>
@@ -97,7 +101,7 @@
                               data-confirm-button="Ya, Batalkan Reservasi">
                             @csrf
                             <button type="submit" class="btn-batal-cepat" title="Batalkan Reservasi #{{ $r->id_reservasi }}">
-                                ✕ Batalkan Booking
+                                <x-ikon name="tanda-silang" /> Batalkan Booking
                             </button>
                         </form>
                     @endif
@@ -175,7 +179,7 @@
                                            aria-label="Alasan pembatalan reservasi (opsional)"
                                            placeholder="Alasan pembatalan (opsional, misal: jadwal berubah)...">
                                     <button type="submit" class="btn-batal-booking">
-                                        ✕ Batalkan Reservasi Ini
+                                        <x-ikon name="tanda-silang" /> Batalkan Reservasi Ini
                                     </button>
                                 </div>
                                 <small class="info-kebijakan-batal">

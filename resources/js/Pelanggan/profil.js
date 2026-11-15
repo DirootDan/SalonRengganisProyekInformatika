@@ -1,5 +1,7 @@
 import { ikatNavigasiTabAria, sinkronTabAria } from '../components/aria-widget';
 
+import { svgIkon } from '../components/ikon-svg';
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Navigasi Tab (Data Diri & Ganti Password)
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -66,10 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (inputEl.type === 'password') {
                 inputEl.type = 'text';
-                btn.textContent = '🙈';
+                btn.innerHTML = svgIkon('mataTutup');
             } else {
                 inputEl.type = 'password';
-                btn.textContent = '👁️';
+                btn.innerHTML = svgIkon('mata');
             }
         });
     });
@@ -92,10 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (valBaru === valKonf) {
-            pwMatchInfo.textContent = '✓ Konfirmasi kata sandi cocok';
+            pwMatchInfo.innerHTML = `${svgIkon('tandaCek')} Konfirmasi kata sandi cocok`;
             pwMatchInfo.className = 'pw-match-info cocok';
         } else {
-            pwMatchInfo.textContent = '✕ Konfirmasi kata sandi belum cocok';
+            pwMatchInfo.innerHTML = `${svgIkon('tandaSilang')} Konfirmasi kata sandi belum cocok`;
             pwMatchInfo.className = 'pw-match-info tidak-cocok';
         }
     };

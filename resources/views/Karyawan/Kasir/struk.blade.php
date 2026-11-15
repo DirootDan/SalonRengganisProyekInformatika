@@ -13,7 +13,7 @@
         <div class="panel-kartu">
             <div class="kepala-info-struk">
                 <h2 class="judul-sub-struk tanpa-margin">Identitas &amp; Format Struk Aktif</h2>
-                <span class="lencana-baca-saja">🔒 Diatur oleh Manajer</span>
+                <span class="lencana-baca-saja"><x-ikon name="gembok" /> Diatur oleh Manajer</span>
             </div>
 
             <p class="catatan-info-struk">
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="modal-kaki">
-                    <button type="button" class="btn-sekunder" id="btnUjiCetakStruk">🖨️ Uji Cetak Struk</button>
+                    <button type="button" class="btn-sekunder" id="btnUjiCetakStruk"><x-ikon name="cetak" /> Uji Cetak Struk</button>
                 </div>
             </div>
         </div>

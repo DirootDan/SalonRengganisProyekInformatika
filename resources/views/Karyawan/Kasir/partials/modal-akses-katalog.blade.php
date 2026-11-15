@@ -3,7 +3,7 @@
     <div class="modal-kotak">
         <div class="modal-header">
             <div>
-                <h2 id="judulModalAksesKatalog">🔑 Ajukan Izin Akses 1x Pakai</h2>
+                <h2 id="judulModalAksesKatalog"><x-ikon name="kunci" /> Ajukan Izin Akses 1x Pakai</h2>
                 <small class="sub-modal-katalog">Permintaan akan dikirim ke halaman Persetujuan Manajer.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalAksesKatalog" aria-label="Tutup">&times;</button>
@@ -29,7 +29,7 @@
 
             <div class="modal-kaki">
                 <button type="button" class="btn-sekunder" id="btnBatalModalAksesKatalog">Batal</button>
-                <button type="submit" class="btn-utama">📨 Kirim Request ke Manajer</button>
+                <button type="submit" class="btn-utama"><x-ikon name="surat" /> Kirim Request ke Manajer</button>
             </div>
         </form>
     </div>

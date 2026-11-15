@@ -13,7 +13,7 @@
     @if ($errors->any())
         <div class="error-msg">
             @foreach ($errors->all() as $error)
-                ⚠️ {{ $error }}<br>
+                <x-ikon name="peringatan" /> {{ $error }}<br>
             @endforeach
         </div>
     @endif
@@ -37,7 +37,7 @@
                     @csrf
                     <input type="file" name="foto_profil" id="inputFoto" accept="image/png,image/jpeg,image/webp" hidden>
                     <button type="button" class="btn-foto" id="btnPilihFoto">
-                        📷 {{ $pelanggan->foto_profil ? 'Ganti Foto' : 'Tambah Foto' }}
+                        <x-ikon name="kamera" /> {{ $pelanggan->foto_profil ? 'Ganti Foto' : 'Tambah Foto' }}
                     </button>
                     <button type="submit" class="btn-foto btn-foto-simpan" id="btnSimpanFoto" hidden>Simpan Foto</button>
                 </form>
@@ -83,10 +83,10 @@
         <section class="profil-konten">
             <div class="profil-tabs" role="tablist" aria-label="Pengaturan Profil">
                 <button type="button" class="tab-btn {{ !$bukaTabPassword ? 'aktif' : '' }}" id="tabBtnBiodata" data-target="tab-biodata" role="tab" aria-controls="tab-biodata" aria-selected="{{ !$bukaTabPassword ? 'true' : 'false' }}" tabindex="{{ !$bukaTabPassword ? '0' : '-1' }}">
-                    👤 Data Diri
+                    <x-ikon name="pengguna" /> Data Diri
                 </button>
                 <button type="button" class="tab-btn {{ $bukaTabPassword ? 'aktif' : '' }}" id="tabBtnPassword" data-target="tab-password" role="tab" aria-controls="tab-password" aria-selected="{{ $bukaTabPassword ? 'true' : 'false' }}" tabindex="{{ $bukaTabPassword ? '0' : '-1' }}">
-                    🔒 Ganti Kata Sandi
+                    <x-ikon name="gembok" /> Ganti Kata Sandi
                 </button>
             </div>
 
@@ -144,7 +144,7 @@
                         <div class="input-password-wrap">
                             <input type="password" id="password_lama" name="password_lama" class="input-profil"
                                    placeholder="Masukkan kata sandi saat ini" required>
-                            <button type="button" class="toggle-pw" data-input="password_lama" aria-label="Tampilkan Kata Sandi">👁️</button>
+                            <button type="button" class="toggle-pw" data-input="password_lama" aria-label="Tampilkan Kata Sandi"><x-ikon name="mata" /></button>
                         </div>
                     </div>
 
@@ -153,7 +153,7 @@
                         <div class="input-password-wrap">
                             <input type="password" id="password" name="password" class="input-profil"
                                    placeholder="Minimal 6 karakter" minlength="6" required>
-                            <button type="button" class="toggle-pw" data-input="password" aria-label="Tampilkan Kata Sandi">👁️</button>
+                            <button type="button" class="toggle-pw" data-input="password" aria-label="Tampilkan Kata Sandi"><x-ikon name="mata" /></button>
                         </div>
                     </div>
 
@@ -162,7 +162,7 @@
                         <div class="input-password-wrap">
                             <input type="password" id="password_confirmation" name="password_confirmation" class="input-profil"
                                    placeholder="Ulangi kata sandi baru" minlength="6" required>
-                            <button type="button" class="toggle-pw" data-input="password_confirmation" aria-label="Tampilkan Kata Sandi">👁️</button>
+                            <button type="button" class="toggle-pw" data-input="password_confirmation" aria-label="Tampilkan Kata Sandi"><x-ikon name="mata" /></button>
                         </div>
                         <small id="pwMatchInfo" class="pw-match-info"></small>
                     </div>

@@ -5,7 +5,8 @@
 ])
 
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-<meta name="theme-color" content="#db2777">
+<link rel="icon" href="{{ asset('favicon.ico') }}" sizes="32x32">
+<meta name="theme-color" content="#be185d">
 <meta name="description" content="{{ $deskripsi }}">
 <meta name="robots" content="{{ $indeks ? 'index, follow' : 'noindex, nofollow' }}">
 
@@ -16,4 +17,6 @@
 <meta property="og:description" content="{{ $deskripsi }}">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:image" content="{{ asset('images/og-salon.jpg') }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">

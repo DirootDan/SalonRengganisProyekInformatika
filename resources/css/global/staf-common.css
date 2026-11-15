@@ -353,6 +353,7 @@ body {
     border-bottom: 1px solid var(--warna-batas-input);
     color: var(--warna-teks-sekunder);
     vertical-align: middle;
+    font-variant-numeric: tabular-nums;
 }
 
 .tabel-data tbody tr:hover {

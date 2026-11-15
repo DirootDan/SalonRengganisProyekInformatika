@@ -10,7 +10,7 @@
 
     <div class="kertas-struk kertas-{{ $struk->ukuranTernormalisasi() }}" id="kertasStruk" data-ukuran="{{ $struk->ukuranTernormalisasi() }}">
         <div class="struk-kepala">
-            <div class="struk-logo {{ $struk->tampil_logo ? '' : 'elemen-tersembunyi' }}" id="prevLogo">🌸</div>
+            <div class="struk-logo {{ $struk->tampil_logo ? '' : 'elemen-tersembunyi' }}" id="prevLogo"><x-ikon name="bunga" /></div>
             <div class="struk-judul" id="prevNamaSalon">{{ $struk->nama_salon }}</div>
             <div class="struk-sub" id="prevSlogan">{{ $struk->slogan }}</div>
             <div class="struk-alamat" id="prevAlamat">{{ $struk->alamat }}</div>

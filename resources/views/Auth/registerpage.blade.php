@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Pelanggan - Salon Rengganis</title>
     <x-meta-situs />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/Login/registerpage.css', 'resources/js/loginpage.js'])
 </head>
 <body>
 
     <main class="login-card">
-        <div class="logo">🌸</div>
+        <div class="logo" aria-hidden="true"><x-ikon name="bunga" /></div>
         <h1>Buat Akun</h1>
         <p class="subtitle">Daftar untuk mulai booking di Salon Rengganis</p>
 
         @if ($errors->any())
             <div class="error-msg">
                 @foreach ($errors->all() as $error)
-                    ⚠️ {{ $error }}<br>
+                    <x-ikon name="peringatan" /> {{ $error }}<br>
                 @endforeach
             </div>
         @endif
@@ -47,7 +49,7 @@
             <input type="password" id="password_confirmation" name="password_confirmation"
                    placeholder="••••••••" required autocomplete="new-password">
 
-            <button type="submit" id="submitBtn">DAFTAR SEKARANG</button>
+            <button type="submit" id="submitBtn">Daftar Sekarang</button>
         </form>
 
         <div class="link-row">

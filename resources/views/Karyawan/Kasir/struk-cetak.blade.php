@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Struk #INV-{{ $nomorNota }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
     @vite(['resources/css/Karyawan/Kasir/struk-cetak.css', 'resources/js/Karyawan/Kasir/struk-cetak.js'])
 </head>
 <body class="struk-cetak kertas-{{ $ukuran }}" data-ukuran="{{ $ukuran }}">
     <main class="struk-main">
     @if (session('status'))
-        <div class="notif-sukses-cetak">✅ {{ session('status') }}</div>
+        <div class="notif-sukses-cetak"><x-ikon name="cek" /> {{ session('status') }}</div>
     @endif
 
     <div class="struk-kepala">
         @if ($struk->tampil_logo)
-            <div aria-hidden="true" class="struk-logo-cetak">🌸</div>
+            <div aria-hidden="true" class="struk-logo-cetak"><x-ikon name="bunga" /></div>
         @endif
         <div class="struk-kepala-teks {{ $struk->tampil_logo ? '' : 'pusat' }}">
             <h1 class="struk-nama">{{ $struk->nama_salon }}</h1>
@@ -80,7 +83,7 @@
     @endif
 
     <div class="aksi-cetak">
-        <button type="button" id="btnCetakUlang">🖨️ Cetak Ulang</button>
+        <button type="button" id="btnCetakUlang"><x-ikon name="cetak" /> Cetak Ulang</button>
         <a href="{{ route('kasir.dashboard') }}">← Kembali ke Kasir</a>
     </div>
     </main>

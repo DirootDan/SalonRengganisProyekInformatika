@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('judul', 'Panel Manajer - Salon Rengganis')</title>
     <x-meta-situs />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/Manajer/layout.css'])
     @stack('styles')
@@ -14,7 +16,7 @@
         <!-- Sidebar Kiri Khusus Manajer -->
         <aside class="sidebar" id="sidebar" aria-label="Menu utama manajer">
             <div class="sidebar-brand">
-                <span class="brand-ikon">🌸</span>
+                <span class="brand-ikon" aria-hidden="true"><x-ikon name="bunga" /></span>
                 <div class="brand-teks">
                     <span class="brand-nama">Salon Rengganis</span>
                     <span class="brand-sub">Panel Manajer</span>
@@ -26,11 +28,11 @@
                 <div class="nav-grup">
                     <span class="nav-label">RINGKASAN</span>
                     <a href="{{ route('manajer.dashboard') }}" class="nav-item {{ request()->routeIs('manajer.dashboard') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">📊</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="grafik-batang" /></span>
                         <span>Beranda Manajer</span>
                     </a>
                     <a href="{{ route('manajer.persetujuan') }}" class="nav-item {{ request()->routeIs('manajer.persetujuan*') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">✅</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="cek" /></span>
                         <span class="nav-item-teks">
                             Persetujuan Kasir
                             <sup class="nav-kuadrat-notif {{ $jumlahPendingOtorisasi > 0 ? 'ada-acc' : 'kosong' }}"
@@ -44,19 +46,19 @@
                 <div class="nav-grup">
                     <span class="nav-label">KELOLA DATA (MASTER)</span>
                     <a href="{{ route('manajer.karyawan') }}" class="nav-item {{ request()->routeIs('manajer.karyawan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">👥</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="pengguna-grup" /></span>
                         <span>Data Karyawan</span>
                     </a>
                     <a href="{{ route('manajer.layanan') }}" class="nav-item {{ request()->routeIs('manajer.layanan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">💇‍♀️</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="gunting" /></span>
                         <span>Daftar Layanan</span>
                     </a>
                     <a href="{{ route('manajer.produk') }}" class="nav-item {{ request()->routeIs('manajer.produk') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🧴</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="botol" /></span>
                         <span>Stok Produk</span>
                     </a>
                     <a href="{{ route('manajer.promo') }}" class="nav-item {{ request()->routeIs('manajer.promo') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🏷️</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="tag" /></span>
                         <span>Program Promo</span>
                     </a>
                 </div>
@@ -64,7 +66,7 @@
                 <div class="nav-grup">
                     <span class="nav-label">KEUANGAN &amp; ANALITIK</span>
                     <a href="{{ route('manajer.laporan') }}" class="nav-item {{ request()->routeIs('manajer.laporan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">📈</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="tren-naik" /></span>
                         <span>Cek Laporan</span>
                     </a>
                 </div>
@@ -72,15 +74,15 @@
                 <div class="nav-grup">
                     <span class="nav-label">PENGATURAN NOTA &amp; BAYAR</span>
                     <a href="{{ route('manajer.metode') }}" class="nav-item {{ request()->routeIs('manajer.metode') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">💳</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="kartu" /></span>
                         <span>Metode Pembayaran</span>
                     </a>
                     <a href="{{ route('manajer.struk') }}" class="nav-item {{ request()->routeIs('manajer.struk') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🧾</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="struk" /></span>
                         <span>Format Struk Nota</span>
                     </a>
                     <a href="{{ route('manajer.kebijakan') }}" class="nav-item {{ request()->routeIs('manajer.kebijakan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🛡️</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="perisai" /></span>
                         <span>Kebijakan &amp; Blokir</span>
                     </a>
                 </div>
@@ -88,7 +90,7 @@
 
             <div class="sidebar-kaki">
                 <div class="info-hak-akses">
-                    <span>🔒 Hak Akses: <strong>Manajer</strong></span>
+                    <span><x-ikon name="gembok" /> Hak Akses: <strong>Manajer</strong></span>
                 </div>
             </div>
         </aside>
@@ -100,7 +102,7 @@
             <!-- Topbar -->
             <header class="topbar">
                 <div class="topbar-kiri">
-                    <button type="button" class="btn-menu-mobile" id="btnToggleSidebar" aria-label="Buka Menu">☰</button>
+                    <button type="button" class="btn-menu-mobile" id="btnToggleSidebar" aria-label="Buka Menu"><x-ikon name="menu" /></button>
                     <div>
                         <h1 class="topbar-judul">@yield('header', 'Dashboard Manajer')</h1>
                         <p class="topbar-sub">@yield('sub_header', 'Kelola operasional Salon Rengganis secara terpusat.')</p>
@@ -126,12 +128,12 @@
             <!-- Konten Halaman -->
             <main class="konten">
                 @if (session('status'))
-                    <div class="alert-sukses">✅ {{ session('status') }}</div>
+                    <div class="alert-sukses"><x-ikon name="cek" /> {{ session('status') }}</div>
                 @endif
                 @if ($errors->any())
                     <div class="alert-galat">
                         @foreach ($errors->all() as $err)
-                            <div>⚠️ {{ $err }}</div>
+                            <div><x-ikon name="peringatan" /> {{ $err }}</div>
                         @endforeach
                     </div>
                 @endif

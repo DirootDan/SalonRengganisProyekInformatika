@@ -11,10 +11,10 @@
 @section('isi')
     <div class="tab-bar-persetujuan" role="tablist">
         <button type="button" id="tabPending" class="tab-persetujuan aktif" data-target="panelPending" role="tab" aria-controls="panelPending" aria-selected="true" tabindex="0">
-            ⏳ Menunggu Keputusan ({{ $daftarPending->count() }})
+            <x-ikon name="jam" /> Menunggu Keputusan ({{ $daftarPending->count() }})
         </button>
         <button type="button" id="tabAudit" class="tab-persetujuan" data-target="panelAudit" role="tab" aria-controls="panelAudit" aria-selected="false" tabindex="-1">
-            📋 Log Audit Perubahan &amp; Riwayat ({{ $logPerubahan->count() }})
+            <x-ikon name="catatan" /> Log Audit Perubahan &amp; Riwayat ({{ $logPerubahan->count() }})
         </button>
     </div>
 
@@ -27,7 +27,7 @@
                         <span class="lencana-konteks">{{ $item->labelKonteks() }}</span>
                         <span class="kode-tiket">#{{ $item->kode_referensi }}</span>
                         @if ($item->sedang_dihold)
-                            <span class="lencana-hold">⏸️ Sedang Di-Hold di POS</span>
+                            <span class="lencana-hold"><x-ikon name="jeda" /> Sedang Di-Hold di POS</span>
                         @endif
                         <h2 class="judul-target-otorisasi">{{ $item->label_target }}</h2>
                         <small class="meta-pengajuan">
@@ -68,7 +68,7 @@
                             <ul class="daftar-rincian-item">
                                 @forelse ($item->layananAwalList() as $lAwal)
                                     <li>
-                                        <span>💇 {{ $lAwal['nama'] }}</span>
+                                        <span><x-ikon name="gunting" /> {{ $lAwal['nama'] }}</span>
                                         <span>Rp {{ number_format((float) $lAwal['harga_normal'], 0, ',', '.') }}</span>
                                     </li>
                                 @empty
@@ -83,7 +83,7 @@
                                 @foreach ($item->layananUsulanList() as $lUsul)
                                     <li>
                                         <span>
-                                            💇 {{ $lUsul['nama'] }}
+                                            <x-ikon name="gunting" /> {{ $lUsul['nama'] }}
                                             @if (! empty($lUsul['di_override']))
                                                 <em class="tag-override">Override</em>
                                             @endif
@@ -99,7 +99,7 @@
                                 @foreach ($item->produkUsulanList() as $pUsul)
                                     <li>
                                         <span>
-                                            🧴 {{ $pUsul['nama'] }} (x{{ $pUsul['qty'] }})
+                                            <x-ikon name="botol" /> {{ $pUsul['nama'] }} (x{{ $pUsul['qty'] }})
                                             @if (! empty($pUsul['di_override']))
                                                 <em class="tag-override">Override</em>
                                             @endif
@@ -122,7 +122,7 @@
                         @csrf
                         <input type="text" name="catatan_manajer" aria-label="Catatan keputusan manajer" class="form-input input-catatan-kecil"
                                placeholder="Catatan persetujuan (opsional)...">
-                        <button type="submit" class="btn-setujui">✅ Setujui Pengajuan</button>
+                        <button type="submit" class="btn-setujui"><x-ikon name="cek" /> Setujui Pengajuan</button>
                     </form>
 
                     <form method="POST" action="{{ route('manajer.persetujuan.tolak', $item->id_otorisasi) }}" class="form-tolak-inline">
@@ -130,14 +130,14 @@
                         <input type="text" name="catatan_manajer" aria-label="Catatan keputusan manajer" class="form-input input-catatan-kecil"
                                placeholder="Wajib isi alasan penolakan untuk Kasir..." required minlength="3">
                         <button type="submit" class="btn-tolak">
-                            {{ $item->konteks === \App\Models\PermintaanOtorisasi::KONTEKS_POS_TRANSAKSI ? '❌ Tolak & Kembalikan Normal' : '❌ Tolak Pengajuan Akses' }}
+                            <x-ikon name="silang" /> {{ $item->konteks === \App\Models\PermintaanOtorisasi::KONTEKS_POS_TRANSAKSI ? 'Tolak & Kembalikan Normal' : 'Tolak Pengajuan Akses' }}
                         </button>
                     </form>
                 </div>
             </article>
         @empty
             <div class="panel-kartu kotak-kosong-persetujuan">
-                ✅ Tidak ada permintaan otorisasi Kasir yang sedang menunggu keputusan.
+                <x-ikon name="cek" /> Tidak ada permintaan otorisasi Kasir yang sedang menunggu keputusan.
             </div>
         @endforelse
     </section>
@@ -147,7 +147,7 @@
         <div class="panel-kartu">
             <div class="header-audit-filter">
                 <div>
-                    <h2 class="judul-seksi">🔍 Jejak Audit Perubahan Harga, Layanan &amp; Katalog</h2>
+                    <h2 class="judul-seksi"><x-ikon name="cari" /> Jejak Audit Perubahan Harga, Layanan &amp; Katalog</h2>
                     <p class="sub-seksi">Mencatat seluruh perubahan, termasuk override mandiri Kasir di bawah Rp 150.000 maupun persetujuan Manajer.</p>
                 </div>
                 <form method="GET" action="{{ route('manajer.persetujuan') }}" class="form-filter-tanggal">

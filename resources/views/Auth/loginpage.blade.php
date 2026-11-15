@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - Salon Rengganis</title>
     <x-meta-situs />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/Login/loginpage.css', 'resources/js/loginpage.js'])
 </head>
 <body>
 
     <main class="login-card">
-        <div class="logo">🌸</div>
+        <div class="logo" aria-hidden="true"><x-ikon name="bunga" /></div>
         <h1>Salon Rengganis</h1>
         <p class="subtitle">Silakan masuk ke akun Anda</p>
 
         @if (session('status'))
-            <div class="success-msg">✅ {{ session('status') }}</div>
+            <div class="success-msg"><x-ikon name="cek" /> {{ session('status') }}</div>
         @endif
 
         @if ($errors->any())
-            <div class="error-msg">⚠️ {{ $errors->first() }}</div>
+            <div class="error-msg"><x-ikon name="peringatan" /> {{ $errors->first() }}</div>
         @endif
 
         <form method="POST" action="{{ route('login.proses') }}" id="loginForm">
@@ -34,7 +36,7 @@
             <input type="password" id="password" name="password"
                    placeholder="••••••••" required autocomplete="current-password">
 
-            <button type="submit" id="submitBtn">MASUK SEKARANG</button>
+            <button type="submit" id="submitBtn">Masuk Sekarang</button>
         </form>
 
         <div class="link-row">

@@ -198,6 +198,7 @@
     font-weight: 800;
     font-size: 20px;
     color: #db2777;
+    font-variant-numeric: tabular-nums;
 }
 
 .layanan-info {

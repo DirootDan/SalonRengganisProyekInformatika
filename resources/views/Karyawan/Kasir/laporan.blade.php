@@ -12,7 +12,7 @@
 <div class="panel-kartu">
     <div class="toolbar-atas">
         <h2 class="tanpa-margin">Riwayat Nota Pembayaran &amp; Reservasi</h2>
-        <button type="button" class="btn-utama" id="btnCetakLaporan">🖨️ Cetak Rekap Shift</button>
+        <button type="button" class="btn-utama" id="btnCetakLaporan"><x-ikon name="cetak" /> Cetak Rekap Shift</button>
     </div>
 
     <div class="tabel-responsif">
@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         @if ($r->transaksi)
-                        <a href="{{ route('kasir.struk.cetak', $r->transaksi->id_transaksi) }}" target="_blank" rel="noopener noreferrer" class="btn-aksi btn-edit">🖨️ Cetak</a>
+                        <a href="{{ route('kasir.struk.cetak', $r->transaksi->id_transaksi) }}" target="_blank" rel="noopener noreferrer" class="btn-aksi btn-edit"><x-ikon name="cetak" /> Cetak</a>
                         @endif
                     </td>
                 </tr>

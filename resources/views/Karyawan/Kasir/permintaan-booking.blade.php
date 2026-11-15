@@ -21,7 +21,7 @@
 
     <div class="panel-kartu">
         <div class="toolbar-atas">
-            <input type="text" id="cariBooking" class="input-cari" aria-label="Cari nama pelanggan atau nomor reservasi" placeholder="🔍 Cari nama pelanggan atau nomor reservasi...">
+            <input type="text" id="cariBooking" class="input-cari" aria-label="Cari nama pelanggan atau nomor reservasi" placeholder="Cari nama pelanggan atau nomor reservasi...">
         </div>
 
         <div class="tabel-responsif">
@@ -88,14 +88,14 @@
                                     <div class="aksi-grup">
                                         <form method="POST" action="{{ route('kasir.permintaan.terima', $r->id_reservasi) }}">
                                             @csrf
-                                            <button type="submit" class="btn-aksi btn-edit">✓ Terima</button>
+                                            <button type="submit" class="btn-aksi btn-edit"><x-ikon name="tanda-cek" /> Terima</button>
                                         </form>
 
                                         <button type="button" class="btn-aksi btn-hapus btnBukaModalTolak"
                                                 data-id="{{ $r->id_reservasi }}"
                                                 data-pelanggan="{{ $r->pelanggan->nama_cust ?? 'Pelanggan' }}"
                                                 data-url="{{ route('kasir.permintaan.tolak', $r->id_reservasi) }}">
-                                            ✕ Tolak
+                                            <x-ikon name="tanda-silang" /> Tolak
                                         </button>
                                     </div>
                                 @elseif ($r->statusTernormalisasi() === 'Diterima')

@@ -1,3 +1,5 @@
+import { svgIkon } from './ikon-svg';
+
 const SELECTOR_FOKUS = [
     'a[href]',
     'area[href]',
@@ -105,17 +107,20 @@ export function tampilkanToastGlobal(pesan, tipe = null) {
     const adalahGalat = tipe === 'galat' || (tipe !== 'sukses' && POLA_GALAT.test(teks));
 
     toast.classList.remove('toast-galat', 'toast-sukses');
+    const teksEl = document.createElement('span');
+    teksEl.textContent = teks;
     if (adalahGalat) {
         toast.classList.add('toast-galat');
         toast.setAttribute('role', 'alert');
         toast.setAttribute('aria-live', 'assertive');
-        toast.textContent = `⚠️ ${teks}`;
+        toast.innerHTML = `${svgIkon('peringatan')} `;
     } else {
         toast.classList.add('toast-sukses');
         toast.setAttribute('role', 'status');
         toast.setAttribute('aria-live', 'polite');
-        toast.textContent = `✓ ${teks}`;
+        toast.innerHTML = `${svgIkon('tandaCek')} `;
     }
+    toast.appendChild(teksEl);
 
     toast.classList.add('tampil');
 
@@ -302,4 +307,38 @@ export function perbaruiEmptyStateGrid(gridEl, jumlahTampak, pesan = 'Tidak ada 
     div.setAttribute('role', 'status');
     div.textContent = pesan;
     gridEl.appendChild(div);
+}
+
+/**
+ * Mengikat logika toggle sidebar mobile, Escape key, backdrop, dan auto-tutup menu nav staf.
+ */
+export function ikatSidebarStaf() {
+    const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+    const btnTutupSidebar = document.getElementById('btnTutupSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebar = document.getElementById('sidebar');
+
+    if (!btnToggleSidebar || !sidebar) return;
+
+    const aturSidebar = (terbuka) => {
+        sidebar.classList.toggle('buka', terbuka);
+        sidebarBackdrop?.classList.toggle('aktif', terbuka);
+        btnToggleSidebar.setAttribute('aria-expanded', String(terbuka));
+    };
+
+    btnToggleSidebar.addEventListener('click', () => {
+        aturSidebar(!sidebar.classList.contains('buka'));
+    });
+    btnTutupSidebar?.addEventListener('click', () => aturSidebar(false));
+    sidebarBackdrop?.addEventListener('click', () => aturSidebar(false));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('buka') && !document.querySelector('.modal-backdrop.tampil')) {
+            aturSidebar(false);
+        }
+    });
+    sidebar.querySelectorAll('.nav-item').forEach((link) => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 960) aturSidebar(false);
+        });
+    });
 }

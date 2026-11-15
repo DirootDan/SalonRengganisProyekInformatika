@@ -1,5 +1,6 @@
 import { escapeHtml } from '../pos-otorisasi';
 import { formatRp } from './kalkulasi';
+import { svgIkon } from '../../../components/ikon-svg';
 
 export const perbaruiPeringatanPetugas = (peringatanPetugasEl, keranjang) => {
     if (!peringatanPetugasEl) return;
@@ -75,7 +76,7 @@ const buatKontrolOverrideHarga = (item, id) => {
     }
     const adaOverride = Math.abs(item.harga - item.hargaNormal) >= 1;
     return `<div class="baris-aksi-harga">
-        <button type="button" class="btn-buka-override" data-id="${idAman}">✏️ Ubah Harga</button>
+        <button type="button" class="btn-buka-override" data-id="${idAman}">${svgIkon('edit')} Ubah Harga</button>
         ${adaOverride ? `<button type="button" class="btn-reset-override" data-id="${idAman}">Reset (${formatRp(item.hargaNormal)})</button>` : ''}
     </div>`;
 };

@@ -12,7 +12,7 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariProduk" class="input-cari" aria-label="Cari nama produk kecantikan" placeholder="🔍 Cari nama produk kecantikan...">
+                <input type="text" id="cariProduk" class="input-cari" aria-label="Cari nama produk kecantikan" placeholder="Cari nama produk kecantikan...">
                 <select id="filterStok" class="select-filter" aria-label="Filter status stok">
                     <option value="">Semua Status Stok</option>
                     <option value="aman">Stok Aman (&ge; 10)</option>
@@ -44,16 +44,16 @@
                             <td><strong>#{{ $item->id_produk }}</strong></td>
                             <td>
                                 <div class="nama-produk-sel">
-                                    <span class="ikon-produk">🧴</span>
+                                    <span class="ikon-produk" aria-hidden="true"><x-ikon name="botol" /></span>
                                     <strong>{{ $item->nama_produk }}</strong>
                                 </div>
                             </td>
                             <td><strong>{{ $item->stok_produk }} pcs</strong></td>
                             <td>
                                 @if ($item->apakahStokMenipis())
-                                    <span class="badge badge-nonaktif">⚠️ Stok Menipis</span>
+                                    <span class="badge badge-nonaktif"><x-ikon name="peringatan" /> Stok Menipis</span>
                                 @else
-                                    <span class="badge badge-aktif">✓ Tersedia</span>
+                                    <span class="badge badge-aktif"><x-ikon name="tanda-cek" /> Tersedia</span>
                                 @endif
                             </td>
                             <td class="harga-produk">Rp {{ number_format($item->harga_produk, 0, ',', '.') }}</td>
@@ -64,7 +64,7 @@
                                             data-nama-asli="{{ $item->nama_produk }}"
                                             data-stok="{{ $item->stok_produk }}"
                                             data-harga="{{ (int) $item->harga_produk }}">
-                                        ✏️ Ubah
+                                        <x-ikon name="edit" /> Ubah
                                     </button>
                                     <form method="POST" action="{{ route('manajer.produk.hapus', $item->id_produk) }}"
                                           class="form-hapus-produk"

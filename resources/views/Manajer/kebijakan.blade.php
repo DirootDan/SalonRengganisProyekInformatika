@@ -12,7 +12,7 @@
     <div class="kebijakan-grid">
         <!-- Form Pengaturan Parameter Kebijakan -->
         <div class="panel-kartu">
-            <h2 class="judul-seksi-kebijakan">⚙️ Parameter Kebijakan Pinalti</h2>
+            <h2 class="judul-seksi-kebijakan"><x-ikon name="roda" /> Parameter Kebijakan Pinalti</h2>
             <p class="sub-seksi-kebijakan">
                 Semua aturan pinalti reservasi diambil dari pengaturan ini secara dinamis tanpa mengubah kode program.
             </p>
@@ -77,13 +77,13 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn-utama">💾 Simpan Kebijakan Booking</button>
+                <button type="submit" class="btn-utama"><x-ikon name="simpan" /> Simpan Kebijakan Booking</button>
             </form>
         </div>
 
         <!-- Daftar Pelanggan yang Sedang Diblokir -->
         <div class="panel-kartu">
-            <h2 class="judul-seksi-kebijakan">🚫 Daftar Pelanggan yang Sedang Diblokir</h2>
+            <h2 class="judul-seksi-kebijakan"><x-ikon name="tangan" /> Daftar Pelanggan yang Sedang Diblokir</h2>
             <p class="sub-seksi-kebijakan">
                 Manajer dapat membuka blokir pelanggan lebih awal dengan wajib mencantumkan alasan pembukaan.
             </p>
@@ -110,11 +110,11 @@
                 </div>
             @empty
                 <div class="kotak-kosong-kebijakan">
-                    ✓ Saat ini tidak ada pelanggan yang sedang diblokir.
+                    <x-ikon name="tanda-cek" /> Saat ini tidak ada pelanggan yang sedang diblokir.
                 </div>
             @endforelse
 
-            <h2 class="judul-seksi-kebijakan spasi-atas">⚠️ Pelanggan dengan Catatan Pelanggaran</h2>
+            <h2 class="judul-seksi-kebijakan spasi-atas"><x-ikon name="peringatan" /> Pelanggan dengan Catatan Pelanggaran</h2>
             <div class="tabel-responsif">
                 <table class="tabel-data">
                     <thead>
@@ -150,7 +150,7 @@
 
     <!-- Riwayat Log Pelanggaran & Pembukaan Blokir -->
     <div class="panel-kartu spasi-atas">
-        <h2 class="judul-seksi-kebijakan">📜 Riwayat Pelanggaran &amp; Aktivitas Blokir</h2>
+        <h2 class="judul-seksi-kebijakan"><x-ikon name="catatan" /> Riwayat Pelanggaran &amp; Aktivitas Blokir</h2>
         <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>

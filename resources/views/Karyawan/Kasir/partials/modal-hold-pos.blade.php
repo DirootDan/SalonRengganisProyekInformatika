@@ -3,7 +3,7 @@
     <div class="modal-kotak modal-kotak-lebar">
         <div class="modal-header">
             <div>
-                <h2 id="judulModalHoldPos">⏸️ Daftar Transaksi Hold &amp; Status Approval ({{ $daftarHold->count() }})</h2>
+                <h2 id="judulModalHoldPos"><x-ikon name="jeda" /> Daftar Transaksi Hold &amp; Status Approval ({{ $daftarHold->count() }})</h2>
                 <small class="sub-antrean">Pantau respons persetujuan Manajer atau lanjutkan transaksi yang telah diputuskan.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalHold" aria-label="Tutup">&times;</button>
@@ -16,11 +16,11 @@
                         <div>
                             <span class="antrean-id">#{{ $h->kode_referensi }} &bull; {{ $h->created_at?->format('H:i') }} WIB</span>
                             @if ($h->status === \App\Models\PermintaanOtorisasi::STATUS_MENUNGGU)
-                                <span class="badge-hold badge-hold-pending">⏳ Menunggu Approval Manajer</span>
+                                <span class="badge-hold badge-hold-pending"><x-ikon name="jam" /> Menunggu Approval Manajer</span>
                             @elseif ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DISETUJUI)
-                                <span class="badge-hold badge-hold-setuju">✅ Disetujui ({{ $h->manajer?->nama_staff ?? 'Manajer' }})</span>
+                                <span class="badge-hold badge-hold-setuju"><x-ikon name="cek" /> Disetujui ({{ $h->manajer?->nama_staff ?? 'Manajer' }})</span>
                             @elseif ($h->status === \App\Models\PermintaanOtorisasi::STATUS_DITOLAK)
-                                <span class="badge-hold badge-hold-tolak">❌ Request Ditolak Manajer</span>
+                                <span class="badge-hold badge-hold-tolak"><x-ikon name="silang" /> Request Ditolak Manajer</span>
                             @endif
                             <h4 class="antrean-nama">{{ $h->label_target }}</h4>
                         </div>

@@ -8,13 +8,15 @@
         judul="Salon Rengganis - Perawatan Rambut, Wajah & Tubuh"
         deskripsi="Lihat layanan dan harga resmi Salon Rengganis, pilih jam dan petugas favoritmu, lalu booking online tanpa antre."
         :indeks="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/Publik/beranda.css', 'resources/js/Publik/beranda.js'])
 </head>
 <body>
     <header class="pb-topbar">
         <div class="pb-wadah pb-topbar-isi">
-            <a href="{{ route('beranda.publik') }}" class="pb-brand">🌸 Salon Rengganis</a>
+            <a href="{{ route('beranda.publik') }}" class="pb-brand"><x-ikon name="bunga" /> Salon Rengganis</a>
             <button type="button" id="btnMenuPublik" class="pb-menu-btn" aria-expanded="false" aria-controls="pbMenuNav" aria-label="Buka menu navigasi">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
                     <line x1="3" y1="6" x2="21" y2="6" />

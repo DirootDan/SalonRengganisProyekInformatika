@@ -6,6 +6,7 @@ import {
     ikatNavigasiTabAria,
     ikatNavigasiRadioAria,
 } from '../components/aria-widget';
+import { svgIkon } from '../components/ikon-svg';
 
 document.addEventListener('DOMContentLoaded', () => {
     const formBooking        = document.getElementById('formBooking');
@@ -237,11 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sedangTersembunyi) {
             panelMenitKustom.removeAttribute('hidden');
             btnToggleMenitKustom.setAttribute('aria-expanded', 'true');
-            btnToggleMenitKustom.textContent = '✕ Tutup Menit Spesifik';
+            btnToggleMenitKustom.innerHTML = `${svgIkon('tandaSilang')} Tutup Menit Spesifik`;
         } else {
             panelMenitKustom.setAttribute('hidden', '');
             btnToggleMenitKustom.setAttribute('aria-expanded', 'false');
-            btnToggleMenitKustom.textContent = '⚙️ Pilih Menit Spesifik';
+            btnToggleMenitKustom.innerHTML = `${svgIkon('roda')} Pilih Menit Spesifik`;
         }
     });
 
@@ -284,7 +285,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const indikator = blok?.querySelector('.indikator-pilih');
 
         blok?.classList.toggle('terpilih', checkbox.checked);
-        if (indikator) indikator.textContent = checkbox.checked ? '✓ Terpilih' : '+ Pilih';
+        if (indikator) {
+            if (checkbox.checked) {
+                indikator.innerHTML = `${svgIkon('tandaCek')} Terpilih`;
+            } else {
+                indikator.textContent = '+ Pilih';
+            }
+        }
         if (select) {
             select.disabled = !checkbox.checked;
             if (!checkbox.checked) select.value = '';

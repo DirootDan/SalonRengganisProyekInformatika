@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
 :root {
     --lebar-cetak: 80mm;
 }
 
 body.struk-cetak {
     font-family: 'VT323', 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
     font-size: 18px;
     font-weight: bold;
     line-height: 1.15;

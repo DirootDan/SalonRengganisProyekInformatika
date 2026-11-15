@@ -4,59 +4,6 @@
     gap: 14px;
 }
 
-.stat-kasir-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-    gap: 18px;
-    margin-bottom: 24px;
-}
-
-.stat-kasir-kartu {
-    background: white;
-    border-radius: 18px;
-    padding: 20px 22px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    text-decoration: none;
-    color: inherit;
-    border: 1.5px solid #fce7f3;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease;
-}
-
-.stat-kasir-kartu:hover {
-    border-color: #db2777;
-    transform: translateY(-2px);
-}
-
-.stat-kasir-ikon {
-    font-size: 26px;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: #fdf2f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.stat-kasir-label {
-    display: block;
-    font-size: 12.5px;
-    color: #6b7280;
-    font-weight: 500;
-}
-
-.stat-kasir-nilai {
-    font-size: 20px;
-    color: #111827;
-}
-
-.panel-antrean-ringkas {
-    margin-bottom: 24px;
-}
-
 .sub-antrean {
     margin: 2px 0 0;
     font-size: 12px;
@@ -116,6 +63,7 @@
     font-weight: 700;
     color: #db2777;
     font-size: 14px;
+    font-variant-numeric: tabular-nums;
 }
 
 .btn-muat-booking {
@@ -180,27 +128,6 @@
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 16px;
-}
-
-.btn-buka-modal-antrean {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
-    border-radius: 12px;
-    background: #fdf2f8;
-    border: 1.5px solid #fbcfe8;
-    color: #9d174d;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-buka-modal-antrean:hover {
-    background: #fce7f3;
-    border-color: #db2777;
 }
 
 .sub-keranjang {
@@ -425,6 +352,7 @@
 .baris-total strong {
     font-size: 22px;
     color: #db2777;
+    font-variant-numeric: tabular-nums;
 }
 
 .nominal-cepat {

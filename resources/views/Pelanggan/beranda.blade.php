@@ -39,7 +39,7 @@
                                       data-confirm-description="Apakah Anda yakin ingin membatalkan reservasi ini? Pembatalan sebelum batas {{ $kebijakan->batas_batal_jam }} jam bebas pinalti (tidak hadir tanpa pembatalan dihitung pelanggaran)."
                                       data-confirm-button="Ya, Batalkan Reservasi">
                                     @csrf
-                                    <button type="submit" class="btn-batal-cepat">✕ Batalkan Booking</button>
+                                    <button type="submit" class="btn-batal-cepat"><x-ikon name="tanda-silang" /> Batalkan Booking</button>
                                 </form>
                             @endif
                         </div>

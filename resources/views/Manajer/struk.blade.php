@@ -126,7 +126,7 @@
                                    id="cekTampilLogo"
                                    value="1"
                                    @checked(old('tampil_logo', $struk->tampil_logo))>
-                            <span>Tampilkan Logo Bunga (🌸) di bagian atas struk</span>
+                            <span>Tampilkan Logo Bunga Salon di bagian atas struk</span>
                         </label>
                         <label class="opsi-ceklis">
                             <input type="checkbox"
@@ -168,8 +168,8 @@
                 </div>
 
                 <div class="modal-kaki kaki-sebar">
-                    <button type="button" class="btn-sekunder" id="btnUjiCetakStruk">🖨️ Uji Cetak Struk</button>
-                    <button type="submit" class="btn-utama" id="btnSimpanStruk">💾 Simpan Format Nota</button>
+                    <button type="button" class="btn-sekunder" id="btnUjiCetakStruk"><x-ikon name="cetak" /> Uji Cetak Struk</button>
+                    <button type="submit" class="btn-utama" id="btnSimpanStruk"><x-ikon name="simpan" /> Simpan Format Nota</button>
                 </div>
             </form>
         </div>

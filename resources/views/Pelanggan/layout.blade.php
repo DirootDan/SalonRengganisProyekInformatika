@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('judul', 'Salon Rengganis')</title>
     <x-meta-situs />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/Pelanggan/dashboard.css', 'resources/css/Pelanggan/layanan.css', 'resources/css/Pelanggan/riwayat.css'])
+    @vite(['resources/css/Pelanggan/dashboard.css'])
     @stack('styles')
 </head>
 <body>
     <header class="topbar">
         <div class="topbar-inner">
-            <a href="{{ route('pelanggan.beranda') }}" class="brand">🌸 Salon Rengganis</a>
+            <a href="{{ route('pelanggan.beranda') }}" class="brand"><x-ikon name="bunga" /> Salon Rengganis</a>
 
             <nav class="menu" aria-label="Navigasi Utama Pelanggan">
                 <a href="{{ route('pelanggan.beranda') }}" class="{{ request()->routeIs('pelanggan.beranda') ? 'aktif' : '' }}">Beranda</a>
@@ -27,7 +29,7 @@
                    class="tombol-lonceng {{ $jmlNotifBelumDibaca > 0 ? 'ada-notif' : '' }}"
                    aria-label="Notifikasi ({{ $jmlNotifBelumDibaca }} belum dibaca)"
                    title="{{ $jmlNotifBelumDibaca > 0 ? $jmlNotifBelumDibaca . ' pemberitahuan belum dibaca' : 'Pemberitahuan Akun' }}">
-                    <span class="ikon-lonceng" aria-hidden="true">🔔</span>
+                    <span class="ikon-lonceng" aria-hidden="true"><x-ikon name="lonceng" /></span>
                     @if ($jmlNotifBelumDibaca > 0)
                         <span class="lencana-lonceng">{{ $jmlNotifBelumDibaca > 99 ? '99+' : $jmlNotifBelumDibaca }}</span>
                     @endif
@@ -65,14 +67,14 @@
                         <a href="{{ route('pelanggan.profil') }}"
                            class="akun-menu-item {{ $sedangDiProfil && request()->query('tab') !== 'password' ? 'item-aktif' : '' }}"
                            role="menuitem">
-                            <span class="item-ikon" aria-hidden="true">👤</span>
+                            <span class="item-ikon" aria-hidden="true"><x-ikon name="pengguna" /></span>
                             <span>Profil Saya</span>
                         </a>
 
                         <a href="{{ route('pelanggan.profil', ['tab' => 'password']) }}"
                            class="akun-menu-item {{ $sedangDiProfil && request()->query('tab') === 'password' ? 'item-aktif' : '' }}"
                            role="menuitem">
-                            <span class="item-ikon" aria-hidden="true">🔒</span>
+                            <span class="item-ikon" aria-hidden="true"><x-ikon name="gembok" /></span>
                             <span>Ganti Kata Sandi</span>
                         </a>
 
@@ -81,7 +83,7 @@
                         <form method="POST" action="{{ route('logout') }}" class="form-menu-keluar" role="none">
                             @csrf
                             <button type="submit" class="akun-menu-item akun-menu-keluar" role="menuitem">
-                                <span class="item-ikon" aria-hidden="true">🚪</span>
+                                <span class="item-ikon" aria-hidden="true"><x-ikon name="keluar" /></span>
                                 <span>Keluar</span>
                             </button>
                         </form>
@@ -93,7 +95,7 @@
 
     <main class="container">
         @if (session('status'))
-            <div class="success-msg">✅ {{ session('status') }}</div>
+            <div class="success-msg"><x-ikon name="cek" /> {{ session('status') }}</div>
         @endif
 
         @yield('isi')

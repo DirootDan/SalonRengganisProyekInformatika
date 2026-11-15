@@ -2,6 +2,10 @@
 
 @section('judul', 'Layanan - Salon Rengganis')
 
+@push('styles')
+    @vite(['resources/css/Pelanggan/layanan.css'])
+@endpush
+
 @section('isi')
     <h1 class="judul-halaman">Layanan Kami</h1>
     <p class="sub-halaman">Pilih perawatan favorit Anda, lalu klik tombol pada layanan untuk langsung menuju form booking dengan layanan tercentang otomatis.</p>
@@ -12,7 +16,7 @@
         <div class="grid-layanan">
             @foreach ($layanan as $item)
                 <div class="kartu">
-                    <div class="kartu-ikon">{{ $item->jabatan_petugas === 'Stylist' ? '💇‍♀️' : '🌿' }}</div>
+                    <div class="kartu-ikon"><x-ikon :name="$item->jabatan_petugas === 'Stylist' ? 'gunting' : 'daun'" /></div>
                     <span class="lencana-kategori-layanan">{{ $item->kategori }}</span>
                     <h2>{{ $item->nama_layanan }}</h2>
                     <p class="meta-layanan">⏱ {{ (int) ($item->durasi_menit ?: 60) }} menit &bull; Ditangani {{ $item->jabatan_petugas }}</p>

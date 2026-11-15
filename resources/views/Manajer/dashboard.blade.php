@@ -12,7 +12,7 @@
     <!-- Kartu Statistik Utama -->
     <div class="stat-grid">
         <div class="stat-kartu">
-            <div class="stat-ikon stat-pink">👥</div>
+            <div class="stat-ikon stat-pink" aria-hidden="true"><x-ikon name="pengguna-grup" /></div>
             <div class="stat-info">
                 <span class="stat-label">Total Karyawan</span>
                 <span class="stat-nilai">{{ $totalKaryawan }} Staf</span>
@@ -20,7 +20,7 @@
         </div>
 
         <div class="stat-kartu">
-            <div class="stat-ikon stat-ungu">💇‍♀️</div>
+            <div class="stat-ikon stat-ungu" aria-hidden="true"><x-ikon name="gunting" /></div>
             <div class="stat-info">
                 <span class="stat-label">Jenis Layanan</span>
                 <span class="stat-nilai">{{ $totalLayanan }} Layanan</span>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="stat-kartu">
-            <div class="stat-ikon stat-hijau">🧴</div>
+            <div class="stat-ikon stat-hijau" aria-hidden="true"><x-ikon name="botol" /></div>
             <div class="stat-info">
                 <span class="stat-label">Katalog Produk</span>
                 <span class="stat-nilai">{{ $totalProduk }} Produk</span>
@@ -36,7 +36,7 @@
         </div>
 
         <div class="stat-kartu">
-            <div class="stat-ikon stat-kuning">📅</div>
+            <div class="stat-ikon stat-kuning" aria-hidden="true"><x-ikon name="kalender" /></div>
             <div class="stat-info">
                 <span class="stat-label">Total Reservasi</span>
                 <span class="stat-nilai">{{ $totalReservasi }} Booking</span>
@@ -48,7 +48,7 @@
     <h2 class="seksi-judul">Akses Cepat Menu Manajer</h2>
     <div class="pintas-grid">
         <a href="{{ route('manajer.karyawan') }}" class="pintas-item">
-            <span class="pintas-ikon">👥</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="pengguna-grup" /></span>
             <div>
                 <h3>Kelola Karyawan</h3>
                 <p>Tambah, ubah, atur persentase komisi, atau nonaktifkan akun staf.</p>
@@ -56,7 +56,7 @@
         </a>
 
         <a href="{{ route('manajer.layanan') }}" class="pintas-item">
-            <span class="pintas-ikon">💇‍♀️</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="gunting" /></span>
             <div>
                 <h3>Kelola Layanan</h3>
                 <p>Atur kategori layanan, harga perawatan, dan pemetaan jabatan petugas.</p>
@@ -64,7 +64,7 @@
         </a>
 
         <a href="{{ route('manajer.produk') }}" class="pintas-item">
-            <span class="pintas-ikon">🧴</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="botol" /></span>
             <div>
                 <h3>Kelola Produk</h3>
                 <p>Pantau stok produk kecantikan salon dan perbarui harga jual.</p>
@@ -72,7 +72,7 @@
         </a>
 
         <a href="{{ route('manajer.promo') }}" class="pintas-item">
-            <span class="pintas-ikon">🏷️</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="tag" /></span>
             <div>
                 <h3>Program Promo</h3>
                 <p>Buat kode voucer, potongan harga, dan periode promosi pelanggan.</p>
@@ -80,7 +80,7 @@
         </a>
 
         <a href="{{ route('manajer.laporan') }}" class="pintas-item">
-            <span class="pintas-ikon">📈</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="tren-naik" /></span>
             <div>
                 <h3>Cek Laporan</h3>
                 <p>Lihat rekap pendapatan, layanan terlaris, dan kinerja komisi karyawan.</p>
@@ -88,7 +88,7 @@
         </a>
 
         <a href="{{ route('manajer.metode') }}" class="pintas-item">
-            <span class="pintas-ikon">💳</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="kartu" /></span>
             <div>
                 <h3>Metode Pembayaran</h3>
                 <p>Atur rekening bank, QRIS, tunai, dan mesin EDC untuk transaksi kasir.</p>
@@ -96,7 +96,7 @@
         </a>
 
         <a href="{{ route('manajer.struk') }}" class="pintas-item">
-            <span class="pintas-ikon">🧾</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="struk" /></span>
             <div>
                 <h3>Format Struk Nota</h3>
                 <p>Sesuaikan nama cabang, alamat, logo, dan pesan kaki pada struk belanja.</p>
@@ -104,7 +104,7 @@
         </a>
 
         <a href="{{ route('manajer.kebijakan') }}" class="pintas-item">
-            <span class="pintas-ikon">🛡️</span>
+            <span class="pintas-ikon" aria-hidden="true"><x-ikon name="perisai" /></span>
             <div>
                 <h3>Kebijakan Booking &amp; Pinalti</h3>
                 <p>Atur batas pelanggaran, lama blokir, dan buka blokir pelanggan secara manual.</p>

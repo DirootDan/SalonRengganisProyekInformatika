@@ -93,7 +93,7 @@
                     <label class="form-label tanpa-margin" for="posNamaPelanggan">Nama Pelanggan / Reservasi <span class="tanda-wajib">*</span></label>
                     <div class="grup-tautan-pos">
                         <button type="button" class="tautan-hold-pos {{ $kelasTombolHold }}" id="btnBukaHoldPos">
-                            ⏸️ Transaksi Hold ({{ $daftarHold->count() }})
+                            <x-ikon name="jeda" /> Transaksi Hold ({{ $daftarHold->count() }})
                         </button>
                         <button type="button" class="tautan-pilih-antrean" id="btnPilihAntreanKecil">
                             Muat dari Antrean ({{ $reservasiAktif->count() }})
@@ -180,10 +180,10 @@
 
                     <div id="aksiWajibApprovalPos" class="aksi-wajib-approval-pos" hidden>
                         <button type="button" class="btn-hold-kirim" id="btnKirimHoldManajer">
-                            ⏸️ Kirim ke Manajer &amp; Hold Transaksi
+                            <x-ikon name="jeda" /> Kirim ke Manajer &amp; Hold Transaksi
                         </button>
                         <button type="button" class="btn-direct-override" id="btnBukaDirectOverride">
-                            🔑 Otorisasi Manajer di Tempat
+                            <x-ikon name="kunci" /> Otorisasi Manajer di Tempat
                         </button>
                     </div>
                 </div>

@@ -13,7 +13,7 @@
             <h1 class="booking-judul-ringkas">Buat Reservasi Perawatan</h1>
             <p class="booking-sub-ringkas">Pilih perawatan favorit Anda, tentukan jam kedatangan, dan datang tanpa antre.</p>
         </div>
-        <span class="lencana-jam-buka">🕘 Jam Operasional: 09:00 – 21:00 WIB</span>
+        <span class="lencana-jam-buka"><x-ikon name="jam" /> Jam Operasional: 09:00 &ndash; 21:00 WIB</span>
     </div>
 
     @if ($errors->any())
@@ -111,19 +111,19 @@
                         <!-- Bar Filter Kategori Rapi (Tidak Terpotong) -->
                         <div class="filter-kategori-bar" role="tablist" aria-label="Kategori Layanan Salon">
                             <button type="button" class="tab-kat-item aktif" data-filter-jabatan="semua">
-                                ✨ Semua ({{ $layanan->count() }})
+                                <x-ikon name="kilau" /> Semua ({{ $layanan->count() }})
                             </button>
 
                             <button type="button" class="tab-kat-item" data-filter-jabatan="Stylist">
-                                💇‍♀️ Hair Stylist ({{ $jmlStylistLayanan }})
+                                <x-ikon name="gunting" /> Hair Stylist ({{ $jmlStylistLayanan }})
                             </button>
 
                             <button type="button" class="tab-kat-item" data-filter-jabatan="Therapist">
-                                🌿 Spa Therapist ({{ $jmlTherapistLayanan }})
+                                <x-ikon name="daun" /> Spa Therapist ({{ $jmlTherapistLayanan }})
                             </button>
 
                             <button type="button" class="tab-kat-item tab-kat-terpilih" data-filter-jabatan="terpilih" id="tabLayananTerpilih">
-                                ✅ Dipilih (<span id="badgeTabLayananTerpilih">0</span>)
+                                <x-ikon name="cek" /> Dipilih (<span id="badgeTabLayananTerpilih">0</span>)
                             </button>
                         </div>
 
@@ -170,7 +170,7 @@
 
                                         <div class="opsi-kanan-harga">
                                             <span class="opsi-harga">Rp {{ number_format($item->harga_layanan, 0, ',', '.') }}</span>
-                                            <span class="indikator-pilih">{{ $item->dipilih_awal ? '✓ Terpilih' : '+ Pilih' }}</span>
+                                            <span class="indikator-pilih">@if ($item->dipilih_awal)<x-ikon name="tanda-cek" /> Terpilih @else + Pilih @endif</span>
                                         </div>
                                     </label>
 
@@ -185,7 +185,7 @@
                                                 data-pilihan-lama="{{ $item->petugas_lama }}"
                                                 data-tersedia="{{ $item->daftar_petugas->count() }}"
                                                 @disabled(! $item->dipilih_awal)>
-                                            <option value="">🤖 Pilihkan {{ $item->jabatan_petugas }} Otomatis ({{ $item->daftar_petugas->count() }} tersedia)</option>
+                                            <option value="">Pilihkan {{ $item->jabatan_petugas }} Otomatis ({{ $item->daftar_petugas->count() }} tersedia)</option>
                                             @foreach ($item->daftar_petugas as $staf)
                                                 <option value="{{ $staf->id_karyawan }}" @selected((string) $item->petugas_lama === (string) $staf->id_karyawan)>
                                                     {{ $staf->nama_staff }}
@@ -249,14 +249,14 @@
                                 <span class="label">Ringkasan Waktu Kedatangan</span>
                                 <div class="kotak-jam-aktif-besar">
                                     <div class="jam-aktif-utama">
-                                        <span class="jam-aktif-ikon">🕒</span>
+                                        <span class="jam-aktif-ikon" aria-hidden="true"><x-ikon name="jam" /></span>
                                         <div>
                                             <strong id="teksJamTerpilihBesar">{{ $jamTerpilihAwal }} WIB</strong>
                                             <small id="teksEstimasiSelesaiStep2">Pilih slot jam di bawah</small>
                                         </div>
                                     </div>
                                     <button type="button" class="btn-toggle-menit-kustom" id="btnToggleMenitKustom" aria-expanded="false">
-                                        ⚙️ Pilih Menit Spesifik
+                                        <x-ikon name="roda" /> Pilih Menit Spesifik
                                     </button>
                                 </div>
 
@@ -408,7 +408,7 @@
 
                         <!-- Empty State Ringkas Saat Belum Ada Layanan Dipilih -->
                         <div class="pilihan-kosong-live" id="ringkasanKosongState">
-                            <span class="kosong-ikon" aria-hidden="true">🌸</span>
+                            <span class="kosong-ikon" aria-hidden="true"><x-ikon name="bunga" /></span>
                             <strong>Belum ada perawatan dipilih</strong>
                             <span>Klik kartu perawatan di sebelah kiri untuk melihat rincian durasi, promo, dan estimasi biaya.</span>
                         </div>

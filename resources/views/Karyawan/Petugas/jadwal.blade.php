@@ -81,7 +81,7 @@
                                       data-confirm-title="Konfirmasi Penyelesaian Layanan"
                                       data-confirm-item="{{ $item->nama_layanan }} (#{{ $item->id_reservasi }})">
                                     @csrf
-                                    <button type="submit" class="btn-selesai">✓ Tandai Selesai</button>
+                                    <button type="submit" class="btn-selesai"><x-ikon name="tanda-cek" /> Tandai Selesai</button>
                                 </form>
                             @else
                                 <span class="teks-tunggu-kasir">Menunggu diterima Kasir</span>

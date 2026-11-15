@@ -407,6 +407,7 @@ body {
 .ringkasan-card .angka {
     font-size: 28px;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
     color: var(--warna-teks-utama);
     margin: 0;
 }

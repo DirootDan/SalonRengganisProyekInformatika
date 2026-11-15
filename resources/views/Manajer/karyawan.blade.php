@@ -12,7 +12,7 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariKaryawan" class="input-cari" aria-label="Cari nama, username, atau email staf" placeholder="🔍 Cari nama, username, atau email staf...">
+                <input type="text" id="cariKaryawan" class="input-cari" aria-label="Cari nama, username, atau email staf" placeholder="Cari nama, username, atau email staf...">
                 <select id="filterJabatan" class="select-filter" aria-label="Filter jabatan staf">
                     <option value="">Semua Jabatan</option>
                     <option value="Manajer">Manajer</option>
@@ -73,7 +73,7 @@
                                             data-jabatan="{{ $staf->role_jabatan }}"
                                             data-komisi="{{ (float) $staf->persen_komisi }}"
                                             data-aktif="{{ $staf->aktif ? '1' : '0' }}">
-                                        ✏️ Ubah
+                                        <x-ikon name="edit" /> Ubah
                                     </button>
 
                                     <form method="POST" action="{{ route('manajer.karyawan.hapus', $staf->id_karyawan) }}"

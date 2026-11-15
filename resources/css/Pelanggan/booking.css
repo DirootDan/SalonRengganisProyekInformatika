@@ -312,6 +312,7 @@
 .chip-jam-angka {
     font-size: 14.5px;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }
 
 .chip-jam-status {

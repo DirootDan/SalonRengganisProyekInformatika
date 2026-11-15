@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('judul', 'Panel Kasir - Salon Rengganis')</title>
     <x-meta-situs />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/Karyawan/Kasir/layout.css'])
     @stack('styles')
@@ -13,7 +15,7 @@
     <div class="kasir-shell">
         <aside class="sidebar" id="sidebar" aria-label="Menu utama kasir" data-url-badge="{{ route('kasir.badge-ringkasan') }}">
             <div class="sidebar-brand">
-                <span class="brand-ikon">🌸</span>
+                <span class="brand-ikon" aria-hidden="true"><x-ikon name="bunga" /></span>
                 <div class="brand-teks">
                     <span class="brand-nama">Salon Rengganis</span>
                     <span class="brand-sub">Meja Operasional Kasir</span>
@@ -25,11 +27,11 @@
                 <div class="nav-grup">
                     <span class="nav-label">TRANSAKSI &amp; RESERVASI</span>
                     <a href="{{ route('kasir.dashboard') }}" class="nav-item {{ request()->routeIs('kasir.dashboard') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🖥️</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="monitor" /></span>
                         <span class="nav-item-teks">Dashboard Transaksi</span>
                     </a>
                     <a href="{{ route('kasir.permintaan') }}" class="nav-item {{ request()->routeIs('kasir.permintaan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">📩</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="surat" /></span>
                         <span class="nav-item-teks">
                             Permintaan Booking
                             <sup id="badgeNotifMenunggu"
@@ -40,7 +42,7 @@
                         </span>
                     </a>
                     <a href="{{ route('kasir.antrean') }}" class="nav-item {{ request()->routeIs('kasir.antrean') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">⏳</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="jam" /></span>
                         <span class="nav-item-teks">
                             Antrean Hari Ini
                             <sup id="badgeNotifAntrean"
@@ -55,11 +57,11 @@
                 <div class="nav-grup">
                     <span class="nav-label">KATALOG &amp; INVENTARIS</span>
                     <a href="{{ route('kasir.layanan') }}" class="nav-item {{ request()->routeIs('kasir.layanan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">💇‍♀️</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="gunting" /></span>
                         <span>Kelola Layanan</span>
                     </a>
                     <a href="{{ route('kasir.produk') }}" class="nav-item {{ request()->routeIs('kasir.produk') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🧴</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="botol" /></span>
                         <span>Kelola Produk</span>
                     </a>
                 </div>
@@ -67,7 +69,7 @@
                 <div class="nav-grup">
                     <span class="nav-label">REKAP HARIAN</span>
                     <a href="{{ route('kasir.laporan') }}" class="nav-item {{ request()->routeIs('kasir.laporan') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">📈</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="tren-naik" /></span>
                         <span>Cek Laporan Kasir</span>
                     </a>
                 </div>
@@ -75,11 +77,11 @@
                 <div class="nav-grup">
                     <span class="nav-label">PENGATURAN KASIR</span>
                     <a href="{{ route('kasir.metode') }}" class="nav-item {{ request()->routeIs('kasir.metode') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">💳</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="kartu" /></span>
                         <span>Metode Pembayaran</span>
                     </a>
                     <a href="{{ route('kasir.struk') }}" class="nav-item {{ request()->routeIs('kasir.struk') ? 'aktif' : '' }}">
-                        <span class="nav-ikon">🧾</span>
+                        <span class="nav-ikon" aria-hidden="true"><x-ikon name="struk" /></span>
                         <span>Format Struk Nota</span>
                     </a>
                 </div>
@@ -87,7 +89,7 @@
 
             <div class="sidebar-kaki">
                 <div class="info-shift">
-                    <span>🟢 Shift Kasir Aktif</span>
+                    <span><x-ikon name="status-hijau" /> Shift Kasir Aktif</span>
                     <small>{{ now()->format('d/m/Y') }}</small>
                 </div>
             </div>
@@ -98,7 +100,7 @@
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-kiri">
-                    <button type="button" class="btn-menu-mobile" id="btnToggleSidebar" aria-label="Buka Menu">☰</button>
+                    <button type="button" class="btn-menu-mobile" id="btnToggleSidebar" aria-label="Buka Menu"><x-ikon name="menu" /></button>
                     <div>
                         <h1 class="topbar-judul">@yield('header', 'Dashboard Transaksi')</h1>
                         <p class="topbar-sub">@yield('sub_header', 'Layani pembayaran pelanggan dan kelola antrean harian.')</p>
@@ -123,12 +125,12 @@
 
             <main class="konten">
                 @if (session('status'))
-                    <div class="alert-sukses">✅ {{ session('status') }}</div>
+                    <div class="alert-sukses"><x-ikon name="cek" /> {{ session('status') }}</div>
                 @endif
                 @if ($errors->any())
                     <div class="alert-galat">
                         @foreach ($errors->all() as $err)
-                            <div>⚠️ {{ $err }}</div>
+                            <div><x-ikon name="peringatan" /> {{ $err }}</div>
                         @endforeach
                     </div>
                 @endif

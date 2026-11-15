@@ -22,15 +22,15 @@
                     <input type="date" name="selesai" id="tglSelesai" class="select-filter" value="{{ $tglSelesai }}">
                 </div>
                 <button type="submit" class="btn-sekunder btn-turun">
-                    🔄 Terapkan Filter
+                    <x-ikon name="segar" /> Terapkan Filter
                 </button>
             </div>
 
             <div class="aksi-grup btn-turun">
                 <a href="{{ route('manajer.laporan.ekspor', ['mulai' => $tglMulai, 'selesai' => $tglSelesai]) }}" class="btn-sekunder">
-                    📥 Ekspor CSV / Excel
+                    <x-ikon name="unduh" /> Ekspor CSV / Excel
                 </a>
-                <button type="button" class="btn-utama" id="btnCetakLaporan">🖨️ Cetak PDF / Kertas</button>
+                <button type="button" class="btn-utama" id="btnCetakLaporan"><x-ikon name="cetak" /> Cetak PDF / Kertas</button>
             </div>
         </form>
     </div>

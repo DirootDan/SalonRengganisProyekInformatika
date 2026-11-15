@@ -46,6 +46,7 @@
 .stat-nilai {
     font-size: 22px;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
     color: #111827;
 }
 

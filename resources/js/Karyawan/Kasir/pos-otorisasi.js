@@ -6,6 +6,7 @@ export const escapeHtml = (teks) => String(teks ?? '')
     .replace(/'/g, '&#39;');
 
 import { bukaModalAksesibel, ikatModalAksesibel, tutupModalAksesibel } from '../../components/staf-ui';
+import { svgIkon } from '../../components/ikon-svg';
 
 export function inisialisasiOtorisasiPos(ctx) {
     const {
@@ -94,7 +95,7 @@ export function inisialisasiOtorisasiPos(ctx) {
 
         if (!st.wajibApproval) {
             el.panel.classList.add('mode-mandiri');
-            el.kepala.innerHTML = `<strong>📝 Perubahan Mandiri (&lt; ${formatRp(batasApproval)})</strong><span>Tanpa menunggu Manajer, wajib isi alasan untuk log audit harian.</span>`;
+            el.kepala.innerHTML = `<strong>${svgIkon('catatan')} Perubahan Mandiri (&lt; ${formatRp(batasApproval)})</strong><span>Tanpa menunggu Manajer, wajib isi alasan untuk log audit harian.</span>`;
             el.grupAlasan.hidden = false;
             el.aksiApproval.hidden = true;
             btnProsesBayar.hidden = false;
@@ -103,7 +104,7 @@ export function inisialisasiOtorisasiPos(ctx) {
 
         if (tiketDisetujuiAktif) {
             el.panel.classList.add('mode-disetujui');
-            el.kepala.innerHTML = `<strong>✅ Disetujui oleh ${escapeHtml(tiketDisetujuiAktif.namaManajer)} (#${escapeHtml(tiketDisetujuiAktif.kodeReferensi)})</strong><span>Alasan tercatat: "${escapeHtml(tiketDisetujuiAktif.alasan)}" — Silakan selesaikan pembayaran.</span>`;
+            el.kepala.innerHTML = `<strong>${svgIkon('cek')} Disetujui oleh ${escapeHtml(tiketDisetujuiAktif.namaManajer)} (#${escapeHtml(tiketDisetujuiAktif.kodeReferensi)})</strong><span>Alasan tercatat: "${escapeHtml(tiketDisetujuiAktif.alasan)}" - Silakan selesaikan pembayaran.</span>`;
             el.grupAlasan.hidden = true;
             el.aksiApproval.hidden = true;
             btnProsesBayar.hidden = false;
@@ -111,7 +112,7 @@ export function inisialisasiOtorisasiPos(ctx) {
         }
 
         el.panel.classList.add('mode-wajib');
-        el.kepala.innerHTML = `<strong>🔒 Wajib Persetujuan Manajer (Acuan ${formatRp(st.nilaiAcuan)} &ge; ${formatRp(batasApproval)})</strong><span>Tagihan awal ${formatRp(st.totalAwal)} &rarr; usulan ${formatRp(st.totalBaru)}. Isi alasan lalu pilih Hold atau Otorisasi di Tempat.</span>`;
+        el.kepala.innerHTML = `<strong>${svgIkon('gembok')} Wajib Persetujuan Manajer (Acuan ${formatRp(st.nilaiAcuan)} &ge; ${formatRp(batasApproval)})</strong><span>Tagihan awal ${formatRp(st.totalAwal)} &rarr; usulan ${formatRp(st.totalBaru)}. Isi alasan lalu pilih Hold atau Otorisasi di Tempat.</span>`;
         el.grupAlasan.hidden = false;
         el.aksiApproval.hidden = false;
         btnProsesBayar.hidden = true;

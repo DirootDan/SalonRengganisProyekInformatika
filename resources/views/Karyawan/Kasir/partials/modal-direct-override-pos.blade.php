@@ -5,7 +5,7 @@
     <div class="modal-kotak">
         <div class="modal-header">
             <div>
-                <h2 id="judulModalDirectPos">🔑 Otorisasi Manajer di Tempat</h2>
+                <h2 id="judulModalDirectPos"><x-ikon name="kunci" /> Otorisasi Manajer di Tempat</h2>
                 <small class="sub-antrean">Verifikasi instan tanpa mengubah sesi login Kasir yang sedang aktif.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalDirect" aria-label="Tutup">&times;</button>
@@ -31,7 +31,7 @@
         <div id="pesanGalatDirect" class="peringatan-petugas-pos" hidden role="alert"></div>
 
         <div id="infoKunciDirect" class="kotak-kunci-rate-limit" hidden role="alert">
-            🔒 Batas percobaan gagal tercapai. Input password dikunci sementara (<strong id="hitungMundurDirect">60</strong> detik). Silakan gunakan tombol <strong>Kirim ke Manajer &amp; Hold Transaksi</strong>.
+            <x-ikon name="gembok" /> Batas percobaan gagal tercapai. Input password dikunci sementara (<strong id="hitungMundurDirect">60</strong> detik). Silakan gunakan tombol <strong>Kirim ke Manajer &amp; Hold Transaksi</strong>.
         </div>
 
         <div id="grupFormDirectOverride">

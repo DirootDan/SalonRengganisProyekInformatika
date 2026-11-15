@@ -5,6 +5,6 @@
    target="_blank"
    rel="noopener noreferrer"
    aria-label="Hubungi Salon Rengganis lewat WhatsApp">
-    <span class="wa-ikon" aria-hidden="true">💬</span>
+    <span class="wa-ikon" aria-hidden="true"><x-ikon name="whatsapp" /></span>
     <span class="wa-teks">Tanya via WhatsApp</span>
 </a>

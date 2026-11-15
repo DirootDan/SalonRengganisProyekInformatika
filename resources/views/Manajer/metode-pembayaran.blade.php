@@ -23,7 +23,7 @@
             <div class="kartu-metode {{ $m->aktif ? 'aktif' : 'nonaktif' }}">
                 <div class="metode-atas">
                     <div class="metode-identitas">
-                        <span class="metode-ikon">{{ $m->ikon }}</span>
+                        <span class="metode-ikon" aria-hidden="true"><x-ikon :name="$m->ikon" /></span>
                         <div>
                             <span class="metode-kategori">{{ $m->kategori }}</span>
                             <h2 class="metode-nama">{{ $m->nama_metode }}</h2>
@@ -65,7 +65,7 @@
                                 data-kategori="{{ $m->kategori }}"
                                 data-rek="{{ $m->nomor_rekening }}"
                                 data-an="{{ $m->atas_nama }}">
-                            ✏️ Ubah Rincian
+                            <x-ikon name="edit" /> Ubah Rincian
                         </button>
                     </div>
                 </div>
