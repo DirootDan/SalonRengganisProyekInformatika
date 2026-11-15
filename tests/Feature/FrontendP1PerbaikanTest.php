@@ -99,7 +99,7 @@ class FrontendP1PerbaikanTest extends TestCase
 
             foreach ($warnaTerlarang as $hex) {
                 $rel = str_replace('\\', '/', $berkas->getRelativePathname());
-                if ($hex === '#f472b6' && in_array($rel, ['global/variables.css', 'base/variables.css'], true)) {
+                if ($hex === '#f472b6' && $rel === 'base/variables.css') {
                     continue;
                 }
                 $this->assertStringNotContainsString($hex, $teks, $berkas->getRelativePathname());

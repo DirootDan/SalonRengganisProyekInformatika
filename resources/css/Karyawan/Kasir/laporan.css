@@ -1,9 +1,0 @@
-@import '../../Manajer/laporan.css';
-
-.ringkasan-laporan {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-}
-
-.metrik-tren {
-    color: var(--warna-sukses-teks, #15803d);
-}

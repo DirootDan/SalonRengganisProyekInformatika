@@ -62,9 +62,9 @@ class FrontendP3PerbaikanTest extends TestCase
             $this->assertStringContainsString('rel="preconnect" href="https://fonts.gstatic.com" crossorigin', $isi, $jalur);
         }
 
-        $strukCetakCss = File::get(resource_path('css/Karyawan/Kasir/struk-cetak.css'));
-        $this->assertStringNotContainsString('@import', $strukCetakCss);
-        $this->assertStringNotContainsString('fonts.googleapis.com', $strukCetakCss);
+        $strukCss = File::get(resource_path('css/components/struk.css'));
+        $this->assertStringNotContainsString('@import', $strukCss);
+        $this->assertStringNotContainsString('fonts.googleapis.com', $strukCss);
     }
 
     public function test_css_pelanggan_terpisah_per_halaman_dan_dead_code_telah_dihapus(): void
@@ -82,10 +82,15 @@ class FrontendP3PerbaikanTest extends TestCase
         $this->assertStringContainsString("@push('styles')", $pelangganRiwayat);
         $this->assertStringContainsString('resources/css/pages/pelanggan/akun.css', $pelangganRiwayat);
 
-        $kasirDashCss = File::get(resource_path('css/Karyawan/Kasir/dashboard.css'));
-        $this->assertStringNotContainsString('.stat-kasir-', $kasirDashCss);
-        $this->assertStringNotContainsString('.panel-antrean-ringkas', $kasirDashCss);
-        $this->assertStringNotContainsString('.btn-buka-modal-antrean', $kasirDashCss);
+        $stafDashCss = File::get(resource_path('css/pages/staf/dashboard.css'));
+        $this->assertStringNotContainsString('.stat-kasir-', $stafDashCss);
+        $this->assertStringNotContainsString('.panel-antrean-ringkas', $stafDashCss);
+        $this->assertStringNotContainsString('.btn-buka-modal-antrean', $stafDashCss);
+
+        $this->assertCount(21, File::allFiles(resource_path('css')));
+        foreach (['global', 'errors', 'Login', 'Publik', 'Pelanggan', 'Manajer', 'Karyawan'] as $dirLama) {
+            $this->assertDirectoryDoesNotExist(resource_path("css/{$dirLama}"));
+        }
 
         $this->assertFileDoesNotExist(resource_path('views/welcome.blade.php'));
         $this->assertFileDoesNotExist(resource_path('views/Karyawan/PlaceHolder.blade.php'));
@@ -96,17 +101,17 @@ class FrontendP3PerbaikanTest extends TestCase
     public function test_tabular_nums_dan_deduplikasi_modul_js_tersedia(): void
     {
         $berkasTabular = [
-            'css/global/staf-common.css',
-            'css/Manajer/dashboard.css',
-            'css/Manajer/laporan.css',
-            'css/Karyawan/Kasir/dashboard.css',
-            'css/Karyawan/Kasir/struk-cetak.css',
-            'css/Karyawan/Petugas/dashboard.css',
-            'css/Publik/beranda.css',
-            'css/Pelanggan/dashboard.css',
-            'css/Pelanggan/layanan.css',
-            'css/Pelanggan/booking.css',
-            'css/Pelanggan/riwayat.css',
+            'css/components/cards.css',
+            'css/components/tables.css',
+            'css/components/struk.css',
+            'css/pages/staf/dashboard.css',
+            'css/pages/staf/katalog.css',
+            'css/pages/staf/laporan.css',
+            'css/pages/staf/kasir-pos.css',
+            'css/pages/staf/manajer-admin.css',
+            'css/pages/publik/beranda.css',
+            'css/pages/pelanggan/booking.css',
+            'css/pages/pelanggan/akun.css',
         ];
 
         foreach ($berkasTabular as $jalurCss) {

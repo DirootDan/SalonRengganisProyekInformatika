@@ -45,22 +45,22 @@ class FrontendP2PerbaikanTest extends TestCase
         $viteConfig = File::get(base_path('vite.config.js'));
         $this->assertStringContainsString('resources/js/Publik/beranda.js', $viteConfig);
 
-        $cssPublik = File::get(resource_path('css/Publik/beranda.css'));
+        $cssPublik = File::get(resource_path('css/pages/publik/beranda.css'));
         $this->assertStringContainsString('scroll-margin-top: 84px', $cssPublik);
     }
 
     public function test_css_aksesibilitas_reduced_motion_forced_colors_dan_layout_p2_tersedia(): void
     {
-        $aksesibilitasCss = File::get(resource_path('css/global/aksesibilitas.css'));
+        $aksesibilitasCss = File::get(resource_path('css/base/reset.css'));
         $this->assertStringContainsString(':focus-visible', $aksesibilitasCss);
         $this->assertStringContainsString('@media (prefers-reduced-motion: reduce)', $aksesibilitasCss);
         $this->assertStringContainsString('@media (forced-colors: active)', $aksesibilitasCss);
 
-        $stafCommonCss = File::get(resource_path('css/global/staf-common.css'));
-        $this->assertStringContainsString('.form-dua-kolom', $stafCommonCss);
+        $formsCss = File::get(resource_path('css/components/forms.css'));
+        $this->assertStringContainsString('.form-dua-kolom', $formsCss);
 
-        $kasirDashCss = File::get(resource_path('css/Karyawan/Kasir/dashboard.css'));
-        $this->assertStringContainsString('overflow-y: visible', $kasirDashCss);
+        $stafDashCss = File::get(resource_path('css/pages/staf/dashboard.css'));
+        $this->assertStringContainsString('overflow-y: visible', $stafDashCss);
     }
 
     public function test_layout_sidebar_dan_panel_tab_memiliki_atribut_aria_lengkap(): void
