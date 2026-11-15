@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 
                 // Auth
+                'resources/css/pages/auth/auth.css',
                 'resources/css/Login/loginpage.css',
                 'resources/css/Login/registerpage.css',
                 'resources/css/Login/lupapassword.css',
@@ -16,11 +17,15 @@ export default defineConfig({
                 'resources/js/loginpage.js',
 
                 // Publik
+                'resources/css/pages/publik/beranda.css',
+                'resources/css/pages/error.css',
                 'resources/css/Publik/beranda.css',
                 'resources/js/Publik/beranda.js',
                 'resources/css/errors/halaman-error.css',
                 
                 // Pelanggan CSS
+                'resources/css/pages/pelanggan/booking.css',
+                'resources/css/pages/pelanggan/akun.css',
                 'resources/css/Pelanggan/dashboard.css',
                 'resources/css/Pelanggan/layanan.css',
                 'resources/css/Pelanggan/riwayat.css',

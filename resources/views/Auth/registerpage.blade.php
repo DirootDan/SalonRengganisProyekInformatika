@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/Login/registerpage.css', 'resources/js/loginpage.js'])
+    @vite(['resources/css/pages/auth/auth.css', 'resources/js/loginpage.js'])
 </head>
-<body>
+<body class="auth-register">
 
     <main class="login-card">
         <div class="logo" aria-hidden="true"><x-ikon name="bunga" /></div>
@@ -52,7 +52,7 @@
             <button type="submit" id="submitBtn">Daftar Sekarang</button>
         </form>
 
-        <div class="link-row">
+        <div class="link-row center">
             <!-- Rute disesuaikan menjadi login -->
             <a href="{{ route('login') }}">Sudah punya akun? Login</a>
         </div>

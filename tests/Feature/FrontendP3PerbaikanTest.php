@@ -70,17 +70,17 @@ class FrontendP3PerbaikanTest extends TestCase
     public function test_css_pelanggan_terpisah_per_halaman_dan_dead_code_telah_dihapus(): void
     {
         $pelangganLayout = File::get(resource_path('views/Pelanggan/layout.blade.php'));
-        $this->assertStringContainsString('resources/css/Pelanggan/dashboard.css', $pelangganLayout);
-        $this->assertStringNotContainsString('resources/css/Pelanggan/layanan.css', $pelangganLayout);
-        $this->assertStringNotContainsString('resources/css/Pelanggan/riwayat.css', $pelangganLayout);
+        $this->assertStringContainsString('resources/css/app.css', $pelangganLayout);
+        $this->assertStringNotContainsString('resources/css/pages/pelanggan/booking.css', $pelangganLayout);
+        $this->assertStringNotContainsString('resources/css/pages/pelanggan/akun.css', $pelangganLayout);
 
         $pelangganLayanan = File::get(resource_path('views/Pelanggan/layanan.blade.php'));
         $this->assertStringContainsString("@push('styles')", $pelangganLayanan);
-        $this->assertStringContainsString('resources/css/Pelanggan/layanan.css', $pelangganLayanan);
+        $this->assertStringContainsString('resources/css/pages/pelanggan/booking.css', $pelangganLayanan);
 
         $pelangganRiwayat = File::get(resource_path('views/Pelanggan/riwayat.blade.php'));
         $this->assertStringContainsString("@push('styles')", $pelangganRiwayat);
-        $this->assertStringContainsString('resources/css/Pelanggan/riwayat.css', $pelangganRiwayat);
+        $this->assertStringContainsString('resources/css/pages/pelanggan/akun.css', $pelangganRiwayat);
 
         $kasirDashCss = File::get(resource_path('css/Karyawan/Kasir/dashboard.css'));
         $this->assertStringNotContainsString('.stat-kasir-', $kasirDashCss);

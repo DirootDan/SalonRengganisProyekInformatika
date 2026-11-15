@@ -1,5 +1,3 @@
-@vite(['resources/css/components/tombol-whatsapp.css'])
-
 <a href="https://wa.me/{{ config('salon.whatsapp') }}?text={{ rawurlencode(config('salon.whatsapp_pesan_awal')) }}"
    class="wa-mengambang"
    target="_blank"

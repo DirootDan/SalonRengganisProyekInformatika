@@ -2,8 +2,10 @@
 
 @section('judul', 'Booking Perawatan - Salon Rengganis')
 
+@section('kelas_container', 'container-booking')
+
 @push('styles')
-    @vite(['resources/css/Pelanggan/booking.css'])
+    @vite(['resources/css/pages/pelanggan/booking.css'])
 @endpush
 
 @section('isi')

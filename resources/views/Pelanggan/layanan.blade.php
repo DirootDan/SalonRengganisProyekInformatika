@@ -3,7 +3,7 @@
 @section('judul', 'Layanan - Salon Rengganis')
 
 @push('styles')
-    @vite(['resources/css/Pelanggan/layanan.css'])
+    @vite(['resources/css/pages/pelanggan/booking.css'])
 @endpush
 
 @section('isi')

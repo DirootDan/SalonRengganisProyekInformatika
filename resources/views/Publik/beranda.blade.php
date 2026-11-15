@@ -11,9 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/Publik/beranda.css', 'resources/js/Publik/beranda.js'])
+    @vite(['resources/css/app.css', 'resources/css/pages/publik/beranda.css', 'resources/js/Publik/beranda.js'])
 </head>
-<body>
+<body class="publik-app">
     <header class="pb-topbar">
         <div class="pb-wadah pb-topbar-isi">
             <a href="{{ route('beranda.publik') }}" class="pb-brand"><x-ikon name="bunga" /> Salon Rengganis</a>

@@ -2,6 +2,10 @@
 
 @section('judul', 'Beranda - Salon Rengganis')
 
+@push('styles')
+    @vite(['resources/css/pages/pelanggan/akun.css'])
+@endpush
+
 @section('isi')
     <div class="kartu-sambutan">
         <h1 class="judul-halaman">Selamat Datang, {{ auth('pelanggan')->user()->nama_cust }}!</h1>

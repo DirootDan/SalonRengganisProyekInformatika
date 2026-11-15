@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/Pelanggan/dashboard.css'])
+    @vite(['resources/css/app.css'])
     @stack('styles')
 </head>
-<body>
+<body class="pelanggan-app">
     <header class="topbar">
         <div class="topbar-inner">
             <a href="{{ route('pelanggan.beranda') }}" class="brand"><x-ikon name="bunga" /> Salon Rengganis</a>
@@ -93,7 +93,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container @yield('kelas_container')">
         @if (session('status'))
             <div class="success-msg"><x-ikon name="cek" /> {{ session('status') }}</div>
         @endif
