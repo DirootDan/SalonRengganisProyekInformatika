@@ -6,6 +6,7 @@ use App\Models\NotifikasiPelanggan;
 use App\Models\PermintaanOtorisasi;
 use App\Models\Reservasi;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Paginator::defaultView('components.paginasi');
+        Paginator::defaultSimpleView('components.paginasi');
+
         // Link reset password gabungan untuk pelanggan maupun karyawan
         ResetPassword::createUrlUsing(function ($user, string $token) {
             return route('password.reset', [
@@ -38,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        View::composer(['Pelanggan.layout', 'pelanggan.layout'], function ($view): void {
+        View::composer('Pelanggan.layout', function ($view): void {
             $pelangganAktif = Auth::guard('pelanggan')->user();
             $jmlNotifBelumDibaca = $pelangganAktif
                 ? NotifikasiPelanggan::where('id_pelanggan', $pelangganAktif->id_pelanggan)->where('dibaca', false)->count()

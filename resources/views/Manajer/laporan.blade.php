@@ -65,7 +65,7 @@
     <!-- Tabel Kinerja Karyawan -->
     <div class="panel-kartu panel-filter-laporan">
         <h3 class="judul-sub-panel">Kinerja Stylist &amp; Therapist (Layanan Selesai)</h3>
-        <div class="tabel-Responsif">
+        <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>
                     <tr>
@@ -97,7 +97,7 @@
     <div class="panel-kartu">
         <h3 class="judul-sub-panel">Rincian Transaksi &amp; Reservasi Periode Ini</h3>
 
-        <div class="tabel-Responsif">
+        <div class="tabel-responsif">
             <table class="tabel-data" id="tabelLaporan">
                 <thead>
                     <tr>

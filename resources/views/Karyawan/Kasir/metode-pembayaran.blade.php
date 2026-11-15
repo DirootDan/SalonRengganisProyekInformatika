@@ -11,7 +11,7 @@
 @section('isi')
     <div class="toolbar-atas">
         <p class="tanpa-margin">
-            Berikut adalah metode pembayaran yang telah dikonfigurasi untuk meja Kasir.
+            Daftar kanal pembayaran bersifat baca-saja bagi Kasir. Pengaturan aktif atau nonaktif kanal dikelola oleh Manajer.
         </p>
     </div>
 
@@ -20,19 +20,16 @@
             <div class="kartu-metode {{ $m->aktif ? 'aktif' : 'nonaktif' }}">
                 <div class="metode-atas">
                     <div class="metode-identitas">
-                        <span class="metode-ikon">{{ $m->ikon }}</span>
+                        <span class="metode-ikon" aria-hidden="true">{{ $m->ikon }}</span>
                         <div>
                             <span class="metode-kategori">{{ $m->kategori }}</span>
                             <h3 class="metode-nama">{{ $m->nama_metode }}</h3>
                         </div>
                     </div>
 
-                    <label class="sakelar" title="Aktifkan / Nonaktifkan">
-                        <input type="checkbox" class="toggle-metode"
-                               data-nama="{{ $m->nama_metode }}"
-                               @checked($m->aktif)>
-                        <span class="slider"></span>
-                    </label>
+                    <span class="lencana-metode-kasir {{ $m->aktif ? 'aktif' : 'nonaktif' }}">
+                        {{ $m->aktif ? 'Aktif' : 'Nonaktif' }}
+                    </span>
                 </div>
 
                 <div class="metode-detail">
@@ -47,13 +44,9 @@
                 </div>
 
                 <div class="metode-kaki">
-                    <span class="status-teks">{{ $m->aktif ? '● Aktif di Kasir' : '○ Nonaktif' }}</span>
+                    <span class="status-teks">{{ $m->aktif ? 'Tersedia di transaksi Kasir' : 'Dinonaktifkan oleh Manajer' }}</span>
                 </div>
             </div>
         @endforeach
     </div>
 @endsection
-
-@push('scripts')
-    @vite(['resources/js/Karyawan/Kasir/metode.js'])
-@endpush

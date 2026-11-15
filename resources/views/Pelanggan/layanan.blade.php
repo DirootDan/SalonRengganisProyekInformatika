@@ -1,4 +1,4 @@
-@extends('pelanggan.layout')
+@extends('Pelanggan.layout')
 
 @section('judul', 'Layanan - Salon Rengganis')
 
@@ -33,5 +33,5 @@
 @endsection
 
 @push('scripts')
-    @vite(['resources/js/pelanggan/beranda.js'])
+    @vite(['resources/js/Pelanggan/beranda.js'])
 @endpush

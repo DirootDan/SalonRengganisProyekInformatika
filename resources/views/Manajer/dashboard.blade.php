@@ -119,7 +119,7 @@
             <a href="{{ route('manajer.laporan') }}" class="btn-sekunder">Lihat Semua Laporan &rarr;</a>
         </div>
 
-        <div class="tabel-Responsif">
+        <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>
                     <tr>

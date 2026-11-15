@@ -6,7 +6,7 @@
     <title>@yield('judul', 'Salon Rengganis')</title>
     <x-meta-situs />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/pelanggan/dashboard.css', 'resources/css/pelanggan/layanan.css', 'resources/css/pelanggan/riwayat.css'])
+    @vite(['resources/css/Pelanggan/dashboard.css', 'resources/css/Pelanggan/layanan.css', 'resources/css/Pelanggan/riwayat.css'])
     @stack('styles')
 </head>
 <body>
@@ -103,7 +103,7 @@
 
     <x-confirm-modal />
 
-    @vite(['resources/js/pelanggan/layout.js'])
+    @vite(['resources/js/Pelanggan/layout.js'])
     @stack('scripts')
 <x-anti-klik-ganda />
 <x-tombol-whatsapp />

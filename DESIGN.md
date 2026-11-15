@@ -1,0 +1,25 @@
+# Design Direction
+
+- **Product:** Salon Rengganis (Layanan Publik, Booking Pelanggan, Panel Manajer, POS Kasir, Portal Stylist dan Therapist)
+- **Reference Vibe:** Rengganis Rose Refined (hangat, rapi, feminin tanpa dekorasi berlebihan, fokus keterbacaan harga, jadwal, dan transaksi)
+- **Mood:** Warm, Clean, Trustworthy, Efficient
+- **Theme Mode:** Light-first (kanvas terang dominan untuk kenyamanan membaca jadwal layanan, rincian biaya, serta kecepatan kerja staf kasir dan manajer)
+- **Palette:**
+  - Light Canvas: `#FFFFFF` (permukaan kartu, modal, area kerja utama) dan `#FDF2F8` (soft blush canvas untuk latar shell, header tabel, dan sorotan lembut)
+  - Dark Surface: `#111827` (surface penekanan, notifikasi toast, serta elemen kontras tinggi) dan `#831843` (aksen gelap untuk penekanan struktur)
+  - Primary Text (on light / on dark): `#111827` / `#F9FAFB`
+  - Muted Text & Borders: `#4B5563` dengan border `#E5E7EB` dan `#FBCFE8` (on light) / `#D1D5DB` dengan border `#374151` (on dark)
+  - Spot Accent (CTA utama, state navigasi aktif, penanda fokus): `#BE185D` (hover `#9D174D`, kontras teks putih `6.04:1` hingga `7.88:1` WCAG AA)
+  - Semantic Status (khusus indikator status nyata, seluruh teks di atas latar status wajib >= `4.5:1`):
+    - Sukses: teks `#15803D` di `#DCFCE7` (`4.57:1`), tombol/badge solid `#047857` teks putih (`5.48:1`)
+    - Peringatan: teks `#B45309` di `#FEF3C7` (`4.51:1`), badge solid `#B45309` teks putih (`5.02:1`)
+    - Bahaya / Hapus: teks `#B91C1C` di `#FEE2E2` (`5.30:1`), tombol/badge solid `#B91C1C` teks putih (`6.47:1`)
+- **Typography:**
+  - Display / Headings: Poppins (`600`, `700`), satu `<h1>` per dokumen dan tidak melompati level heading
+  - Body & UI: Poppins (`400`, `500`, `600`), ukuran badan minimal `14px`, line-height `1.5` hingga `1.65`
+  - Numbers & Currency: Poppins dengan `font-variant-numeric: tabular-nums` agar nominal Rupiah, waktu jadwal, dan kolom laporan sejajar rapi tanpa menggunakan font monospace dekoratif
+- **Layout & Component Rules:**
+  - Gunakan satu aksen `#BE185D` secara selektif hanya untuk aksi primer, indikator halaman aktif, dan focus ring; hindari warna merah muda terang sebagai latar teks putih
+  - Variasikan komposisi di halaman Publik dan Pelanggan sesuai kebutuhan konten, sedangkan panel operasional Kasir, Manajer, dan Petugas menjaga konsistensi grid, tabel responsif, serta touch target minimal `44px x 44px`
+  - Setiap kontrol interaktif memakai elemen semantik native (`<button>`, `<a href>`, `<label for>`), status fokus `:focus-visible` yang jelas, dukungan `prefers-reduced-motion: reduce`, dan ikon fungsional berbasis SVG yang bersih alih-alih emoji
+- **Dial:** ENERGY 2 / RHYTHM 2 / MOTION 1

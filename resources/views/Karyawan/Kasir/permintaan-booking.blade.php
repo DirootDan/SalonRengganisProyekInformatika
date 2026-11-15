@@ -24,7 +24,7 @@
             <input type="text" id="cariBooking" class="input-cari" placeholder="🔍 Cari nama pelanggan atau nomor reservasi...">
         </div>
 
-        <div class="tabel-Responsif">
+        <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>
                     <tr>

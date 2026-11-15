@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="tabel-Responsif">
+        <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>
                     <tr>

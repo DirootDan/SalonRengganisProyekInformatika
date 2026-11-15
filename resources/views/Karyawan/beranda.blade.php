@@ -1,4 +1,4 @@
-@extends('pelanggan.layout')
+@extends('Pelanggan.layout')
 
 @section('judul', 'Layanan - Salon Rengganis')
 

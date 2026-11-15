@@ -115,7 +115,7 @@
             @endforelse
 
             <h3 class="judul-seksi-kebijakan spasi-atas">⚠️ Pelanggan dengan Catatan Pelanggaran</h3>
-            <div class="tabel-Responsif">
+            <div class="tabel-responsif">
                 <table class="tabel-data">
                     <thead>
                         <tr>
@@ -151,7 +151,7 @@
     <!-- Riwayat Log Pelanggaran & Pembukaan Blokir -->
     <div class="panel-kartu spasi-atas">
         <h3 class="judul-seksi-kebijakan">📜 Riwayat Pelanggaran &amp; Aktivitas Blokir</h3>
-        <div class="tabel-Responsif">
+        <div class="tabel-responsif">
             <table class="tabel-data">
                 <thead>
                     <tr>

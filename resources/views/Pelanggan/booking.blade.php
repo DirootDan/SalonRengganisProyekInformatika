@@ -1,9 +1,9 @@
-@extends('pelanggan.layout')
+@extends('Pelanggan.layout')
 
 @section('judul', 'Booking Perawatan - Salon Rengganis')
 
 @push('styles')
-    @vite(['resources/css/pelanggan/booking.css'])
+    @vite(['resources/css/Pelanggan/booking.css'])
 @endpush
 
 @section('isi')
@@ -526,5 +526,5 @@
 @endsection
 
 @push('scripts')
-    @vite(['resources/js/pelanggan/booking.js'])
+    @vite(['resources/js/Pelanggan/booking.js'])
 @endpush

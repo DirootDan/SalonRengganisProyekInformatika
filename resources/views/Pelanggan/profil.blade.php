@@ -1,9 +1,9 @@
-@extends('pelanggan.layout')
+@extends('Pelanggan.layout')
 
 @section('judul', 'Profil Saya - Salon Rengganis')
 
 @push('styles')
-    @vite(['resources/css/pelanggan/profil.css'])
+    @vite(['resources/css/Pelanggan/profil.css'])
 @endpush
 
 @section('isi')
@@ -177,5 +177,5 @@
 @endsection
 
 @push('scripts')
-    @vite(['resources/js/pelanggan/profil.js'])
+    @vite(['resources/js/Pelanggan/profil.js'])
 @endpush

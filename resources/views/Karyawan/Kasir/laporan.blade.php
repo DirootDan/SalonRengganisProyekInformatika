@@ -15,7 +15,7 @@
         <button type="button" class="btn-utama" id="btnCetakLaporan">🖨️ Cetak Rekap Shift</button>
     </div>
 
-    <div class="tabel-Responsif">
+    <div class="tabel-responsif">
         <table class="tabel-data">
             <thead>
                 <tr>

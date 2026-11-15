@@ -324,7 +324,7 @@ body {
 }
 
 /* ===== Tabel Data Profesional ===== */
-.tabel-Responsif {
+.tabel-responsif {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -562,8 +562,8 @@ body {
     .kasir-shell .konten,
     .admin-shell .panel-kartu,
     .kasir-shell .panel-kartu,
-    .admin-shell .tabel-Responsif,
-    .kasir-shell .tabel-Responsif {
+    .admin-shell .tabel-responsif,
+    .kasir-shell .tabel-responsif {
         min-width: 0;
         max-width: 100%;
     }
@@ -741,4 +741,88 @@ body {
     .profil-staf {
         padding: 3px;
     }
+}
+
+/* ===== Paginasi Non-Tailwind ===== */
+.paginasi-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.paginasi-ringkas {
+    margin: 0;
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.paginasi-daftar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.paginasi-tautan {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: var(--radius-kecil);
+    border: 1px solid var(--warna-batas-abu);
+    background: #ffffff;
+    color: var(--warna-teks-sekunder);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+a.paginasi-tautan {
+    cursor: pointer;
+}
+
+a.paginasi-tautan:hover {
+    background: var(--warna-brand-lembut);
+    border-color: var(--warna-brand-hover);
+    color: var(--warna-brand-hover);
+}
+
+a.paginasi-tautan:focus-visible {
+    outline: 2px solid var(--warna-brand-hover);
+    outline-offset: 2px;
+}
+
+.paginasi-tautan.aktif {
+    background: var(--warna-brand-hover);
+    border-color: var(--warna-brand-hover);
+    color: #ffffff;
+}
+
+.paginasi-tautan.nonaktif {
+    background: var(--warna-latar-input);
+    color: #4b5563;
+    cursor: not-allowed;
+}
+
+.paginasi-tautan.pemisah {
+    border-color: transparent;
+    background: transparent;
+    color: #4b5563;
+    cursor: default;
+}
+
+.paginasi-tautan svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
 }

@@ -20,18 +20,18 @@ export default defineConfig({
                 'resources/css/errors/halaman-error.css',
                 
                 // Pelanggan CSS
-                'resources/css/pelanggan/dashboard.css',
-                'resources/css/pelanggan/layanan.css',
-                'resources/css/pelanggan/riwayat.css',
-                'resources/css/pelanggan/profil.css',
-                'resources/css/pelanggan/booking.css',
+                'resources/css/Pelanggan/dashboard.css',
+                'resources/css/Pelanggan/layanan.css',
+                'resources/css/Pelanggan/riwayat.css',
+                'resources/css/Pelanggan/profil.css',
+                'resources/css/Pelanggan/booking.css',
                 
                 // Pelanggan JS
-                'resources/js/pelanggan/layout.js',
-                'resources/js/pelanggan/beranda.js',
-                'resources/js/pelanggan/booking.js',
-                'resources/js/pelanggan/riwayat.js',
-                'resources/js/pelanggan/profil.js',
+                'resources/js/Pelanggan/layout.js',
+                'resources/js/Pelanggan/beranda.js',
+                'resources/js/Pelanggan/booking.js',
+                'resources/js/Pelanggan/riwayat.js',
+                'resources/js/Pelanggan/profil.js',
 
                 // Manajer CSS
                 'resources/css/Manajer/layout.css',
@@ -79,7 +79,6 @@ export default defineConfig({
                 'resources/js/Karyawan/Kasir/layanan.js',
                 'resources/js/Karyawan/Kasir/produk.js',
                 'resources/js/Karyawan/Kasir/laporan.js',
-                'resources/js/Karyawan/Kasir/metode.js',
                 'resources/js/Karyawan/Kasir/struk.js',
                 'resources/js/Karyawan/Kasir/struk-cetak.js',
 
