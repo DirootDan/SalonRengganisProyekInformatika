@@ -1,7 +1,10 @@
+import { bukaModalAksesibel, perbaruiEmptyStateTabel } from '../components/staf-ui';
+
 document.addEventListener('DOMContentLoaded', () => {
     const cariInput    = document.getElementById('cariPromo');
     const filterStatus = document.getElementById('filterStatusPromo');
     const barisPromo   = document.querySelectorAll('.baris-promo');
+    const tbodyPromo   = barisPromo[0]?.closest('tbody') || null;
 
     const modal        = document.getElementById('modalPromo');
     const judulModal   = document.getElementById('judulModalPromo');
@@ -20,12 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const saringPromo = () => {
         const kataKunci = (cariInput?.value || '').toLowerCase().trim();
         const status    = filterStatus?.value || '';
+        let jumlahTampak = 0;
 
         barisPromo.forEach(baris => {
             const cocokNama   = (baris.dataset.nama || '').includes(kataKunci);
             const cocokStatus = !status || baris.dataset.status === status;
-            baris.style.display = (cocokNama && cocokStatus) ? '' : 'none';
+            const tampil      = cocokNama && cocokStatus;
+            baris.style.display = tampil ? '' : 'none';
+            if (tampil) jumlahTampak += 1;
         });
+
+        if (barisPromo.length > 0) {
+            perbaruiEmptyStateTabel(tbodyPromo, jumlahTampak, 'Tidak ada program promo yang cocok dengan pencarian atau filter.');
+        }
     };
 
     cariInput?.addEventListener('input', saringPromo);
@@ -36,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         form.action       = btnTambah.dataset.urlSimpan;
         methodInput.value = 'POST';
-        modal.classList.add('tampil');
+        bukaModalAksesibel(modal, inputKode);
     });
 
     document.querySelectorAll('.btnEditPromo').forEach(btn => {
@@ -51,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inputMin.value         = btn.dataset.min || '';
             inputSampai.value      = btn.dataset.sampai || '';
             inputStatus.value      = btn.dataset.aktif || '1';
-            modal.classList.add('tampil');
+            bukaModalAksesibel(modal, inputKode);
         });
     });
 });

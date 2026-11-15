@@ -12,8 +12,8 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariKaryawan" class="input-cari" placeholder="🔍 Cari nama, username, atau email staf...">
-                <select id="filterJabatan" class="select-filter">
+                <input type="text" id="cariKaryawan" class="input-cari" aria-label="Cari nama, username, atau email staf" placeholder="🔍 Cari nama, username, atau email staf...">
+                <select id="filterJabatan" class="select-filter" aria-label="Filter jabatan staf">
                     <option value="">Semua Jabatan</option>
                     <option value="Manajer">Manajer</option>
                     <option value="Kasir">Kasir</option>
@@ -96,11 +96,11 @@
     </div>
 
     <!-- Modal Tambah / Edit Karyawan -->
-    <div class="modal-backdrop" id="modalKaryawan">
+    <div class="modal-backdrop" id="modalKaryawan" role="dialog" aria-modal="true" aria-labelledby="judulModalKaryawan" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
                 <h3 id="judulModalKaryawan">Tambah Karyawan Baru</h3>
-                <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
+                <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 
             <form method="POST" action="{{ route('manajer.karyawan.simpan') }}" id="formKaryawan">
@@ -108,18 +108,18 @@
                 <input type="hidden" name="_method" id="methodKaryawan" value="POST">
 
                 <div class="form-grup">
-                    <label class="form-label">Nama Lengkap Staf</label>
+                    <label class="form-label" for="inputNamaStaf">Nama Lengkap Staf</label>
                     <input type="text" name="nama_staff" id="inputNamaStaf" class="form-input" placeholder="Contoh: Dewi Lestari" required>
                 </div>
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
-                        <label class="form-label">Username Login</label>
+                        <label class="form-label" for="inputUsernameStaf">Username Login</label>
                         <input type="text" name="username" id="inputUsernameStaf" class="form-input" placeholder="Contoh: dewi_stylist" required>
                     </div>
 
                     <div class="form-grup">
-                        <label class="form-label">Jabatan</label>
+                        <label class="form-label" for="inputJabatanStaf">Jabatan</label>
                         <select name="role_jabatan" id="inputJabatanStaf" class="form-select" required>
                             <option value="Stylist">Stylist</option>
                             <option value="Therapist">Therapist</option>
@@ -131,12 +131,12 @@
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
-                        <label class="form-label">Persentase Komisi (%)</label>
+                        <label class="form-label" for="inputKomisiStaf">Persentase Komisi (%)</label>
                         <input type="number" name="persen_komisi" id="inputKomisiStaf" class="form-input" min="0" max="100" step="1" value="15" required>
                     </div>
 
                     <div class="form-grup">
-                        <label class="form-label">Status Keaktifan</label>
+                        <label class="form-label" for="inputAktifStaf">Status Keaktifan</label>
                         <select name="aktif" id="inputAktifStaf" class="form-select">
                             <option value="1">Aktif Melayani</option>
                             <option value="0">Nonaktif / Cuti</option>
@@ -145,12 +145,12 @@
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Alamat Email</label>
+                    <label class="form-label" for="inputEmailStaf">Alamat Email</label>
                     <input type="email" name="email" id="inputEmailStaf" class="form-input" placeholder="nama@salon.test" required>
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Kata Sandi Akun</label>
+                    <label class="form-label" for="inputPasswordStaf">Kata Sandi Akun</label>
                     <input type="password" name="password" id="inputPasswordStaf" class="form-input" placeholder="Minimal 6 karakter (kosongkan jika tidak diubah)">
                 </div>
 

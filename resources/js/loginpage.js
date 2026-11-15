@@ -1,17 +1,20 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const loginForm = document.getElementById("loginForm");
-    const submitBtn = document.getElementById("submitBtn");
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
 
     if (!loginForm || !submitBtn) return;
 
     const defaultText = submitBtn.innerHTML;
 
-    loginForm.addEventListener("submit", function () {
-        submitBtn.innerHTML = "MEMPROSES...";
-        submitBtn.disabled = true;
+    loginForm.addEventListener('submit', (e) => {
+        setTimeout(() => {
+            if (e.defaultPrevented || submitBtn.disabled) return;
+            submitBtn.innerHTML = 'MEMPROSES...';
+            submitBtn.disabled = true;
+        }, 0);
     });
 
-    window.addEventListener("pageshow", function () {
+    window.addEventListener('pageshow', () => {
         submitBtn.innerHTML = defaultText;
         submitBtn.disabled = false;
     });

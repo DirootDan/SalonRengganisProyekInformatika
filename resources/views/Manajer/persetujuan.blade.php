@@ -120,14 +120,14 @@
                 <div class="aksi-keputusan-baris">
                     <form method="POST" action="{{ route('manajer.persetujuan.setujui', $item->id_otorisasi) }}" class="form-setujui-inline">
                         @csrf
-                        <input type="text" name="catatan_manajer" class="form-input input-catatan-kecil"
+                        <input type="text" name="catatan_manajer" aria-label="Catatan keputusan manajer" class="form-input input-catatan-kecil"
                                placeholder="Catatan persetujuan (opsional)...">
                         <button type="submit" class="btn-setujui">✅ Setujui Pengajuan</button>
                     </form>
 
                     <form method="POST" action="{{ route('manajer.persetujuan.tolak', $item->id_otorisasi) }}" class="form-tolak-inline">
                         @csrf
-                        <input type="text" name="catatan_manajer" class="form-input input-catatan-kecil"
+                        <input type="text" name="catatan_manajer" aria-label="Catatan keputusan manajer" class="form-input input-catatan-kecil"
                                placeholder="Wajib isi alasan penolakan untuk Kasir..." required minlength="3">
                         <button type="submit" class="btn-tolak">
                             {{ $item->konteks === \App\Models\PermintaanOtorisasi::KONTEKS_POS_TRANSAKSI ? '❌ Tolak & Kembalikan Normal' : '❌ Tolak Pengajuan Akses' }}
@@ -152,7 +152,7 @@
                 </div>
                 <form method="GET" action="{{ route('manajer.persetujuan') }}" class="form-filter-tanggal">
                     <input type="hidden" name="tab" value="audit">
-                    <input type="date" name="tanggal" value="{{ $tanggalFilter }}" class="form-input">
+                    <input type="date" name="tanggal" value="{{ $tanggalFilter }}" aria-label="Filter tanggal log audit" class="form-input">
                     <button type="submit" class="btn-utama">Filter Tanggal</button>
                     @if ($tanggalFilter !== '')
                         <a href="{{ route('manajer.persetujuan', ['tab' => 'audit']) }}" class="btn-reset-filter">Reset</a>

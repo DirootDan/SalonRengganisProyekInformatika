@@ -77,7 +77,7 @@
 }
 
 .pintas-item:hover {
-    border-color: #f472b6;
+    border-color: #db2777;
     transform: translateY(-4px);
     box-shadow: 0 12px 28px rgba(219, 39, 119, 0.1);
 }

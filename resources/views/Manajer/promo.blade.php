@@ -12,8 +12,8 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariPromo" class="input-cari" placeholder="🔍 Cari kode atau nama promo...">
-                <select id="filterStatusPromo" class="select-filter">
+                <input type="text" id="cariPromo" class="input-cari" aria-label="Cari kode atau nama promo" placeholder="🔍 Cari kode atau nama promo...">
+                <select id="filterStatusPromo" class="select-filter" aria-label="Filter status promo">
                     <option value="">Semua Status</option>
                     <option value="Aktif">Promo Aktif</option>
                     <option value="Berakhir">Nonaktif / Berakhir</option>
@@ -90,11 +90,11 @@
     </div>
 
     <!-- Modal Tambah / Edit Promo -->
-    <div class="modal-backdrop" id="modalPromo">
+    <div class="modal-backdrop" id="modalPromo" role="dialog" aria-modal="true" aria-labelledby="judulModalPromo" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
                 <h3 id="judulModalPromo">Buat Program Promo</h3>
-                <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
+                <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 
             <form method="POST" action="{{ route('manajer.promo.simpan') }}" id="formPromo">
@@ -103,12 +103,12 @@
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
-                        <label class="form-label">Kode Voucer</label>
+                        <label class="form-label" for="inputKodePromo">Kode Voucer</label>
                         <input type="text" name="kode_promo" id="inputKodePromo" class="form-input input-huruf-besar" placeholder="Contoh: CANTIK20" required>
                     </div>
 
                     <div class="form-grup">
-                        <label class="form-label">Status Promo</label>
+                        <label class="form-label" for="inputStatusPromo">Status Promo</label>
                         <select name="aktif" id="inputStatusPromo" class="form-select">
                             <option value="1">Aktif</option>
                             <option value="0">Nonaktif</option>
@@ -117,13 +117,13 @@
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Nama Program Promo</label>
+                    <label class="form-label" for="inputNamaPromo">Nama Program Promo</label>
                     <input type="text" name="nama_promo" id="inputNamaPromo" class="form-input" placeholder="Contoh: Diskon Akhir Pekan" required>
                 </div>
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
-                        <label class="form-label">Jenis Potongan</label>
+                        <label class="form-label" for="inputTipePromo">Jenis Potongan</label>
                         <select name="tipe_diskon" id="inputTipePromo" class="form-select">
                             <option value="Persentase">Persentase (%)</option>
                             <option value="Nominal">Nominal Rupiah (Rp)</option>
@@ -131,19 +131,19 @@
                     </div>
 
                     <div class="form-grup">
-                        <label class="form-label">Nilai Potongan</label>
+                        <label class="form-label" for="inputNilaiPromo">Nilai Potongan</label>
                         <input type="number" name="nilai_diskon" id="inputNilaiPromo" class="form-input" min="1" placeholder="Contoh: 20 atau 25000" required>
                     </div>
                 </div>
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
-                        <label class="form-label">Minimal Transaksi (Rp)</label>
+                        <label class="form-label" for="inputMinPromo">Minimal Transaksi (Rp)</label>
                         <input type="number" name="min_transaksi" id="inputMinPromo" class="form-input" min="0" step="1" placeholder="Contoh: 150000" required>
                     </div>
 
                     <div class="form-grup">
-                        <label class="form-label">Berlaku Sampai</label>
+                        <label class="form-label" for="inputSampaiPromo">Berlaku Sampai</label>
                         <input type="date" name="berlaku_sampai" id="inputSampaiPromo" class="form-input" required>
                     </div>
                 </div>

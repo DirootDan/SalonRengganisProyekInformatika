@@ -172,6 +172,7 @@
                                            name="alasan_batal"
                                            class="input-alasan-batal"
                                            maxlength="200"
+                                           aria-label="Alasan pembatalan reservasi (opsional)"
                                            placeholder="Alasan pembatalan (opsional, misal: jadwal berubah)...">
                                     <button type="submit" class="btn-batal-booking">
                                         ✕ Batalkan Reservasi Ini

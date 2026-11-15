@@ -99,7 +99,7 @@
 
 .status-selesai {
     background: #dcfce7;
-    color: #16a34a;
+    color: #15803d;
 }
 
 .status-diterima {
@@ -109,7 +109,7 @@
 
 .status-batal {
     background: #fee2e2;
-    color: #ef4444;
+    color: #b91c1c;
 }
 
 /* Tombol Batal Cepat di Header Kartu */
@@ -208,7 +208,7 @@
 
 .layanan-petugas {
     font-size: 12px;
-    color: #9ca3af;
+    color: #4b5563;
     font-weight: 500;
 }
 
@@ -247,8 +247,9 @@
 }
 
 .input-alasan-batal:focus {
-    outline: none;
-    border-color: #db2777;
+    outline: 2px solid #be185d;
+    outline-offset: 1px;
+    border-color: #be185d;
 }
 
 .btn-batal-booking {
@@ -312,7 +313,7 @@
 
 .btn-tandai-baca {
     background: #fdf2f8;
-    color: #db2777;
+    color: #be185d;
     border: 1px solid #fbcfe8;
     padding: 6px 14px;
     border-radius: 999px;
@@ -352,11 +353,11 @@
 
 .notif-waktu {
     font-size: 11.5px;
-    color: #6b7280;
+    color: #4b5563;
 }
 
 .titik-baru {
-    background: #db2777;
+    background: #be185d;
     color: white;
     font-size: 10px;
     font-weight: 700;
@@ -418,4 +419,15 @@
         width: 100%;
         max-width: none;
     }
+}
+
+.kartu-kosong-filter {
+    padding: 24px 18px;
+    text-align: center;
+    background: #ffffff;
+    border: 1.5px dashed #fbcfe8;
+    border-radius: 18px;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
 }

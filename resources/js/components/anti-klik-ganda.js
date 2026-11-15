@@ -1,23 +1,40 @@
 const TEKS_PROSES = 'Memproses...';
 
-const kunciTombol = (tombol) => {
+const kunciTombol = (tombol, form) => {
+    const teksProses = tombol.dataset.teksProses || form.dataset.teksProses || TEKS_PROSES;
+
+    if (tombol instanceof HTMLInputElement) {
+        if (tombol.dataset.teksAsli === undefined) {
+            tombol.dataset.teksAsli = tombol.value;
+        }
+        tombol.disabled = true;
+        tombol.value = teksProses;
+        return;
+    }
+
     if (tombol.dataset.teksAsli === undefined) {
         tombol.dataset.teksAsli = tombol.innerHTML;
     }
     tombol.disabled = true;
-    tombol.innerHTML = TEKS_PROSES;
+    tombol.textContent = teksProses;
 };
 
 const pulihkanTombol = (tombol) => {
     if (tombol.dataset.teksAsli === undefined) return;
-    tombol.innerHTML = tombol.dataset.teksAsli;
+
+    if (tombol instanceof HTMLInputElement) {
+        tombol.value = tombol.dataset.teksAsli;
+    } else {
+        tombol.innerHTML = tombol.dataset.teksAsli;
+    }
+
     tombol.disabled = false;
     delete tombol.dataset.teksAsli;
 };
 
 const tombolPengirim = (form, submitter) => {
     if (submitter && submitter.form === form) return submitter;
-    return form.querySelector('button[type="submit"], input[type="submit"]');
+    return form.querySelector('button[type="submit"], button:not([type]), input[type="submit"]');
 };
 
 // Pengecekan ditunda satu tick agar semua handler lain (validasi, modal konfirmasi) selesai lebih dulu.
@@ -25,18 +42,24 @@ const tombolPengirim = (form, submitter) => {
 document.addEventListener('submit', (e) => {
     const form = e.target;
     if (!(form instanceof HTMLFormElement)) return;
-    if (form.method.toLowerCase() === 'get' || form.hasAttribute('data-tanpa-loading')) return;
+    if (
+        form.method.toLowerCase() === 'get'
+        || form.hasAttribute('data-tanpa-loading')
+        || form.hasAttribute('data-anti-klik-kustom')
+    ) {
+        return;
+    }
 
     const tombol = tombolPengirim(form, e.submitter);
     if (!tombol) return;
 
     setTimeout(() => {
         if (e.defaultPrevented || tombol.disabled) return;
-        kunciTombol(tombol);
+        kunciTombol(tombol, form);
     }, 0);
 });
 
 // Tombol "Kembali" browser: pastikan tombol tidak terjebak dalam status memproses.
 window.addEventListener('pageshow', () => {
-    document.querySelectorAll('button[data-teks-asli]').forEach(pulihkanTombol);
+    document.querySelectorAll('button[data-teks-asli], input[data-teks-asli]').forEach(pulihkanTombol);
 });

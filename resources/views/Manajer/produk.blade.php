@@ -12,8 +12,8 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariProduk" class="input-cari" placeholder="🔍 Cari nama produk kecantikan...">
-                <select id="filterStok" class="select-filter">
+                <input type="text" id="cariProduk" class="input-cari" aria-label="Cari nama produk kecantikan" placeholder="🔍 Cari nama produk kecantikan...">
+                <select id="filterStok" class="select-filter" aria-label="Filter status stok">
                     <option value="">Semua Status Stok</option>
                     <option value="aman">Stok Aman (&ge; 10)</option>
                     <option value="menipis">Stok Menipis (&lt; 10)</option>
@@ -85,11 +85,11 @@
     </div>
 
     <!-- Modal Tambah / Edit Produk -->
-    <div class="modal-backdrop" id="modalProduk">
+    <div class="modal-backdrop" id="modalProduk" role="dialog" aria-modal="true" aria-labelledby="judulModalProduk" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
                 <h3 id="judulModalProduk">Tambah Produk Baru</h3>
-                <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
+                <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 
             <form method="POST" action="{{ route('manajer.produk.simpan') }}" id="formProduk">
@@ -97,18 +97,18 @@
                 <input type="hidden" name="_method" id="methodProduk" value="POST">
 
                 <div class="form-grup">
-                    <label class="form-label">Nama Produk</label>
+                    <label class="form-label" for="inputNamaProduk">Nama Produk</label>
                     <input type="text" name="nama_produk" id="inputNamaProduk" class="form-input" placeholder="Contoh: Vitamin Rambut Keratin 100ml" required>
                 </div>
 
                 <div class="form-dua-kolom">
                     <div class="form-grup">
-                        <label class="form-label">Jumlah Stok (pcs)</label>
+                        <label class="form-label" for="inputStokProduk">Jumlah Stok (pcs)</label>
                         <input type="number" name="stok_produk" id="inputStokProduk" class="form-input" min="0" placeholder="Contoh: 20" required>
                     </div>
 
                     <div class="form-grup">
-                        <label class="form-label">Harga Jual (Rp)</label>
+                        <label class="form-label" for="inputHargaProduk">Harga Jual (Rp)</label>
                         <input type="number" name="harga_produk" id="inputHargaProduk" class="form-input" min="0" step="1" placeholder="Contoh: 65000" required>
                     </div>
                 </div>

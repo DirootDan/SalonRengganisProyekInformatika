@@ -54,9 +54,11 @@ const buatDropdownPetugasLayanan = (item, idKeranjang, daftarPetugasAktif) => {
         ? `-- Wajib Pilih ${escapeHtml(jabatan)} Pengganti Aktif --`
         : `-- Pilih ${escapeHtml(jabatan)} --`;
 
+    const idSelect = `petugasPos-${String(idKeranjang).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+
     return `<div class="keranjang-petugas-baris">
-        <label class="label-petugas-kecil">Petugas ${escapeHtml(jabatan)}:</label>
-        <select class="select-petugas-pos ${kelasGalat}" data-id-keranjang="${escapeHtml(idKeranjang)}">
+        <label class="label-petugas-kecil" for="${escapeHtml(idSelect)}">Petugas ${escapeHtml(jabatan)}:</label>
+        <select id="${escapeHtml(idSelect)}" class="select-petugas-pos ${kelasGalat}" data-id-keranjang="${escapeHtml(idKeranjang)}">
             <option value="">${labelKosong}</option>${opsiHtml}
         </select>
     </div>`;
@@ -80,10 +82,15 @@ const buatKontrolOverrideHarga = (item, id) => {
 
 export const buatElemenBarisKeranjang = (item, id, daftarPetugasAktif) => {
     const adaOverride = Math.abs(item.harga - item.hargaNormal) >= 1;
+    const idAman = escapeHtml(id);
+    const namaAman = escapeHtml(item.nama);
+    const tombolTambah = item.kategori === 'Produk'
+        ? `<button type="button" class="btn-qty" data-aksi="tambah" data-id="${idAman}" aria-label="Tambah jumlah ${namaAman}">+</button>`
+        : `<button type="button" class="btn-qty" data-aksi="tambah" data-id="${idAman}" disabled title="Layanan dihitung 1x per item transaksi" aria-label="Jumlah layanan ${namaAman} tetap 1">+</button>`;
     const baris = document.createElement('div');
     baris.className = 'item-keranjang';
     baris.innerHTML = `<div class="keranjang-info">
-        <span class="keranjang-nama">${escapeHtml(item.nama)}</span>
+        <span class="keranjang-nama">${namaAman}</span>
         <span class="keranjang-sub">
             ${item.qty} x ${adaOverride ? `<del class="harga-awal-coret">${formatRp(item.hargaNormal)}</del> ` : ''}${formatRp(item.harga)}
             ${adaOverride ? '<span class="badge-harga-override">Harga Override</span>' : ''}
@@ -92,9 +99,9 @@ export const buatElemenBarisKeranjang = (item, id, daftarPetugasAktif) => {
         ${item.kategori === 'Layanan' ? buatDropdownPetugasLayanan(item, id, daftarPetugasAktif) : ''}
     </div>
     <div class="keranjang-kontrol">
-        <button type="button" class="btn-qty" data-aksi="kurang" data-id="${escapeHtml(id)}">-</button>
+        <button type="button" class="btn-qty" data-aksi="kurang" data-id="${idAman}" aria-label="Kurangi jumlah ${namaAman}">-</button>
         <strong>${item.qty}</strong>
-        <button type="button" class="btn-qty" data-aksi="tambah" data-id="${escapeHtml(id)}">+</button>
+        ${tombolTambah}
     </div>`;
 
     return baris;

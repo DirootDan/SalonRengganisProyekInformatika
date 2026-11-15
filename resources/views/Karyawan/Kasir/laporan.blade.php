@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         @if ($r->transaksi)
-                        <a href="{{ route('kasir.struk.cetak', $r->transaksi->id_transaksi) }}" target="_blank" class="btn-aksi btn-edit">🖨️ Cetak</a>
+                        <a href="{{ route('kasir.struk.cetak', $r->transaksi->id_transaksi) }}" target="_blank" rel="noopener noreferrer" class="btn-aksi btn-edit">🖨️ Cetak</a>
                         @endif
                     </td>
                 </tr>

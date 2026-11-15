@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return {
             judul: ds.confirmTitle || judulDefault,
             item: namaItem,
-            deskripsi: ds.confirmDescription || deskripsiDefault,
+            deskripsi: ds.confirmDescription || ds.confirm || deskripsiDefault,
             dampak: dampakDefault,
-            labelTombol: ds.confirmButton || labelTombol,
+            labelTombol: ds.confirmButton || ds.confirmLabel || labelTombol,
             varian,
         };
     };

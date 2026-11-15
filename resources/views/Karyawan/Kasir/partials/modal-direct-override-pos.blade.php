@@ -1,11 +1,11 @@
 <!-- Modal Otorisasi Langsung di Tempat (Direct Override Kredensial Manajer) -->
-<div class="modal-backdrop" id="modalDirectOverridePos" aria-hidden="true"
+<div class="modal-backdrop" id="modalDirectOverridePos" role="dialog" aria-modal="true" aria-labelledby="judulModalDirectPos" aria-hidden="true"
      data-url-direct="{{ route('kasir.otorisasi.direct') }}"
      data-detik-kunci-awal="{{ (int) $detikKunciDirect }}">
     <div class="modal-kotak">
         <div class="modal-header">
             <div>
-                <h3>🔑 Otorisasi Manajer di Tempat</h3>
+                <h3 id="judulModalDirectPos">🔑 Otorisasi Manajer di Tempat</h3>
                 <small class="sub-antrean">Verifikasi instan tanpa mengubah sesi login Kasir yang sedang aktif.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalDirect" aria-label="Tutup">&times;</button>

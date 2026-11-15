@@ -36,7 +36,7 @@
     height: 88px;
     margin: 0 auto 16px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #db2777, #f472b6);
+    background: linear-gradient(135deg, #be185d, #9d174d);
     color: white;
     display: flex;
     align-items: center;
@@ -57,7 +57,7 @@
 .profil-badge {
     display: inline-block;
     background: #fdf2f8;
-    color: #db2777;
+    color: #be185d;
     border: 1px solid #fbcfe8;
     padding: 5px 14px;
     border-radius: 999px;
@@ -83,7 +83,7 @@
 
 .detail-label {
     font-size: 12px;
-    color: #9ca3af;
+    color: #4b5563;
     font-weight: 500;
 }
 
@@ -189,10 +189,11 @@
 }
 
 .input-profil:focus {
-    outline: none;
-    border-color: #db2777;
+    outline: 2px solid #be185d;
+    outline-offset: 1px;
+    border-color: #be185d;
     background: white;
-    box-shadow: 0 0 0 4px rgba(219, 39, 119, 0.08);
+    box-shadow: 0 0 0 4px rgba(190, 24, 93, 0.12);
 }
 
 .input-password-wrap {
@@ -229,11 +230,11 @@
 }
 
 .pw-match-info.cocok {
-    color: #16a34a;
+    color: #15803d;
 }
 
 .pw-match-info.tidak-cocok {
-    color: #ef4444;
+    color: #b91c1c;
 }
 
 .form-actions {
@@ -304,7 +305,7 @@
 .btn-foto-hapus {
     background: none;
     border: none;
-    color: #ef4444;
+    color: #b91c1c;
     font-family: inherit;
     font-size: 12px;
     font-weight: 500;
@@ -313,10 +314,22 @@
     padding: 4px;
 }
 
+.foto-error-info {
+    margin: 8px 0 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
 .foto-hint {
     margin: 0;
     font-size: 11px;
-    color: #9ca3af;
+    color: #4b5563;
 }
 
 @media (max-width: 640px) {

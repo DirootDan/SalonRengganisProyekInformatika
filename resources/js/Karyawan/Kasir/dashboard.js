@@ -1,3 +1,8 @@
+import {
+    bukaModalAksesibel,
+    perbaruiEmptyStateGrid,
+    tutupModalAksesibel,
+} from '../../components/staf-ui';
 import { inisialisasiOtorisasiPos } from './pos-otorisasi';
 import {
     apakahMetodeNonTunai,
@@ -42,14 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const aturModalAntrean = (tampil) => {
         if (!modalAntreanPos) return;
-        modalAntreanPos.classList.toggle('tampil', tampil);
-        modalAntreanPos.setAttribute('aria-hidden', tampil ? 'false' : 'true');
+        if (tampil) {
+            bukaModalAksesibel(modalAntreanPos);
+        } else {
+            tutupModalAksesibel(modalAntreanPos);
+        }
     };
 
     document.getElementById('btnBukaModalAntrean')?.addEventListener('click', () => aturModalAntrean(true));
     document.getElementById('btnPilihAntreanKecil')?.addEventListener('click', () => aturModalAntrean(true));
     document.getElementById('btnTutupModalAntrean')?.addEventListener('click', () => aturModalAntrean(false));
-    modalAntreanPos?.addEventListener('click', (e) => { if (e.target === modalAntreanPos) aturModalAntrean(false); });
     document.querySelectorAll('[data-buka-hold]').forEach((btn) => {
         btn.addEventListener('click', () => document.getElementById('btnBukaHoldPos')?.click());
     });
@@ -168,7 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const { id, idAsli, nama, kategori = 'Layanan', jabatan = 'Stylist' } = btn.dataset;
             const harga = parseInt(btn.dataset.harga || '0', 10);
             if (keranjang.has(id)) {
-                if (kategori === 'Produk') keranjang.get(id).qty += 1;
+                if (kategori === 'Produk') {
+                    keranjang.get(id).qty += 1;
+                } else {
+                    window.tampilkanToast?.(`Layanan "${nama}" sudah ada di keranjang (maksimal 1 per item).`, 'galat');
+                    return;
+                }
             } else {
                 const idPetugasDefault = selectPetugasPos?.value || '';
                 const stafDefault = idPetugasDefault
@@ -267,13 +279,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const katalogGridEl = itemKatalogList[0]?.parentElement || null;
+
     const saringKatalog = () => {
         const kata = (cariInput?.value || '').toLowerCase().trim();
+        let jumlahTampak = 0;
         itemKatalogList.forEach((item) => {
             const cocokKat = kategoriAktif === 'semua' || item.dataset.kategori === kategoriAktif;
             const cocokNama = (item.dataset.nama || '').toLowerCase().includes(kata);
-            item.style.display = (cocokKat && cocokNama) ? 'flex' : 'none';
+            const tampil = cocokKat && cocokNama;
+            item.style.display = tampil ? 'flex' : 'none';
+            if (tampil) jumlahTampak += 1;
         });
+
+        if (itemKatalogList.length > 0) {
+            perbaruiEmptyStateGrid(katalogGridEl, jumlahTampak, 'Tidak ada layanan atau produk yang cocok dengan pencarian.');
+        }
     };
 
     tabBtns.forEach((tab) => {
@@ -314,15 +335,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`.btn-muat-booking[data-id-reservasi="${CSS.escape(idMuatOtomatis)}"]`)?.click();
     }
 
+    const teksBtnBayarAsli = btnProsesBayar?.textContent || 'Proses & Selesaikan Transaksi';
+
+    window.addEventListener('pageshow', () => {
+        if (btnProsesBayar) {
+            btnProsesBayar.disabled = false;
+            btnProsesBayar.textContent = teksBtnBayarAsli;
+        }
+    });
+
     formTransaksi?.addEventListener('submit', (e) => {
         if (keranjang.size === 0) {
             e.preventDefault();
-            window.tampilkanToast?.('Pilih reservasi atau tambahkan item ke keranjang terlebih dahulu.');
+            window.tampilkanToast?.('Pilih reservasi atau tambahkan item ke keranjang terlebih dahulu.', 'galat');
             return;
         }
         if (!inputIdReservasi?.value && !(inputPelangganEl?.value || '').trim()) {
             e.preventDefault();
-            window.tampilkanToast?.('Nama pelanggan walk-in wajib diisi untuk transaksi tanpa reservasi.');
+            window.tampilkanToast?.('Nama pelanggan walk-in wajib diisi untuk transaksi tanpa reservasi.', 'galat');
             inputPelangganEl?.focus();
             return;
         }

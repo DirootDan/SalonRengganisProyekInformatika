@@ -43,15 +43,17 @@ body {
     display: block;
     padding: 12px 22px;
     border-radius: 999px;
-    border: 2px solid #db2777;
-    background: #db2777;
+    border: 2px solid #be185d;
+    background: #be185d;
     color: #ffffff;
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
+    font-family: inherit;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.er-tombol:hover { background: #be185d; border-color: #be185d; }
-.er-tombol-garis { background: transparent; color: #db2777; }
-.er-tombol-garis:hover { background: #fdf2f8; color: #be185d; }
+.er-tombol:hover { background: #9d174d; border-color: #9d174d; }
+.er-tombol-garis { background: transparent; color: #be185d; }
+.er-tombol-garis:hover { background: #fdf2f8; color: #9d174d; }

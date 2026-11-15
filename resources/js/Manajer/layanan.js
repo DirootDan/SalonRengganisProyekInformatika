@@ -1,7 +1,10 @@
+import { bukaModalAksesibel, perbaruiEmptyStateTabel } from '../components/staf-ui';
+
 document.addEventListener('DOMContentLoaded', () => {
     const cariInput     = document.getElementById('cariLayanan');
     const filterPetugas = document.getElementById('filterPetugas');
     const barisLayanan  = document.querySelectorAll('.baris-layanan');
+    const tbodyLayanan  = barisLayanan[0]?.closest('tbody') || null;
 
     const modal          = document.getElementById('modalLayanan');
     const judulModal     = document.getElementById('judulModalLayanan');
@@ -28,12 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const saringLayanan = () => {
         const kataKunci = (cariInput?.value || '').toLowerCase().trim();
         const jabatan   = filterPetugas?.value || '';
+        let jumlahTampak = 0;
 
         barisLayanan.forEach(baris => {
             const cocokNama    = (baris.dataset.nama || '').includes(kataKunci);
             const cocokJabatan = !jabatan || baris.dataset.jabatan === jabatan;
-            baris.style.display = (cocokNama && cocokJabatan) ? '' : 'none';
+            const tampil       = cocokNama && cocokJabatan;
+            baris.style.display = tampil ? '' : 'none';
+            if (tampil) jumlahTampak += 1;
         });
+
+        if (barisLayanan.length > 0) {
+            perbaruiEmptyStateTabel(tbodyLayanan, jumlahTampak, 'Tidak ada layanan yang cocok dengan pencarian atau filter.');
+        }
     };
 
     cariInput?.addEventListener('input', saringLayanan);
@@ -47,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputDurasi) inputDurasi.value = '';
         if (inputJeda) inputJeda.value = '15';
         if (inputEksklusif) inputEksklusif.value = '1';
-        modal.classList.add('tampil');
+        bukaModalAksesibel(modal, inputNama);
     });
 
     document.querySelectorAll('.btnEditLayanan').forEach(btn => {
@@ -62,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (inputDurasi) inputDurasi.value = btn.dataset.durasi || '60';
             if (inputJeda) inputJeda.value = btn.dataset.jeda || '15';
             if (inputEksklusif) inputEksklusif.value = btn.dataset.eksklusif || '1';
-            modal.classList.add('tampil');
+            bukaModalAksesibel(modal, inputNama);
         });
     });
 });

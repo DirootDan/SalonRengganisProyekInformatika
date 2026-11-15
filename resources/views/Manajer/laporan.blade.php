@@ -14,11 +14,11 @@
         <form method="GET" action="{{ route('manajer.laporan') }}" class="toolbar-atas tanpa-margin">
             <div class="toolbar-kiri">
                 <div>
-                    <label class="label-kecil">Dari Tanggal</label>
+                    <label class="label-kecil" for="tglMulai">Dari Tanggal</label>
                     <input type="date" name="mulai" id="tglMulai" class="select-filter" value="{{ $tglMulai }}">
                 </div>
                 <div>
-                    <label class="label-kecil">Sampai Tanggal</label>
+                    <label class="label-kecil" for="tglSelesai">Sampai Tanggal</label>
                     <input type="date" name="selesai" id="tglSelesai" class="select-filter" value="{{ $tglSelesai }}">
                 </div>
                 <button type="submit" class="btn-sekunder btn-turun">

@@ -29,15 +29,15 @@
 
             <label for="email" class="field-label">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email', $email) }}"
-                   required readonly>
+                   required readonly autocomplete="email">
 
             <label for="password" class="field-label">Password Baru</label>
             <input type="password" id="password" name="password"
-                   placeholder="Minimal 6 karakter" required autofocus>
+                   placeholder="Minimal 6 karakter" required autocomplete="new-password" autofocus>
 
             <label for="password_confirmation" class="field-label">Ulangi Password Baru</label>
             <input type="password" id="password_confirmation" name="password_confirmation"
-                   placeholder="••••••••" required>
+                   placeholder="••••••••" required autocomplete="new-password">
 
             <button type="submit" id="submitBtn">GANTI PASSWORD</button>
         </form>

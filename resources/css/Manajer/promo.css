@@ -1,8 +1,8 @@
 .kode-voucer {
     display: inline-block;
     background: #fdf2f8;
-    color: #db2777;
-    border: 1.5px dashed #f472b6;
+    color: var(--warna-brand-hover, #be185d);
+    border: 1.5px dashed #db2777;
     padding: 5px 12px;
     border-radius: 8px;
     font-weight: 700;

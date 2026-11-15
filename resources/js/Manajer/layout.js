@@ -1,3 +1,5 @@
+import { ikatSemuaModalAksesibel, tampilkanToastGlobal } from '../components/staf-ui';
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Toggle Sidebar pada layar kecil (Mobile/Tablet)
     const btnToggleSidebar = document.getElementById('btnToggleSidebar');
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnTutupSidebar?.addEventListener('click', () => aturSidebar(false));
         sidebarBackdrop?.addEventListener('click', () => aturSidebar(false));
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar.classList.contains('buka')) {
+            if (e.key === 'Escape' && sidebar.classList.contains('buka') && !document.querySelector('.modal-backdrop.tampil')) {
                 aturSidebar(false);
             }
         });
@@ -31,32 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. Fungsi Global Menampilkan Toast Notifikasi
-    window.tampilkanToast = (pesan) => {
-        const toast = document.getElementById('toastNotif');
-        if (!toast) return;
+    window.tampilkanToast = tampilkanToastGlobal;
 
-        toast.textContent = `✅ ${pesan}`;
-        toast.classList.add('tampil');
-
-        clearTimeout(window._toastTimer);
-        window._toastTimer = setTimeout(() => {
-            toast.classList.remove('tampil');
-        }, 3200);
-    };
-
-    // 3. Penanganan Umum Modal Dialog (Buka & Tutup)
-    document.querySelectorAll('[data-tutup-modal]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const modal = btn.closest('.modal-backdrop');
-            if (modal) modal.classList.remove('tampil');
-        });
-    });
-
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-        backdrop.addEventListener('click', (e) => {
-            if (e.target === backdrop) {
-                backdrop.classList.remove('tampil');
-            }
-        });
-    });
+    // 3. Penanganan Umum Modal Dialog yang Aksesibel (Backdrop, Tombol Tutup, Escape, Focus Trap)
+    ikatSemuaModalAksesibel();
 });

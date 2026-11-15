@@ -1,3 +1,8 @@
+import {
+    bukaModalAksesibel,
+    perbaruiEmptyStateTabel,
+    tutupModalAksesibel,
+} from '../../components/staf-ui';
 import { inisialisasiModalAksesKatalog } from './katalog-akses';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -6,16 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputCari = document.getElementById('cariLayanan');
     const selectPetugas = document.getElementById('filterPetugas');
     const barisLayanan = document.querySelectorAll('.baris-layanan');
+    const tbodyLayanan = barisLayanan[0]?.closest('tbody') || null;
 
     const saringTabel = () => {
         const kataKunci = (inputCari?.value || '').toLowerCase().trim();
         const petugas = selectPetugas?.value || '';
+        let jumlahTampak = 0;
 
         barisLayanan.forEach((baris) => {
             const cocokNama = (baris.dataset.nama || '').includes(kataKunci);
             const cocokPetugas = petugas === '' || (baris.dataset.jabatan || '') === petugas;
-            baris.style.display = (cocokNama && cocokPetugas) ? '' : 'none';
+            const tampil = cocokNama && cocokPetugas;
+            baris.style.display = tampil ? '' : 'none';
+            if (tampil) jumlahTampak += 1;
         });
+
+        if (barisLayanan.length > 0) {
+            perbaruiEmptyStateTabel(tbodyLayanan, jumlahTampak, 'Tidak ada layanan yang cocok dengan pencarian atau filter.');
+        }
     };
 
     inputCari?.addEventListener('input', saringTabel);
@@ -36,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDurasi = document.getElementById('inputDurasiLayanan');
     const inputJeda = document.getElementById('inputJedaLayanan');
 
-    const bukaModal = () => modal?.classList.add('tampil');
-    const tutupModal = () => modal?.classList.remove('tampil');
+    const bukaModal = () => bukaModalAksesibel(modal, inputNama);
+    const tutupModal = () => tutupModalAksesibel(modal);
 
     btnTambah?.addEventListener('click', () => {
         const urlStore = btnTambah.dataset.urlStore || '';
@@ -81,7 +94,4 @@ document.addEventListener('DOMContentLoaded', () => {
         if (urlBatal) aksesCtrl.kunciKembaliAkses(urlBatal);
         else tutupModal();
     });
-
-    document.querySelectorAll('[data-tutup-modal]').forEach(btn => btn.addEventListener('click', tutupModal));
-    modal?.addEventListener('click', (e) => { if (e.target === modal) tutupModal(); });
 });

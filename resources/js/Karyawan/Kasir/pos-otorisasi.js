@@ -5,6 +5,8 @@ export const escapeHtml = (teks) => String(teks ?? '')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
+import { bukaModalAksesibel, ikatModalAksesibel, tutupModalAksesibel } from '../../components/staf-ui';
+
 export function inisialisasiOtorisasiPos(ctx) {
     const {
         keranjang, formTransaksi, inputIdReservasi, inputIdOtorisasi,
@@ -181,16 +183,14 @@ export function inisialisasiOtorisasiPos(ctx) {
         return null;
     };
 
-    const aturModal = (modalEl, tampil) => {
-        if (!modalEl) return;
-        modalEl.classList.toggle('tampil', tampil);
-        modalEl.setAttribute('aria-hidden', tampil ? 'false' : 'true');
+    const tutupModalDirect = () => {
+        tutupModalAksesibel(el.modalDirect);
     };
 
-    const tutupModalDirect = () => {
-        aturModal(el.modalDirect, false);
+    ikatModalAksesibel(el.modalDirect, () => {
         if (el.inputPassManajer) el.inputPassManajer.value = '';
-    };
+    });
+    ikatModalAksesibel(el.modalHold);
 
     el.btnKirimHold?.addEventListener('click', () => {
         const alasan = validasiAlasanWajib();
@@ -222,13 +222,11 @@ export function inisialisasiOtorisasiPos(ctx) {
         document.getElementById('directAlasanKasir').textContent = alasan;
 
         if (el.pesanGalatDirect) el.pesanGalatDirect.hidden = true;
-        aturModal(el.modalDirect, true);
-        el.inputUserManajer?.focus();
+        bukaModalAksesibel(el.modalDirect, el.inputUserManajer);
     });
 
     el.btnTutupDirect?.addEventListener('click', tutupModalDirect);
     el.btnBatalDirect?.addEventListener('click', tutupModalDirect);
-    el.modalDirect?.addEventListener('click', e => { if (e.target === el.modalDirect) tutupModalDirect(); });
 
     const tampilkanGalatDirect = (pesan) => {
         if (!el.pesanGalatDirect) return;
@@ -289,9 +287,8 @@ export function inisialisasiOtorisasiPos(ctx) {
         }
     });
 
-    el.btnBukaHold?.addEventListener('click', () => aturModal(el.modalHold, true));
-    el.btnTutupHold?.addEventListener('click', () => aturModal(el.modalHold, false));
-    el.modalHold?.addEventListener('click', e => { if (e.target === el.modalHold) aturModal(el.modalHold, false); });
+    el.btnBukaHold?.addEventListener('click', () => bukaModalAksesibel(el.modalHold));
+    el.btnTutupHold?.addEventListener('click', () => tutupModalAksesibel(el.modalHold));
 
     document.querySelectorAll('.btn-muat-hold').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -322,7 +319,7 @@ export function inisialisasiOtorisasiPos(ctx) {
                     : 'Silakan sesuaikan harga/layanan & ajukan ulang alasan baru.';
                 window.tampilkanToast?.(pesan);
             }
-            aturModal(el.modalHold, false);
+            tutupModalAksesibel(el.modalHold, { pulihkanFokus: false });
             perbaruiPanelOtorisasi(ctx.ambilTotalAkhir());
         });
     });
@@ -343,7 +340,10 @@ export function inisialisasiOtorisasiPos(ctx) {
             const st = hitungStatusPerubahan(totalBaru);
             if (!st.adaPerubahan) return true;
             if (!st.wajibApproval) return Boolean(validasiAlasanWajib());
-            return Boolean(tiketDisetujuiAktif);
+            if (tiketDisetujuiAktif) return true;
+            window.tampilkanToast?.('Perubahan melebihi batas wajib mendapat persetujuan Manajer terlebih dahulu (Hold atau Otorisasi di Tempat).', 'galat');
+            el.btnBukaDirect?.focus();
+            return false;
         },
         perbaruiPanelOtorisasi,
     };

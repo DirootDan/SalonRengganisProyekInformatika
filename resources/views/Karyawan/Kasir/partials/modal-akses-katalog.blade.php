@@ -1,9 +1,9 @@
 <!-- Modal Pengajuan Hak Akses 1x Pakai Katalog ke Manajer -->
-<div class="modal-backdrop" id="modalAksesKatalog" aria-hidden="true">
+<div class="modal-backdrop" id="modalAksesKatalog" role="dialog" aria-modal="true" aria-labelledby="judulModalAksesKatalog" aria-hidden="true">
     <div class="modal-kotak">
         <div class="modal-header">
             <div>
-                <h3>🔑 Ajukan Izin Akses 1x Pakai</h3>
+                <h3 id="judulModalAksesKatalog">🔑 Ajukan Izin Akses 1x Pakai</h3>
                 <small class="sub-modal-katalog">Permintaan akan dikirim ke halaman Persetujuan Manajer.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalAksesKatalog" aria-label="Tutup">&times;</button>

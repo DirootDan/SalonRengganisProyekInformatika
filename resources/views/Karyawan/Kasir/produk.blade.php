@@ -14,8 +14,8 @@
     <div class="panel-kartu">
         <div class="toolbar-atas">
             <div class="toolbar-kiri">
-                <input type="text" id="cariProduk" class="input-cari" placeholder="🔍 Cari nama produk kecantikan...">
-                <select id="filterStok" class="select-filter">
+                <input type="text" id="cariProduk" class="input-cari" aria-label="Cari nama produk kecantikan" placeholder="🔍 Cari nama produk kecantikan...">
+                <select id="filterStok" class="select-filter" aria-label="Filter status stok">
                     <option value="">Semua Status Stok</option>
                     <option value="aman">Stok Aman (&ge; 10)</option>
                     <option value="menipis">Stok Menipis (&lt; 10)</option>
@@ -171,7 +171,7 @@
     </div>
 
     <!-- Modal Tambah / Edit Produk (Hanya Aktif Saat Memiliki Izin 1x Pakai) -->
-    <div class="modal-backdrop {{ $bukaUlangModalProduk ? 'tampil' : '' }}" id="modalProduk">
+    <div class="modal-backdrop {{ $bukaUlangModalProduk ? 'tampil' : '' }}" id="modalProduk" role="dialog" aria-modal="true" aria-labelledby="judulModalProduk" aria-hidden="{{ $bukaUlangModalProduk ? 'false' : 'true' }}">
         <div class="modal-kotak">
             <div class="modal-header">
                 <h3 id="judulModalProduk">{{ old('_method', 'POST') === 'PUT' ? 'Perbarui Stok & Harga Produk (1x Pakai)' : 'Tambah Produk Baru (1x Pakai)' }}</h3>

@@ -29,23 +29,23 @@
 
             <label for="nama_cust" class="field-label">Nama Lengkap</label>
             <input type="text" id="nama_cust" name="nama_cust" value="{{ old('nama_cust') }}"
-                   placeholder="Masukan nama lengkap..." required autofocus>
+                   placeholder="Masukan nama lengkap..." required autocomplete="name" autofocus>
 
             <label for="no_telp" class="field-label">No. Telepon</label>
             <input type="tel" id="no_telp" name="no_telp" value="{{ old('no_telp') }}"
-                   placeholder="08xxxxxxxxxx" required>
+                   placeholder="08xxxxxxxxxx" required autocomplete="tel">
 
             <label for="email" class="field-label">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}"
-                   placeholder="nama@email.com" required>
+                   placeholder="nama@email.com" required autocomplete="email">
 
             <label for="password" class="field-label">Password</label>
             <input type="password" id="password" name="password"
-                   placeholder="Minimal 6 karakter" required>
+                   placeholder="Minimal 6 karakter" required autocomplete="new-password">
 
             <label for="password_confirmation" class="field-label">Ulangi Password</label>
             <input type="password" id="password_confirmation" name="password_confirmation"
-                   placeholder="••••••••" required>
+                   placeholder="••••••••" required autocomplete="new-password">
 
             <button type="submit" id="submitBtn">DAFTAR SEKARANG</button>
         </form>

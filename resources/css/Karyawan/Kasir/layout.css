@@ -128,7 +128,7 @@
 }
 
 .nav-item.aktif .nav-kuadrat-notif.ada-antrean {
-    background: #d97706;
+    background: #b45309;
     color: #ffffff;
     border-color: var(--warna-peringatan-latar);
 }
@@ -167,9 +167,9 @@
 }
 
 .kuadrat-notif.aktif-kuning {
-    background: #d97706;
+    background: #b45309;
     color: #ffffff;
-    box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
+    box-shadow: 0 2px 6px rgba(180, 83, 9, 0.35);
 }
 
 .staf-jabatan {

@@ -28,11 +28,11 @@
 
             <label for="login_id" class="field-label">Email atau Username</label>
             <input type="text" id="login_id" name="login_id" value="{{ old('login_id') }}"
-                   placeholder="Masukkan email atau username..." required autocomplete="off" autofocus>
+                   placeholder="Masukkan email atau username..." required autocomplete="username" autofocus>
 
             <label for="password" class="field-label">Password</label>
             <input type="password" id="password" name="password"
-                   placeholder="••••••••" required>
+                   placeholder="••••••••" required autocomplete="current-password">
 
             <button type="submit" id="submitBtn">MASUK SEKARANG</button>
         </form>

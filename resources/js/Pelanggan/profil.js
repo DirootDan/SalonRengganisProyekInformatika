@@ -112,32 +112,56 @@ document.addEventListener('DOMContentLoaded', () => {
         const adaFotoAwal = !avatarImg.hidden;
         let urlPreview = null;
 
+        let fotoAlert = document.getElementById('fotoErrorInfo');
+        if (!fotoAlert) {
+            fotoAlert = document.createElement('p');
+            fotoAlert.id = 'fotoErrorInfo';
+            fotoAlert.className = 'foto-error-info';
+            fotoAlert.setAttribute('role', 'alert');
+            fotoAlert.hidden = true;
+            btnPilihFoto.closest('.foto-aksi')?.insertAdjacentElement('afterend', fotoAlert);
+        }
+
+        const aturPesanFoto = (pesan = '') => {
+            if (!fotoAlert) return;
+            fotoAlert.textContent = pesan;
+            fotoAlert.hidden = !pesan;
+        };
+
         const resetPreview = () => {
             inputFoto.value = '';
-            avatarImg.setAttribute('src', srcAwal);
+            if (srcAwal) {
+                avatarImg.setAttribute('src', srcAwal);
+            } else {
+                avatarImg.removeAttribute('src');
+            }
             avatarImg.hidden = !adaFotoAwal;
             avatarHuruf.hidden = adaFotoAwal;
             btnSimpanFoto.hidden = true;
         };
 
-        btnPilihFoto.addEventListener('click', () => inputFoto.click());
+        btnPilihFoto.addEventListener('click', () => {
+            aturPesanFoto('');
+            inputFoto.click();
+        });
 
         inputFoto.addEventListener('change', () => {
             const file = inputFoto.files[0];
             if (!file) return;
 
             if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-                alert('Format foto harus JPG, PNG, atau WEBP.');
+                aturPesanFoto('Format foto harus JPG, PNG, atau WEBP.');
                 resetPreview();
                 return;
             }
 
             if (file.size > 2 * 1024 * 1024) {
-                alert('Ukuran foto maksimal 2 MB.');
+                aturPesanFoto('Ukuran foto maksimal 2 MB.');
                 resetPreview();
                 return;
             }
 
+            aturPesanFoto('');
             if (urlPreview) URL.revokeObjectURL(urlPreview);
             urlPreview = URL.createObjectURL(file);
 

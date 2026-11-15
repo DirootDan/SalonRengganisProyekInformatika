@@ -54,7 +54,7 @@
 
 .brand-sub {
     font-size: 12px;
-    color: var(--warna-teks-abu);
+    color: #d1d5db;
     font-weight: 500;
 }
 
@@ -65,7 +65,7 @@
 .nav-label {
     font-size: 11px;
     font-weight: 700;
-    color: var(--warna-teks-abu);
+    color: #d1d5db;
     padding: 0 12px 6px;
     letter-spacing: 0.8px;
 }
@@ -90,7 +90,7 @@
 }
 
 .nav-item.aktif {
-    background: linear-gradient(135deg, var(--warna-brand), var(--warna-brand-muda));
+    background: linear-gradient(135deg, var(--warna-brand-hover), var(--warna-brand));
     color: white;
     font-weight: 600;
     box-shadow: 0 6px 16px rgba(219, 39, 119, 0.35);

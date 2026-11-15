@@ -74,7 +74,8 @@ input {
 }
 
 input:focus {
-    outline: none;
+    outline: 2px solid var(--warna-brand-hover, #be185d);
+    outline-offset: 1px;
     border-color: var(--warna-brand);
     background: white;
 }
@@ -111,7 +112,7 @@ button:disabled {
 
 .error-msg {
     background: var(--warna-bahaya-latar);
-    color: var(--warna-bahaya);
+    color: var(--warna-bahaya-teks, #b91c1c);
     padding: 10px;
     border-radius: var(--radius-kecil);
     font-size: 13px;
@@ -123,7 +124,7 @@ button:disabled {
 
 .success-msg {
     background: var(--warna-sukses-latar);
-    color: #16a34a;
+    color: var(--warna-sukses-teks, #15803d);
     padding: 10px;
     border-radius: var(--radius-kecil);
     font-size: 13px;

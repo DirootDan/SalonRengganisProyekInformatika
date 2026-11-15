@@ -1,9 +1,9 @@
 <!-- Modal Daftar Transaksi Hold & Status Approval Manajer -->
-<div class="modal-backdrop" id="modalHoldPos" aria-hidden="true">
+<div class="modal-backdrop" id="modalHoldPos" role="dialog" aria-modal="true" aria-labelledby="judulModalHoldPos" aria-hidden="true">
     <div class="modal-kotak modal-kotak-lebar">
         <div class="modal-header">
             <div>
-                <h3>⏸️ Daftar Transaksi Hold &amp; Status Approval ({{ $daftarHold->count() }})</h3>
+                <h3 id="judulModalHoldPos">⏸️ Daftar Transaksi Hold &amp; Status Approval ({{ $daftarHold->count() }})</h3>
                 <small class="sub-antrean">Pantau respons persetujuan Manajer atau lanjutkan transaksi yang telah diputuskan.</small>
             </div>
             <button type="button" class="btn-tutup-modal" id="btnTutupModalHold" aria-label="Tutup">&times;</button>

@@ -176,7 +176,7 @@
 
 .struk-garis {
     text-align: center;
-    color: #9ca3af;
+    color: var(--warna-teks-redup, #4b5563);
     margin: 10px 0;
     overflow: hidden;
     white-space: nowrap;

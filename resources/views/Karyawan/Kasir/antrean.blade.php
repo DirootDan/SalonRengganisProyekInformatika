@@ -11,7 +11,7 @@
 @section('isi')
     <div class="panel-kartu">
         <div class="toolbar-atas">
-            <input type="text" id="cariAntrean" class="input-cari" placeholder="🔍 Cari nama pelanggan atau layanan...">
+            <input type="text" id="cariAntrean" class="input-cari" aria-label="Cari nama pelanggan atau layanan" placeholder="🔍 Cari nama pelanggan atau layanan...">
             <a href="{{ route('kasir.dashboard') }}" class="btn-utama">🖥️ Buka Kasir Pembayaran</a>
         </div>
 

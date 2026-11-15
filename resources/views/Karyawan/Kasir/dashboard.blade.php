@@ -20,6 +20,7 @@
             </div>
 
             <input type="text" id="cariItemPos" class="input-cari input-cari-penuh"
+                   aria-label="Cari nama layanan atau produk"
                    placeholder="Ketik nama layanan atau produk untuk ditambahkan ke keranjang...">
 
             <div class="katalog-grid">
@@ -195,11 +196,11 @@
     </div>
 
     <!-- Modal Pemilih Antrean Aktif (Hanya Muncul Saat Dibutuhkan agar POS Tidak Penuh/Sesak) -->
-    <div class="modal-backdrop" id="modalPilihAntreanPos" aria-hidden="true">
+    <div class="modal-backdrop" id="modalPilihAntreanPos" role="dialog" aria-modal="true" aria-labelledby="judulModalPilihAntrean" aria-hidden="true">
         <div class="modal-kotak modal-kotak-lebar">
             <div class="modal-header">
                 <div>
-                    <h3>Pilih Reservasi Siap Bayar ({{ $reservasiAktif->count() }})</h3>
+                    <h3 id="judulModalPilihAntrean">Pilih Reservasi Siap Bayar ({{ $reservasiAktif->count() }})</h3>
                     <small class="sub-antrean">Petugas, layanan, produk add-on, dan promo dari reservasi akan langsung terisi otomatis ke keranjang POS.</small>
                 </div>
                 <button type="button" class="btn-tutup-modal" id="btnTutupModalAntrean" aria-label="Tutup">&times;</button>

@@ -21,7 +21,7 @@
 
     <div class="panel-kartu">
         <div class="toolbar-atas">
-            <input type="text" id="cariBooking" class="input-cari" placeholder="🔍 Cari nama pelanggan atau nomor reservasi...">
+            <input type="text" id="cariBooking" class="input-cari" aria-label="Cari nama pelanggan atau nomor reservasi" placeholder="🔍 Cari nama pelanggan atau nomor reservasi...">
         </div>
 
         <div class="tabel-responsif">
@@ -120,17 +120,17 @@
     </div>
 
     <!-- Modal Penolakan Booking dengan Alasan Wajib -->
-    <div class="modal-backdrop" id="modalTolakBooking">
+    <div class="modal-backdrop" id="modalTolakBooking" role="dialog" aria-modal="true" aria-labelledby="judulModalTolak" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
                 <h3 id="judulModalTolak">Tolak Permintaan Booking</h3>
-                <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
+                <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 
             <form method="POST" action="" id="formTolakBooking">
                 @csrf
                 <div class="form-grup">
-                    <label class="form-label">Alasan Penolakan (Dikirim ke Notifikasi Pelanggan)</label>
+                    <label class="form-label" for="inputAlasanTolak">Alasan Penolakan (Dikirim ke Notifikasi Pelanggan)</label>
                     <textarea name="alasan_penolakan" id="inputAlasanTolak" class="form-textarea" rows="3"
                               placeholder="Contoh: Mohon maaf, petugas sedang penuh pada jam tersebut. Silakan pilih jam lain." required minlength="4"></textarea>
                 </div>

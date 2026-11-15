@@ -1,3 +1,5 @@
+import { ikatSemuaModalAksesibel, tampilkanToastGlobal } from '../../components/staf-ui';
+
 document.addEventListener('DOMContentLoaded', () => {
     const btnToggleSidebar = document.getElementById('btnToggleSidebar');
     const btnTutupSidebar = document.getElementById('btnTutupSidebar');
@@ -18,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnTutupSidebar?.addEventListener('click', () => aturSidebar(false));
         sidebarBackdrop?.addEventListener('click', () => aturSidebar(false));
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar.classList.contains('buka')) {
+            if (e.key === 'Escape' && sidebar.classList.contains('buka') && !document.querySelector('.modal-backdrop.tampil')) {
                 aturSidebar(false);
             }
         });
@@ -29,33 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.tampilkanToast = (pesan) => {
-        const toast = document.getElementById('toastNotif');
-        if (!toast) return;
+    window.tampilkanToast = tampilkanToastGlobal;
 
-        toast.textContent = `✅ ${pesan}`;
-        toast.classList.add('tampil');
-
-        clearTimeout(window._toastTimer);
-        window._toastTimer = setTimeout(() => {
-            toast.classList.remove('tampil');
-        }, 3200);
-    };
-
-    document.querySelectorAll('[data-tutup-modal]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const modal = btn.closest('.modal-backdrop');
-            if (modal) modal.classList.remove('tampil');
-        });
-    });
-
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-        backdrop.addEventListener('click', (e) => {
-            if (e.target === backdrop) {
-                backdrop.classList.remove('tampil');
-            }
-        });
-    });
+    ikatSemuaModalAksesibel();
 
     const urlBadge = sidebar?.dataset.urlBadge;
     const badgeMenungguEl = document.getElementById('badgeNotifMenunggu');

@@ -19,10 +19,10 @@
 }
 
 .tab-persetujuan.aktif {
-    background: linear-gradient(135deg, #db2777, #ec4899);
+    background: linear-gradient(135deg, #be185d, #9d174d);
     color: #ffffff;
     border-color: transparent;
-    box-shadow: 0 6px 16px rgba(219, 39, 119, 0.25);
+    box-shadow: 0 6px 16px rgba(190, 24, 93, 0.25);
 }
 
 .tersembunyi {
@@ -110,7 +110,7 @@
 
 .angka-coret {
     text-decoration: line-through;
-    color: #9ca3af;
+    color: var(--warna-teks-redup, #4b5563);
     font-size: 13px;
 }
 
@@ -229,12 +229,12 @@
 }
 
 .btn-setujui {
-    background: #059669;
+    background: #047857;
     color: #ffffff;
 }
 
 .btn-setujui:hover {
-    background: #047857;
+    background: #065f46;
 }
 
 .btn-tolak {
@@ -249,7 +249,7 @@
 .kotak-kosong-persetujuan {
     text-align: center;
     padding: 36px 20px;
-    color: #059669;
+    color: #047857;
     font-weight: 600;
 }
 

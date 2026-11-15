@@ -74,11 +74,11 @@
     </div>
 
     <!-- Modal Tambah / Edit Metode Pembayaran -->
-    <div class="modal-backdrop" id="modalMetode">
+    <div class="modal-backdrop" id="modalMetode" role="dialog" aria-modal="true" aria-labelledby="judulModalMetode" aria-hidden="true">
         <div class="modal-kotak">
             <div class="modal-header">
                 <h3 id="judulModalMetode">Ubah Metode Pembayaran</h3>
-                <button type="button" class="btn-tutup-modal" data-tutup-modal>&times;</button>
+                <button type="button" class="btn-tutup-modal" data-tutup-modal aria-label="Tutup">&times;</button>
             </div>
 
             <form method="POST" action="{{ route('manajer.metode.simpan') }}" id="formMetode">
@@ -86,12 +86,12 @@
                 <input type="hidden" name="_method" id="methodMetode" value="POST">
 
                 <div class="form-grup">
-                    <label class="form-label">Nama Metode Pembayaran</label>
+                    <label class="form-label" for="inputNamaMetode">Nama Metode Pembayaran</label>
                     <input type="text" name="nama_metode" id="inputNamaMetode" class="form-input" placeholder="Contoh: Transfer Bank BRI" required>
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Kategori Kanal</label>
+                    <label class="form-label" for="inputKategoriMetode">Kategori Kanal</label>
                     <select name="kategori" id="inputKategoriMetode" class="form-select">
                         <option value="Tunai">Tunai</option>
                         <option value="Dompet Digital / QRIS">Dompet Digital / QRIS</option>
@@ -101,12 +101,12 @@
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Nomor Rekening / ID Merchant / Keterangan</label>
+                    <label class="form-label" for="inputRekMetode">Nomor Rekening / ID Merchant / Keterangan</label>
                     <input type="text" name="nomor_rekening" id="inputRekMetode" class="form-input" placeholder="Contoh: 8420-9912-34" required>
                 </div>
 
                 <div class="form-grup">
-                    <label class="form-label">Atas Nama Pemilik Rekening</label>
+                    <label class="form-label" for="inputAnMetode">Atas Nama Pemilik Rekening</label>
                     <input type="text" name="atas_nama" id="inputAnMetode" class="form-input" placeholder="Contoh: PT Rengganis Cantika" required>
                 </div>
 

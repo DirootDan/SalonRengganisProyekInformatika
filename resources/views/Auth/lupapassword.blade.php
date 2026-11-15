@@ -28,7 +28,7 @@
 
             <label for="email" class="field-label">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}"
-                   placeholder="nama@email.com" required autofocus>
+                   placeholder="nama@email.com" required autocomplete="email" autofocus>
 
             <button type="submit" id="submitBtn">KIRIM LINK RESET</button>
         </form>

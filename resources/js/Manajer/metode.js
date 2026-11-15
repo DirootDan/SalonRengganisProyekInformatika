@@ -1,3 +1,5 @@
+import { bukaModalAksesibel } from '../components/staf-ui';
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal         = document.getElementById('modalMetode');
     const judulModal    = document.getElementById('judulModalMetode');
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         form.action       = btnTambah.dataset.urlSimpan;
         methodInput.value = 'POST';
-        modal.classList.add('tampil');
+        bukaModalAksesibel(modal, inputNama);
     });
 
     document.querySelectorAll('.btnEditMetode').forEach(btn => {
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inputKategori.value    = btn.dataset.kategori || 'Transfer Bank';
             inputRek.value         = btn.dataset.rek || '';
             inputAn.value          = btn.dataset.an || '';
-            modal.classList.add('tampil');
+            bukaModalAksesibel(modal, inputNama);
         });
     });
 });

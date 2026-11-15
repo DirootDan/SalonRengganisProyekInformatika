@@ -64,7 +64,7 @@
 
 .teks-selesai {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--warna-teks-redup, #4b5563);
 }
 
 .paginasi-wadah {

@@ -140,6 +140,7 @@
                             <input type="text"
                                    id="searchInput"
                                    class="search-input tanpa-margin"
+                                   aria-label="Cari nama perawatan"
                                    placeholder="Cari nama perawatan (contoh: Smoothing, Potong Rambut, Facial, Massage...)">
                         </div>
 
@@ -332,6 +333,7 @@
                                 <input type="text"
                                        id="searchProdukInput"
                                        class="search-input tanpa-margin"
+                                       aria-label="Cari produk tambahan"
                                        placeholder="Cari dari {{ $produk->count() }} produk (ketik nama vitamin, serum, shampoo, masker...)">
                                 <div class="filter-produk-grup" role="tablist" aria-label="Filter Produk Add-On">
                                     <button type="button" class="chip-filter-produk aktif" data-filter-produk="semua">
@@ -467,6 +469,7 @@
                                            name="kode_promo"
                                            class="input-kode-promo"
                                            value="{{ old('kode_promo') }}"
+                                           aria-label="Kode promo"
                                            placeholder="Ketik kode promo...">
                                     <button type="button" id="btnHapusPromo" class="btn-reset-promo">Reset</button>
                                 </div>

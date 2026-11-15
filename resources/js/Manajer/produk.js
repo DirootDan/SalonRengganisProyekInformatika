@@ -1,7 +1,10 @@
+import { bukaModalAksesibel, perbaruiEmptyStateTabel } from '../components/staf-ui';
+
 document.addEventListener('DOMContentLoaded', () => {
     const cariInput   = document.getElementById('cariProduk');
     const filterStok  = document.getElementById('filterStok');
     const barisProduk = document.querySelectorAll('.baris-produk');
+    const tbodyProduk = barisProduk[0]?.closest('tbody') || null;
 
     const modal       = document.getElementById('modalProduk');
     const judulModal  = document.getElementById('judulModalProduk');
@@ -16,12 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const saringProduk = () => {
         const kataKunci = (cariInput?.value || '').toLowerCase().trim();
         const status    = filterStok?.value || '';
+        let jumlahTampak = 0;
 
         barisProduk.forEach(baris => {
             const cocokNama   = (baris.dataset.nama || '').includes(kataKunci);
             const cocokStatus = !status || baris.dataset.status === status;
-            baris.style.display = (cocokNama && cocokStatus) ? '' : 'none';
+            const tampil      = cocokNama && cocokStatus;
+            baris.style.display = tampil ? '' : 'none';
+            if (tampil) jumlahTampak += 1;
         });
+
+        if (barisProduk.length > 0) {
+            perbaruiEmptyStateTabel(tbodyProduk, jumlahTampak, 'Tidak ada produk yang cocok dengan pencarian atau filter.');
+        }
     };
 
     cariInput?.addEventListener('input', saringProduk);
@@ -32,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         form.action       = btnTambah.dataset.urlSimpan;
         methodInput.value = 'POST';
-        modal.classList.add('tampil');
+        bukaModalAksesibel(modal, inputNama);
     });
 
     document.querySelectorAll('.btnEditProduk').forEach(btn => {
@@ -43,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inputNama.value        = btn.dataset.namaAsli || '';
             inputStok.value        = btn.dataset.stok || '0';
             inputHarga.value       = btn.dataset.harga || '0';
-            modal.classList.add('tampil');
+            bukaModalAksesibel(modal, inputNama);
         });
     });
 });

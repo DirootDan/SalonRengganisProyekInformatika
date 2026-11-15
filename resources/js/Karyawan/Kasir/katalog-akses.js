@@ -1,3 +1,5 @@
+import { bukaModalAksesibel, tutupModalAksesibel } from '../../components/staf-ui';
+
 export function inisialisasiModalAksesKatalog() {
     const modalEl = document.getElementById('modalAksesKatalog');
     const inputKonteks = document.getElementById('inputKonteksAksesKatalog');
@@ -8,12 +10,6 @@ export function inisialisasiModalAksesKatalog() {
     const inputAlasan = document.getElementById('inputAlasanAksesKatalog');
     const formKunci = document.getElementById('formKunciKembaliAkses');
 
-    const aturModal = (tampil) => {
-        if (!modalEl) return;
-        modalEl.classList.toggle('tampil', tampil);
-        modalEl.setAttribute('aria-hidden', tampil ? 'false' : 'true');
-    };
-
     document.querySelectorAll('.btn-minta-akses-katalog').forEach((btn) => {
         btn.addEventListener('click', () => {
             const d = btn.dataset;
@@ -23,16 +19,12 @@ export function inisialisasiModalAksesKatalog() {
             if (badgeAksi) badgeAksi.textContent = (d.aksi || 'ubah').toUpperCase();
             if (labelTarget) labelTarget.textContent = d.label || '-';
             if (inputAlasan) inputAlasan.value = '';
-            aturModal(true);
-            inputAlasan?.focus();
+            bukaModalAksesibel(modalEl, inputAlasan);
         });
     });
 
-    document.getElementById('btnTutupModalAksesKatalog')?.addEventListener('click', () => aturModal(false));
-    document.getElementById('btnBatalModalAksesKatalog')?.addEventListener('click', () => aturModal(false));
-    modalEl?.addEventListener('click', (e) => {
-        if (e.target === modalEl) aturModal(false);
-    });
+    document.getElementById('btnTutupModalAksesKatalog')?.addEventListener('click', () => tutupModalAksesibel(modalEl));
+    document.getElementById('btnBatalModalAksesKatalog')?.addEventListener('click', () => tutupModalAksesibel(modalEl));
 
     return {
         kunciKembaliAkses: (urlBatal) => {

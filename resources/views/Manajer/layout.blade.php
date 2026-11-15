@@ -145,7 +145,7 @@
     </div>
 
     <!-- Notifikasi Toast Interaktif -->
-    <div id="toastNotif" class="toast-notif"></div>
+    <div id="toastNotif" class="toast-notif" role="status" aria-live="polite"></div>
 
     <x-confirm-modal />
 

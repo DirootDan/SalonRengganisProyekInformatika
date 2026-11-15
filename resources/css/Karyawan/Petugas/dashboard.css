@@ -91,7 +91,7 @@ body {
 }
 
 .menu-petugas a.aktif {
-    background: linear-gradient(135deg, var(--warna-brand-muda), var(--warna-brand));
+    background: linear-gradient(135deg, var(--warna-brand-hover), var(--warna-brand));
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(219, 39, 119, 0.28);
 }
@@ -244,7 +244,7 @@ body {
 }
 
 .kartu-metrik.unggulan {
-    background: linear-gradient(135deg, #e879a0, #d45d87);
+    background: linear-gradient(135deg, #be185d, #9d174d);
     border: none;
 }
 
@@ -306,7 +306,7 @@ body {
     padding: 8px 14px;
     border-radius: 10px;
     border: none;
-    background: #10b981;
+    background: #047857;
     color: #ffffff;
     font-size: 12px;
     font-weight: 600;
@@ -315,13 +315,13 @@ body {
 }
 
 .btn-selesai:hover {
-    background: #059669;
+    background: #065f46;
 }
 
 .btn-selesai:disabled,
 .btn-selesai.btn-selesai-nonaktif {
     background: #e2e8f0;
-    color: #94a3b8;
+    color: #475569;
     cursor: not-allowed;
 }
 
@@ -339,12 +339,12 @@ body {
 .teks-sudah {
     font-size: 12px;
     font-weight: 600;
-    color: #059669;
+    color: #047857;
 }
 
 .teks-komisi {
     font-weight: 700;
-    color: #059669;
+    color: #047857;
 }
 
 .kosong-tengah {
@@ -389,7 +389,7 @@ body {
 }
 
 .ringkasan-card.hari-ini::after {
-    background: var(--warna-brand-muda);
+    background: var(--warna-brand-hover);
 }
 
 .ringkasan-card h3 {

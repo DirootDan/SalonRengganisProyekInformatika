@@ -46,10 +46,10 @@ body {
     flex: 1; 
 }
 
-.menu a { 
-    padding: 10px 20px; 
-    border-radius: 999px; 
-    color: #6b7280; 
+.menu a {
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: #4b5563; 
     text-decoration: none; 
     font-size: 14px; 
     font-weight: 600; 
@@ -70,7 +70,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #ef4444;
+    background: #dc2626;
     color: white;
     font-size: 11px;
     font-weight: 700;
@@ -145,8 +145,9 @@ body {
 .tombol-lonceng:focus-visible {
     background: #fce7f3;
     border-color: #f9a8d4;
-    color: #db2777;
-    outline: none;
+    color: #be185d;
+    outline: 2px solid #be185d;
+    outline-offset: 2px;
 }
 
 .tombol-lonceng.ada-notif {
@@ -163,7 +164,7 @@ body {
     position: absolute;
     top: -4px;
     right: -4px;
-    background: #ef4444;
+    background: #dc2626;
     color: #ffffff;
     font-size: 10px;
     font-weight: 700;
@@ -175,7 +176,7 @@ body {
     align-items: center;
     justify-content: center;
     border: 2px solid #ffffff;
-    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
 }
 
 /* ===== Dropdown Akun Pelanggan ===== */
@@ -203,27 +204,28 @@ body {
 .akun-trigger:focus-visible {
     background: #fce7f3;
     border-color: #f9a8d4;
-    color: #db2777;
-    outline: none;
+    color: #be185d;
+    outline: 2px solid #be185d;
+    outline-offset: 2px;
 }
 
 /* Penanda aktif saat pelanggan berada di halaman profil */
 .akun-trigger.aktif {
     background: #fdf2f8;
-    border-color: #db2777;
-    color: #db2777;
-    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.12);
+    border-color: #be185d;
+    color: #be185d;
+    box-shadow: 0 0 0 3px rgba(190, 24, 93, 0.12);
 }
 
 .akun-trigger.aktif .akun-avatar {
-    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #db2777;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #be185d;
 }
 
 .akun-avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #db2777, #ec4899);
+    background: linear-gradient(135deg, #be185d, #9d174d);
     color: white;
     display: inline-flex;
     align-items: center;
@@ -251,13 +253,13 @@ body {
 
 .akun-panah {
     font-size: 12px;
-    color: #9ca3af;
+    color: #4b5563;
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .akun-dropdown.terbuka .akun-panah {
     transform: rotate(180deg);
-    color: #db2777;
+    color: #be185d;
 }
 
 .akun-menu {
@@ -338,13 +340,14 @@ body {
 .akun-menu-item:hover,
 .akun-menu-item:focus-visible {
     background: #fdf2f8;
-    color: #db2777;
-    outline: none;
+    color: #be185d;
+    outline: 2px solid #be185d;
+    outline-offset: -2px;
 }
 
 .akun-menu-item.item-aktif {
     background: #fce7f3;
-    color: #db2777;
+    color: #be185d;
 }
 
 .item-ikon {
@@ -430,15 +433,15 @@ body {
 }
 
 .sub-halaman { 
-    color: #6b7280; 
+    color: #4b5563;
     margin: 0 0 40px; 
     font-size: 16px; 
     text-align: center; 
 }
 
 .success-msg { 
-    background: #dcfce7; 
-    color: #16a34a; 
+    background: #dcfce7;
+    color: #15803d; 
     padding: 16px; 
     border-radius: 16px; 
     margin-bottom: 24px; 
@@ -448,8 +451,8 @@ body {
 }
 
 .error-msg { 
-    background: #fee2e2; 
-    color: #ef4444; 
+    background: #fee2e2;
+    color: #b91c1c; 
     padding: 16px; 
     border-radius: 16px; 
     margin-bottom: 24px; 
@@ -514,8 +517,9 @@ input[type="date"],
 
 input[type="date"]:focus, 
 .search-input:focus { 
-    outline: none; 
-    border-color: #db2777; 
+    outline: 2px solid #be185d; 
+    outline-offset: 1px; 
+    border-color: #be185d; 
     background: white; 
 }
 
@@ -549,8 +553,8 @@ input[type="date"]:focus,
     border-radius: 10px; 
 }
 
-.daftar-opsi::-webkit-scrollbar-thumb:hover { 
-    background: #9ca3af; 
+.daftar-opsi::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
 }
 
 .opsi { 
@@ -630,9 +634,21 @@ input[type="date"]:focus,
 .footer { 
     text-align: center; 
     padding: 40px 20px; 
-    color: #9ca3af; 
+    color: #4b5563; 
     font-size: 13px; 
     margin-top: 60px; 
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 @media (max-width: 768px) {
