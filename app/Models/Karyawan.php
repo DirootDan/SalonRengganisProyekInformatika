@@ -80,6 +80,11 @@ class Karyawan extends Authenticatable
         ];
     }
 
+    public function sedangAktifBertugas(): bool
+    {
+        return (bool) $this->aktif && ! $this->trashed();
+    }
+
     public function rutePeran(): ?string
     {
         return match ($this->role_jabatan) {

@@ -15,10 +15,17 @@ class AuthController extends Controller
 {
     /* ================= TAMPILAN HALAMAN ================= */
 
-    public function portalStaf()
+    public function portalStaf(Request $request)
     {
         if (Auth::guard('karyawan')->check()) {
             $user = Auth::guard('karyawan')->user();
+
+            if (! $user->sedangAktifBertugas()) {
+                $this->keluarkanKaryawanTidakAktif($request, (int) $user->id_karyawan);
+
+                return redirect()->route('login')
+                    ->withErrors(['login_id' => 'Akun staf Anda sudah dinonaktifkan. Silakan hubungi manajer.']);
+            }
 
             return redirect()->route($user->rutePeran() ?? 'login');
         }
@@ -26,12 +33,16 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    public function showLogin()
+    public function showLogin(Request $request)
     {
         if (Auth::guard('karyawan')->check()) {
             $user = Auth::guard('karyawan')->user();
 
-            return redirect()->route($user->rutePeran() ?? 'login');
+            if (! $user->sedangAktifBertugas()) {
+                $this->keluarkanKaryawanTidakAktif($request, (int) $user->id_karyawan);
+            } else {
+                return redirect()->route($user->rutePeran() ?? 'login');
+            }
         }
 
         if (Auth::guard('pelanggan')->check()) {
@@ -44,7 +55,17 @@ class AuthController extends Controller
 
     public function showRegister(Request $request)
     {
-        if (Auth::guard('pelanggan')->check() || Auth::guard('karyawan')->check()) {
+        if (Auth::guard('karyawan')->check()) {
+            $user = Auth::guard('karyawan')->user();
+
+            if (! $user->sedangAktifBertugas()) {
+                $this->keluarkanKaryawanTidakAktif($request, (int) $user->id_karyawan);
+            } else {
+                return redirect('/');
+            }
+        }
+
+        if (Auth::guard('pelanggan')->check()) {
             return redirect('/');
         }
 
@@ -86,10 +107,16 @@ class AuthController extends Controller
         if (Auth::guard('karyawan')->attempt(['username' => $loginId, 'password' => $password])) {
             $user = Auth::guard('karyawan')->user();
 
+            if (! $user->sedangAktifBertugas()) {
+                $this->keluarkanKaryawanTidakAktif($request, (int) $user->id_karyawan);
+
+                return back()
+                    ->withErrors(['login_id' => 'Akun staf Anda sudah dinonaktifkan. Silakan hubungi manajer.'])
+                    ->onlyInput('login_id');
+            }
+
             if (! $user->rutePeran()) {
-                Auth::guard('karyawan')->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+                $this->keluarkanKaryawanTidakAktif($request, (int) $user->id_karyawan);
 
                 return back()
                     ->withErrors(['login_id' => 'Jabatan akun ini belum dikenali. Hubungi manajer.'])
@@ -216,7 +243,18 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Link reset tidak valid atau sudah kedaluwarsa.'])->onlyInput('email');
     }
 
-    /* ================= HELPER PESAN & ATRIBUT ================= */
+    /* ================= HELPER PESAN, SESI & ATRIBUT ================= */
+
+    private function keluarkanKaryawanTidakAktif(Request $request, ?int $idKaryawan = null): void
+    {
+        if ($idKaryawan !== null) {
+            app(OtorisasiPosService::class)->hanguskanIzinKatalogSaatLogout($idKaryawan);
+        }
+
+        Auth::guard('karyawan')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
 
     private function pesan(): array
     {

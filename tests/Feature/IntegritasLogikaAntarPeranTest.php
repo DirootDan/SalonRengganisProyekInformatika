@@ -460,6 +460,42 @@ class IntegritasLogikaAntarPeranTest extends TestCase
             ->assertViewHas('bukaTabPassword', true);
     }
 
+    public function test_staf_nonaktif_ditolak_saat_login_dan_sesi_aktif_otomatis_dikeluarkan(): void
+    {
+        $this->stylist->update([
+            'aktif' => false,
+            'password' => 'rahasia123',
+        ]);
+
+        // 1. Percobaan login staf nonaktif ditolak tanpa membentuk sesi autentikasi
+        $this->post(route('login.proses'), [
+            'login_id' => $this->stylist->username,
+            'password' => 'rahasia123',
+        ])
+            ->assertSessionHasErrors('login_id');
+
+        $this->assertFalse(auth('karyawan')->check());
+
+        // 2. Sesi aktif yang sudah berjalan langsung dicabut ketika akun dinonaktifkan
+        $this->stylist->update(['aktif' => true]);
+        $this->actingAs($this->stylist, 'karyawan');
+        $this->stylist->update(['aktif' => false]);
+
+        $this->get(route('stylist.dashboard'))
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('login_id');
+
+        $this->assertFalse(auth('karyawan')->check());
+
+        // 3. Akses /dashboard dan /login ulang tidak memicu redirect loop
+        $this->actingAs($this->stylist->fresh(), 'karyawan')
+            ->get(route('dashboard'))
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('login_id');
+
+        $this->get(route('login'))->assertOk();
+    }
+
     private function buatReservasiDenganDetail(string $status): Reservasi
     {
         $reservasi = Reservasi::create([

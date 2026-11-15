@@ -52,7 +52,18 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 
 /* ===== AREA KARYAWAN ===== */
 Route::middleware('auth:karyawan')->get('/dashboard', function () {
-    $rute = Auth::guard('karyawan')->user()->rutePeran();
+    $user = Auth::guard('karyawan')->user();
+
+    if (! $user || ! $user->sedangAktifBertugas()) {
+        Auth::guard('karyawan')->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->withErrors(['login_id' => 'Akun staf Anda sudah dinonaktifkan. Silakan hubungi manajer.']);
+    }
+
+    $rute = $user->rutePeran();
 
     return redirect()->route($rute ?? 'login');
 })->name('dashboard');
