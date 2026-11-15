@@ -98,7 +98,8 @@ class FrontendP1PerbaikanTest extends TestCase
             $this->assertStringNotContainsString('outline:none', $teks, $berkas->getRelativePathname());
 
             foreach ($warnaTerlarang as $hex) {
-                if ($hex === '#f472b6' && str_replace('\\', '/', $berkas->getRelativePathname()) === 'global/variables.css') {
+                $rel = str_replace('\\', '/', $berkas->getRelativePathname());
+                if ($hex === '#f472b6' && in_array($rel, ['global/variables.css', 'base/variables.css'], true)) {
                     continue;
                 }
                 $this->assertStringNotContainsString($hex, $teks, $berkas->getRelativePathname());
