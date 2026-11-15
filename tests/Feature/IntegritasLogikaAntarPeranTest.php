@@ -612,6 +612,93 @@ class IntegritasLogikaAntarPeranTest extends TestCase
         $this->assertStringContainsString("'=CMD|calc", $isiCsv);
     }
 
+    public function test_walkin_pos_menolak_petugas_yang_sedang_bentrok_jadwal_meski_tanpa_petugas_awal(): void
+    {
+        MetodePembayaran::create(['nama_metode' => 'Tunai', 'aktif' => true]);
+
+        $stylistCadangan = Karyawan::create([
+            'nama_staff' => 'Nadia Cadangan',
+            'email' => 'nadia.cadangan@salon.test',
+            'username' => 'stylist_nadia_test',
+            'role_jabatan' => Karyawan::JABATAN_STYLIST,
+            'persen_komisi' => 20,
+            'aktif' => true,
+            'password' => bcrypt('password123'),
+        ]);
+
+        Carbon::setTestNow(Carbon::today()->setTime(13, 15));
+
+        try {
+            // Stylist utama sudah terikat reservasi aktif pukul 13:00 - 14:00 (blokir sampai 14:00)
+            $reservasiAktif = Reservasi::create([
+                'id_pelanggan' => $this->pelanggan->id_pelanggan,
+                'id_karyawan' => $this->stylist->id_karyawan,
+                'tgl_booking' => Carbon::today()->toDateString(),
+                'jam_booking' => '13:00',
+                'jam_selesai' => '13:45',
+                'total_durasi_menit' => 45,
+                'status' => Reservasi::STATUS_DITERIMA,
+            ]);
+            $reservasiAktif->layanan()->attach($this->layananRambut->id_layanan, [
+                'id_karyawan' => $this->stylist->id_karyawan,
+                'jam_mulai' => '13:00',
+                'jam_selesai' => '13:45',
+                'jam_selesai_blokir' => '14:00',
+                'durasi_saat_ini' => 45,
+                'jeda_saat_ini' => 15,
+                'harga_saat_ini' => 120000,
+                'persen_komisi' => 15,
+                'nominal_komisi' => 18000,
+                'status_layanan' => Reservasi::STATUS_MENUNGGU,
+            ]);
+
+            // 1. Walk-In dengan petugas_layanan tanpa id_petugas utama -> harus ditolak karena bentrok
+            $this->actingAs($this->kasir, 'karyawan')
+                ->post(route('kasir.bayar'), [
+                    'nama_pelanggan_walkin' => 'Tamu Bentrok A',
+                    'metode_bayar' => 'Tunai',
+                    'nominal_uang' => 150000,
+                    'layanan_ids' => [$this->layananRambut->id_layanan],
+                    'petugas_layanan' => [$this->layananRambut->id_layanan => $this->stylist->id_karyawan],
+                ])
+                ->assertSessionHasErrors('pembayaran');
+
+            // 2. Walk-In dengan id_petugas utama yang sedang bentrok -> juga harus ditolak
+            $this->actingAs($this->kasir, 'karyawan')
+                ->post(route('kasir.bayar'), [
+                    'nama_pelanggan_walkin' => 'Tamu Bentrok B',
+                    'metode_bayar' => 'Tunai',
+                    'nominal_uang' => 150000,
+                    'layanan_ids' => [$this->layananRambut->id_layanan],
+                    'id_petugas' => $this->stylist->id_karyawan,
+                ])
+                ->assertSessionHasErrors('pembayaran');
+
+            $this->assertSame(0, Transaksi::count());
+
+            // 3. Walk-In dialihkan ke Stylist cadangan yang kosong -> berhasil & komisi tercatat
+            $this->actingAs($this->kasir, 'karyawan')
+                ->post(route('kasir.bayar'), [
+                    'nama_pelanggan_walkin' => 'Tamu Walk-In Valid',
+                    'metode_bayar' => 'Tunai',
+                    'nominal_uang' => 150000,
+                    'layanan_ids' => [$this->layananRambut->id_layanan],
+                    'petugas_layanan' => [$this->layananRambut->id_layanan => $stylistCadangan->id_karyawan],
+                ])
+                ->assertSessionHasNoErrors()
+                ->assertRedirect();
+
+            $this->assertSame(1, Transaksi::count());
+            $this->assertDatabaseHas('reservasi', [
+                'nama_pelanggan_walkin' => 'Tamu Walk-In Valid',
+                'id_karyawan' => $stylistCadangan->id_karyawan,
+                'status' => Reservasi::STATUS_SELESAI,
+            ]);
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
     private function buatReservasiDenganDetail(string $status): Reservasi
     {
         $reservasi = Reservasi::create([

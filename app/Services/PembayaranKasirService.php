@@ -200,9 +200,6 @@ class PembayaranKasirService
             throw new DomainException('Nama pelanggan walk-in wajib diisi untuk transaksi tanpa reservasi.');
         }
 
-        $idPetugasWalkIn = ! empty($data['id_petugas']) ? (int) $data['id_petugas'] : null;
-        $stafWalkIn = $idPetugasWalkIn ? Karyawan::where('aktif', true)->find($idPetugasWalkIn) : null;
-        $persenWalkIn = (float) ($stafWalkIn->persen_komisi ?? Karyawan::DEFAULT_PERSEN_KOMISI);
         $jamSekarang = now()->format('H:i');
 
         $idLayanan = array_values(array_unique(array_filter(array_map(fn (array $i) => (int) ($i['id_layanan'] ?? 0), $layananUsulan))));
@@ -216,7 +213,7 @@ class PembayaranKasirService
         $reservasi = Reservasi::create([
             'id_pelanggan' => null,
             'nama_pelanggan_walkin' => $namaWalkIn,
-            'id_karyawan' => $stafWalkIn?->id_karyawan,
+            'id_karyawan' => null,
             'tgl_booking' => now()->toDateString(),
             'jam_booking' => $timeline['jam_mulai'],
             'jam_selesai' => $timeline['jam_selesai'],
@@ -234,15 +231,15 @@ class PembayaranKasirService
             $slot = $timeline['items'][$master->id_layanan] ?? null;
             $harga = (float) $item['harga_aktif'];
             $lampiran[$master->id_layanan] = [
-                'id_karyawan' => $stafWalkIn?->id_karyawan,
+                'id_karyawan' => null,
                 'jam_mulai' => $slot['jam_mulai'] ?? $jamSekarang,
                 'jam_selesai' => $slot['jam_selesai'] ?? $jamSekarang,
                 'jam_selesai_blokir' => $slot['jam_selesai_blokir'] ?? $jamSekarang,
                 'durasi_saat_ini' => $slot['durasi_saat_ini'] ?? (int) ($master->durasi_menit ?: Layanan::DEFAULT_DURASI_MENIT),
                 'jeda_saat_ini' => $slot['jeda_saat_ini'] ?? (int) ($master->jeda_menit ?? Layanan::DEFAULT_JEDA_MENIT),
                 'harga_saat_ini' => $harga,
-                'persen_komisi' => $stafWalkIn ? $persenWalkIn : 0,
-                'nominal_komisi' => $stafWalkIn ? round($harga * ($persenWalkIn / 100), 2) : 0,
+                'persen_komisi' => 0,
+                'nominal_komisi' => 0,
                 'status_layanan' => Reservasi::STATUS_SELESAI,
             ];
         }
@@ -319,7 +316,7 @@ class PembayaranKasirService
             throw new DomainException("Petugas '{$staf->nama_staff}' ({$staf->role_jabatan}) tidak sesuai untuk layanan '{$layanan->nama_layanan}' yang membutuhkan {$layanan->jabatan_petugas}.");
         }
 
-        if ($idAwal !== null && (int) $staf->id_karyawan !== $idAwal) {
+        if ($idAwal === null || (int) $staf->id_karyawan !== $idAwal) {
             $jamMulai = substr((string) ($layanan->pivot->jam_mulai ?: $reservasi->jam_booking ?: Reservasi::JAM_BUKA_SALON), 0, 5);
             $jamBlokir = substr((string) ($layanan->pivot->jam_selesai_blokir ?: $reservasi->jam_selesai), 0, 5);
             if ($jamBlokir === '') {
@@ -330,7 +327,9 @@ class PembayaranKasirService
             $idSibuk = $this->jadwalService->cariIdPetugasSibukPadaRentang($reservasi->tgl_booking->toDateString(), $jamMulai, $jamBlokir, (int) $reservasi->id_reservasi, true);
 
             if (in_array((int) $staf->id_karyawan, $idSibuk, true)) {
-                throw new DomainException("Petugas pengganti '{$staf->nama_staff}' sedang memiliki jadwal reservasi aktif lain pada tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$jamMulai} - {$jamBlokir} WIB.");
+                $labelPeran = $idAwal === null ? 'Petugas' : 'Petugas pengganti';
+
+                throw new DomainException("{$labelPeran} '{$staf->nama_staff}' sedang memiliki jadwal reservasi aktif lain pada tanggal {$reservasi->tgl_booking->format('d/m/Y')} pukul {$jamMulai} - {$jamBlokir} WIB.");
             }
         }
 
