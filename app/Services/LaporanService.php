@@ -18,13 +18,29 @@ class LaporanService
      */
     public function rentangTanggal(Request $request): array
     {
-        $tglMulai = $request->query('mulai', now()->startOfMonth()->toDateString());
-        $tglSelesai = $request->query('selesai', now()->endOfMonth()->toDateString());
+        $waktuMulai = $this->parseTanggalQuery($request->query('mulai'), now()->startOfMonth());
+        $waktuSelesai = $this->parseTanggalQuery($request->query('selesai'), now()->endOfMonth());
 
-        $waktuMulai = Carbon::parse($tglMulai)->startOfDay();
-        $waktuSelesai = Carbon::parse($tglSelesai)->endOfDay();
+        if ($waktuMulai->gt($waktuSelesai)) {
+            [$waktuMulai, $waktuSelesai] = [$waktuSelesai, $waktuMulai];
+        }
 
-        return [$tglMulai, $tglSelesai, $waktuMulai, $waktuSelesai];
+        $tglMulai = $waktuMulai->toDateString();
+        $tglSelesai = $waktuSelesai->toDateString();
+
+        return [$tglMulai, $tglSelesai, $waktuMulai->copy()->startOfDay(), $waktuSelesai->copy()->endOfDay()];
+    }
+
+    private function parseTanggalQuery(mixed $nilai, Carbon $default): Carbon
+    {
+        if (is_string($nilai) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $nilai) === 1) {
+            [$tahun, $bulan, $hari] = array_map('intval', explode('-', $nilai));
+            if (checkdate($bulan, $hari, $tahun)) {
+                return Carbon::createFromFormat('Y-m-d', $nilai)->startOfDay();
+            }
+        }
+
+        return $default->copy()->startOfDay();
     }
 
     /**
@@ -69,7 +85,10 @@ class LaporanService
             ->get();
 
         $layananTerlaris = DB::table('detail_reservasi')
+            ->join('reservasi', 'reservasi.id_reservasi', '=', 'detail_reservasi.id_reservasi')
             ->join('layanan', 'layanan.id_layanan', '=', 'detail_reservasi.id_layanan')
+            ->whereBetween('reservasi.tgl_booking', [$tglMulai, $tglSelesai])
+            ->where('reservasi.status', Reservasi::STATUS_SELESAI)
             ->select('layanan.nama_layanan', DB::raw('COUNT(*) as total_pesan'))
             ->groupBy('layanan.id_layanan', 'layanan.nama_layanan')
             ->orderByDesc('total_pesan')
@@ -121,10 +140,10 @@ class LaporanService
                     '#'.$r->id_reservasi,
                     $r->tgl_booking->format('d/m/Y'),
                     $r->jam_booking,
-                    $r->namaPelangganTampil(),
-                    $rincianItem,
+                    $this->amankanSelCsv($r->namaPelangganTampil()),
+                    $this->amankanSelCsv($rincianItem),
                     (int) $total,
-                    $r->statusTernormalisasi(),
+                    $this->amankanSelCsv($r->statusTernormalisasi()),
                 ]);
             }
 
@@ -132,5 +151,18 @@ class LaporanService
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Mencegah CSV formula injection di Excel/Google Sheets pada kolom teks bebas.
+     */
+    private function amankanSelCsv(?string $nilai): string
+    {
+        $teks = (string) ($nilai ?? '');
+        if ($teks !== '' && str_contains("=+-@\t\r", $teks[0])) {
+            return "'".$teks;
+        }
+
+        return $teks;
     }
 }

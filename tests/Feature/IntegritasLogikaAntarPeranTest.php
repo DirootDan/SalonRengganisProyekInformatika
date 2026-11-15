@@ -9,6 +9,7 @@ use App\Models\Pelanggan;
 use App\Models\PermintaanOtorisasi;
 use App\Models\Produk;
 use App\Models\Reservasi;
+use App\Models\Transaksi;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -541,6 +542,74 @@ class IntegritasLogikaAntarPeranTest extends TestCase
         } finally {
             Carbon::setTestNow();
         }
+    }
+
+    public function test_laporan_manajer_aman_terhadap_query_invalid_metrik_terfilter_csv_bersih_dan_inv_konsisten(): void
+    {
+        MetodePembayaran::create(['nama_metode' => 'Tunai', 'aktif' => true]);
+
+        // 1. Reservasi #1 dibatalkan pada hari ini agar id_reservasi transaksi berikutnya != id_transaksi
+        $dibatalkan = $this->buatReservasiDenganDetail(Reservasi::STATUS_DIBATALKAN);
+        $dibatalkan->update(['tgl_booking' => Carbon::today()->toDateString()]);
+
+        // Tambah layanan kedua yang dibatalkan 5 kali untuk menguji filter layananTerlaris
+        $layananBatal = Layanan::create([
+            'nama_layanan' => 'Creambath Batal',
+            'kategori' => 'Rambut',
+            'jabatan_petugas' => Karyawan::JABATAN_STYLIST,
+            'harga_layanan' => 90000,
+            'durasi_menit' => 45,
+            'jeda_menit' => 15,
+            'petugas_eksklusif' => true,
+        ]);
+        $dibatalkan->layanan()->attach($layananBatal->id_layanan, [
+            'id_karyawan' => $this->stylist->id_karyawan,
+            'harga_saat_ini' => 90000,
+            'persen_komisi' => 15,
+            'nominal_komisi' => 13500,
+            'status_layanan' => Reservasi::STATUS_DIBATALKAN,
+        ]);
+
+        // 2. Reservasi selesai & dibayar (Walk-In dengan nama berawalan formula CSV '=')
+        $responBayar = $this->actingAs($this->kasir, 'karyawan')
+            ->post(route('kasir.bayar'), [
+                'nama_pelanggan_walkin' => '=CMD|calc',
+                'metode_bayar' => 'Tunai',
+                'nominal_uang' => 150000,
+                'layanan_ids' => [$this->layananRambut->id_layanan],
+                'id_petugas' => $this->stylist->id_karyawan,
+            ])
+            ->assertRedirect();
+
+        $transaksi = Transaksi::latest('id_transaksi')->firstOrFail();
+        $expectedInv = '#INV-'.str_pad((string) $transaksi->id_reservasi, 4, '0', STR_PAD_LEFT);
+        $this->assertNotSame((int) $transaksi->id_transaksi, (int) $transaksi->id_reservasi);
+        $responBayar->assertSessionHas('status', fn (string $pesan) => str_contains($pesan, $expectedInv));
+
+        // 3. Struk cetak menampilkan nomor nota yang identik dengan flash message
+        $this->actingAs($this->kasir, 'karyawan')
+            ->get(route('kasir.struk.cetak', $transaksi->id_transaksi))
+            ->assertOk()
+            ->assertSee($expectedInv);
+
+        // 4. Query tanggal invalid di laporan & ekspor CSV tidak menyebabkan error 500
+        $this->actingAs($this->manajer, 'karyawan')
+            ->get(route('manajer.laporan', ['mulai' => 'bukan-tanggal', 'selesai' => '2026-99-99']))
+            ->assertOk()
+            ->assertSee($this->layananRambut->nama_layanan)
+            ->assertViewHas('layananTerlaris', fn ($terlaris) => $terlaris && $terlaris->nama_layanan === $this->layananRambut->nama_layanan);
+
+        $this->actingAs($this->manajer, 'karyawan')
+            ->get(route('manajer.laporan', ['mulai' => ['array_invalid']]))
+            ->assertOk();
+
+        // 5. Ekspor CSV mensterilkan awalan formula spreadsheet (=)
+        $responCsv = $this->actingAs($this->manajer, 'karyawan')
+            ->get(route('manajer.laporan.ekspor', ['mulai' => 'invalid']))
+            ->assertOk();
+
+        $isiCsv = $responCsv->streamedContent();
+        $this->assertStringContainsString("'=CMD|calc", $isiCsv);
     }
 
     private function buatReservasiDenganDetail(string $status): Reservasi

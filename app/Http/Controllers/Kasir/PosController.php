@@ -206,8 +206,9 @@ class PosController extends Controller
 
         Cache::forget(ManajerDashboardController::CACHE_KEY_RINGKASAN);
         $kembalianRp = number_format((float) $transaksi->kembalian, 0, ',', '.');
+        $nomorNota = str_pad((string) $transaksi->id_reservasi, 4, '0', STR_PAD_LEFT);
 
         return redirect()->route('kasir.struk.cetak', $transaksi->id_transaksi)
-            ->with('status', "Transaksi #INV-{$transaksi->id_transaksi} berhasil dibayar lunas! Kembalian: Rp {$kembalianRp}");
+            ->with('status', "Transaksi #INV-{$nomorNota} berhasil dibayar lunas! Kembalian: Rp {$kembalianRp}");
     }
 }

@@ -178,8 +178,8 @@
                                 <td>{{ $log->created_at?->format('d/m/Y H:i') }}</td>
                                 <td>
                                     <strong>{{ $log->label_target }}</strong>
-                                    @if ($log->id_transaksi)
-                                        <div class="sub-baris-tabel">Nota #INV-{{ $log->id_transaksi }}</div>
+                                    @if ($log->id_reservasi || $log->id_transaksi)
+                                        <div class="sub-baris-tabel">Nota #INV-{{ str_pad((string) ($log->id_reservasi ?? $log->id_transaksi), 4, '0', STR_PAD_LEFT) }}</div>
                                     @endif
                                 </td>
                                 <td>{{ $log->kasir?->nama_staff ?? '-' }}</td>
