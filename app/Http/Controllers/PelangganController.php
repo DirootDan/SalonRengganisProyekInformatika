@@ -72,8 +72,11 @@ class PelangganController extends Controller
 
         $jmlStylistLayanan = $layanan->where('jabatan_petugas', Karyawan::JABATAN_STYLIST)->count();
         $jmlTherapistLayanan = $layanan->where('jabatan_petugas', Karyawan::JABATAN_THERAPIST)->count();
-        $jamTerpilihAwal = substr((string) old('jam_booking', '10:00'), 0, 5);
-        $tglTerpilihAwal = (string) old('tgl_booking', now()->toDateString());
+        $slotTersediaHariIni = collect($jamOperasional)->first(fn (string $jam) => $jam > now()->format('H:i'));
+        $tglDefault = $slotTersediaHariIni ? now()->toDateString() : now()->addDay()->toDateString();
+        $jamDefault = $slotTersediaHariIni ?: '10:00';
+        $jamTerpilihAwal = substr((string) old('jam_booking', $jamDefault), 0, 5);
+        $tglTerpilihAwal = (string) old('tgl_booking', $tglDefault);
         $idLayananDariQuery = $request->integer('layanan');
         $daftarLayananAwal = array_map('intval', (array) old('layanan', $idLayananDariQuery > 0 ? [$idLayananDariQuery] : []));
 

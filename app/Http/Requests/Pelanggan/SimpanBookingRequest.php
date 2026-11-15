@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Pelanggan;
 
 use App\Models\Reservasi;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SimpanBookingRequest extends FormRequest
@@ -23,6 +24,24 @@ class SimpanBookingRequest extends FormRequest
                     $jam = substr((string) $value, 0, 5);
                     if ($jam < Reservasi::JAM_BUKA_SALON || $jam > '20:30') {
                         $fail('Jam kedatangan harus berada dalam jam operasional salon (09:00 s/d 20:30 WIB).');
+
+                        return;
+                    }
+
+                    $tglBooking = trim((string) $this->input('tgl_booking'));
+                    if ($tglBooking === '') {
+                        return;
+                    }
+
+                    try {
+                        $tanggalBooking = Carbon::parse($tglBooking)->toDateString();
+                        $jamSekarang = now()->format('H:i');
+
+                        if ($tanggalBooking === now()->toDateString() && $jam <= $jamSekarang) {
+                            $fail("Jam kedatangan untuk hari ini sudah terlewat. Silakan pilih jam setelah pukul {$jamSekarang} WIB atau pilih tanggal lain.");
+                        }
+                    } catch (\Throwable) {
+                        // Format tanggal tidak valid sudah ditangani aturan validasi tgl_booking.
                     }
                 },
             ],

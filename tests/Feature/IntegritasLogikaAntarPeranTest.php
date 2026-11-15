@@ -496,6 +496,53 @@ class IntegritasLogikaAntarPeranTest extends TestCase
         $this->get(route('login'))->assertOk();
     }
 
+    public function test_booking_hari_ini_menolak_jam_yang_sudah_lewat_namun_menerima_slot_mendatang(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(14, 30));
+
+        try {
+            $hariIni = Carbon::today()->toDateString();
+
+            // 1. Booking jam 10:00 hari ini (sudah lewat dari 14:30) harus ditolak
+            $this->actingAs($this->pelanggan, 'pelanggan')
+                ->post(route('pelanggan.booking.simpan'), [
+                    'tgl_booking' => $hariIni,
+                    'jam_booking' => '10:00',
+                    'layanan' => [$this->layananRambut->id_layanan],
+                ])
+                ->assertSessionHasErrors('jam_booking');
+
+            $this->assertSame(0, Reservasi::count());
+
+            // 2. Slot jam operasional yang sudah lewat ditandai tidak tersedia pada endpoint AJAX
+            $responSlot = $this->actingAs($this->pelanggan, 'pelanggan')
+                ->getJson(route('pelanggan.booking.petugas', [
+                    'tgl_booking' => $hariIni,
+                    'jam_booking' => '15:00',
+                    'layanan' => [$this->layananRambut->id_layanan],
+                ]))
+                ->assertOk();
+
+            $this->assertFalse($responSlot->json('status_jam.10:00'));
+            $this->assertFalse($responSlot->json('status_jam.14:00'));
+            $this->assertTrue($responSlot->json('status_jam.15:00'));
+
+            // 3. Booking jam 15:00 hari ini tetap diterima
+            $this->actingAs($this->pelanggan, 'pelanggan')
+                ->post(route('pelanggan.booking.simpan'), [
+                    'tgl_booking' => $hariIni,
+                    'jam_booking' => '15:00',
+                    'layanan' => [$this->layananRambut->id_layanan],
+                ])
+                ->assertSessionHasNoErrors()
+                ->assertRedirect(route('pelanggan.riwayat'));
+
+            $this->assertSame(1, Reservasi::count());
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
     private function buatReservasiDenganDetail(string $status): Reservasi
     {
         $reservasi = Reservasi::create([

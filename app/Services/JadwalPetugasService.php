@@ -364,13 +364,22 @@ class JadwalPetugasService
             ->groupBy('role_jabatan');
 
         $statusJam = [];
+        $apakahHariIni = $tanggal === now()->toDateString();
+        $jamSekarang = now()->format('H:i');
+        $blokirDefaultMenit = Layanan::DEFAULT_DURASI_MENIT + Layanan::DEFAULT_JEDA_MENIT;
 
         foreach (Reservasi::JAM_OPERASIONAL as $jam) {
+            if ($apakahHariIni && $jam <= $jamSekarang) {
+                $statusJam[$jam] = false;
+
+                continue;
+            }
+
             if ($layananDipilih->isEmpty()) {
                 $idSibuk = $this->saringIdSibukDariKoleksi(
                     $jadwalHariIni,
                     $jam,
-                    Carbon::createFromFormat('H:i', $jam)->addMinutes(75)->format('H:i')
+                    Carbon::createFromFormat('H:i', $jam)->addMinutes($blokirDefaultMenit)->format('H:i')
                 );
                 $totalAktif = $petugasPerJabatan->flatten(1)->count();
                 $statusJam[$jam] = count($idSibuk) < $totalAktif;
