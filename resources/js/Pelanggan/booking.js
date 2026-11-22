@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         infoValidasiEl,
         btnLanjutStepRingkasan,
         submitBtn,
+        stepperItemList,
         promoRefs: { inputKodePromo, katalogPromo, kartuPromoList, pesanStatusPromo },
     };
 
@@ -200,7 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const bukaStep = (nomor, gulir = true) => {
-        stepAktif = Math.min(3, Math.max(1, nomor));
+        const targetNo = Math.min(3, Math.max(1, nomor));
+        if (targetNo > 1) {
+            const tabTarget = Array.from(stepperItemList).find(
+                (item) => parseInt(item.dataset.stepTarget || '1', 10) === targetNo,
+            );
+            if (tabTarget?.disabled) return;
+        }
+        stepAktif = targetNo;
         sinkronStepperVisual();
         updateRingkasan();
         if (gulir) {
@@ -362,7 +370,8 @@ document.addEventListener('DOMContentLoaded', () => {
             aturPilihanPetugas(cb);
         });
         jadwalCtrl.muatPetugasTersedia();
-        updateRingkasan();
+        if (stepAktif > 1) bukaStep(1, false);
+        else updateRingkasan();
     });
 
     formBooking.addEventListener('click', (e) => {
@@ -376,7 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             jadwalCtrl.muatPetugasTersedia();
-            updateRingkasan();
+            if (!checkboxes.some((cb) => cb.checked) && stepAktif > 1) bukaStep(1, false);
+            else updateRingkasan();
             return;
         }
 
