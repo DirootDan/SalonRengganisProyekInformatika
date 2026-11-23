@@ -339,9 +339,14 @@
     min-height: 54px;
 }
 
-.stepper-item:hover {
+.stepper-item:not(:disabled):hover {
     background: #fdf2f8;
     border-color: #fbcfe8;
+}
+
+.stepper-item:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 .stepper-item.aktif {

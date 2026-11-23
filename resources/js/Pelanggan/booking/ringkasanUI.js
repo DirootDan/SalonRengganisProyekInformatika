@@ -153,6 +153,13 @@ export const renderRingkasanBooking = (refs, state) => {
 
     const siap = jumlahLayanan > 0 && petugasKosong === 0 && !diluarJamBuka && !lewatJamTutup;
 
+    refs.stepperItemList?.forEach((item) => {
+        const no = parseInt(item.dataset.stepTarget || '1', 10);
+        if (no === 2) item.disabled = jumlahLayanan === 0;
+        else if (no === 3) item.disabled = !siap;
+        else item.disabled = false;
+    });
+
     if (refs.infoValidasiEl) {
         if (diluarJamBuka) {
             refs.infoValidasiEl.textContent = 'Jam kedatangan harus berada dalam jam operasional salon (09:00 s/d 20:30 WIB).';
