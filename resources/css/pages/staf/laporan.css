@@ -28,7 +28,16 @@
 .teks-sedang {
     font-size: 20px;
 }
+.produk-addon-laporan {
+    margin-top: 4px;
+    line-height: 1.4;
+    color: inherit;
+}
 
+.produk-addon-laporan small {
+    font-size: 12.5px;
+    color: inherit;
+}
 .judul-sub-panel {
     margin: 0 0 16px;
     font-size: 17px;
